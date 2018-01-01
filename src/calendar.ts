@@ -1,6 +1,5 @@
 import { Rule } from './rule'
 import * as moment from 'moment'
-import { Moment } from 'moment'
 
 export type CalendarMeasure =
   'daysOfWeek'
@@ -40,7 +39,7 @@ export class Calendar implements Rule {
     this.checkRange()
   }
 
-  match (date: Moment) {
+  match (date: moment.Moment) {
 
     // Get the unit based on the required measure of the date
     let unit = this.unitTypes(date)
@@ -101,7 +100,7 @@ export class Calendar implements Rule {
     })
   }
 
-  private unitTypes (date: Moment): number {
+  private unitTypes (date: moment.Moment): number {
     switch (this.measure) {
       case 'daysOfMonth':
         return date.date()

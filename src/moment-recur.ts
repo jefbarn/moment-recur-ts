@@ -11,14 +11,18 @@ declare module 'moment' {
     dateOnly (): moment.Moment
 
     recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
+
     recur (options?: RecurOptions): Recur
 
-
-    set(unit: moment.unitOfTime.All, value: number | string): moment.Moment
+    set (unit: moment.unitOfTime.All, value: number | string): moment.Moment
   }
 
   export function recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
   export function recur (options?: RecurOptions): Recur
+
+  namespace HTML5_FMT {
+    export const DATE: string
+  }
 }
 
 // Plugin for calculating the week of the month of a date
@@ -48,19 +52,6 @@ moment.fn.dateOnly = function dateOnly () {
   return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(), 'minute').utcOffset(0)
   // }
 }
-
-// }
-// }
-
-// const moment = Recurrable(moment.fn as Constructor<moment.Moment>)
-
-// var hasModule
-//
-// hasModule = (typeof module !== 'undefined' && module !== null) && (module.exports != null)
-//
-// if (typeof moment === 'undefined') {
-//   throw Error('Can\'t find moment')
-// }
 
 // Recur can be created the following ways:
 // moment.recur()
@@ -109,7 +100,3 @@ moment.fn.recur = function (start?: moment.MomentInput | RecurOptions, end?: mom
 
   return new Recur({ start: start as moment.MomentInput, end: end })
 }
-
-
-
-

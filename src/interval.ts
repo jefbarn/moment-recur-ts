@@ -35,7 +35,7 @@ export class Interval implements Rule {
     } else {
       diff = date.diff(start, this.measure, true)
     }
-    if (this.measure == 'days') {
+    if (this.measure === 'days') {
       // if we are dealing with days, we deal with whole days only.
       diff = Math.floor(diff)  // TODO: should this even happen?
     }

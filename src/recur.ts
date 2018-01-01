@@ -1,12 +1,17 @@
 import * as moment from 'moment'
-import { Moment, MomentInput } from 'moment'
 import { Interval } from './interval'
-import { MeasureInput, MeasurePlural, pluralize, Rule, ruleFactory, UnitsInput } from './rule'
+import { MeasureInput, pluralize, Rule, ruleFactory, UnitsInput } from './rule'
+
+export type Moment = moment.Moment
+export type MomentInput = moment.MomentInput
 
 export interface RecurOptions {
   start?: MomentInput
   end?: MomentInput
-  rules?: any[]
+  rules?: {
+    units: UnitsInput
+    measure: MeasureInput
+  }[]
   exceptions?: MomentInput[]
 }
 
@@ -14,34 +19,6 @@ type OccuranceType = 'next' | 'previous' | 'all'
 
 // The main Recur object to provide an interface for settings, rules, and matching
 export class Recur {
-
-  // A dictionary used to match rule measures to rule types
-  ruleTypes = {
-    days: 'interval',
-    weeks: 'interval',
-    months: 'interval',
-    years: 'interval',
-    daysOfWeek: 'calendar',
-    daysOfMonth: 'calendar',
-    weeksOfMonth: 'calendar',
-    weeksOfMonthByDay: 'calendar',
-    weeksOfYear: 'calendar',
-    monthsOfYear: 'calendar'
-  }
-
-  // a dictionary of plural and singular measures
-  measures = {
-    days: 'day',
-    weeks: 'week',
-    months: 'month',
-    years: 'year',
-    daysOfWeek: 'dayOfWeek',
-    daysOfMonth: 'dayOfMonth',
-    weeksOfMonth: 'weekOfMonth',
-    weeksOfMonthByDay: 'weekOfMonthByDay',
-    weeksOfYear: 'weekOfYear',
-    monthsOfYear: 'monthOfYear'
-  }
 
   protected start: Moment | null
   protected end: Moment | null
@@ -64,7 +41,7 @@ export class Recur {
     }
 
     // Our list of rules, all of which must match
-    this.rules = options.rules || []
+    this.rules = (options.rules || []).map(rule => ruleFactory(rule.units, rule.measure))
 
     // Our list of exceptions. Match always fails on these dates.
     let exceptions = options.exceptions || []
@@ -147,14 +124,14 @@ export class Recur {
     let data: RecurOptions = {}
 
     if (this.start && moment(this.start).isValid()) {
-      data.start = this.start.format('L')
+      data.start = this.start.format(moment.HTML5_FMT.DATE)
     }
 
     if (this.end && moment(this.end).isValid()) {
-      data.end = this.end.format('L')
+      data.end = this.end.format(moment.HTML5_FMT.DATE)
     }
 
-    data.exceptions = this.exceptions.map(date => date.format('L'))
+    data.exceptions = this.exceptions.map(date => date.format(moment.HTML5_FMT.DATE))
 
     data.rules = this.rules
 
@@ -167,7 +144,7 @@ export class Recur {
   }
 
   // Set the units and, optionally, the measure
-  every (units: UnitsInput, measure?: MeasureInput) {
+  every (units?: UnitsInput, measure?: MeasureInput) {
 
     if (units != null) {
       this.units = units
@@ -189,10 +166,9 @@ export class Recur {
 
   // Forgets rules (by passing measure) and exceptions (by passing date)
   forget (dateOrRule: MomentInput | MeasureInput): this {
-    let i
-    let len
+
     if (!dateOrRule) {
-      throw new Error( 'Invalid input for recurrence forget: ' + dateOrRule)
+      throw new Error('Invalid input for recurrence forget: ' + dateOrRule)
     }
     let date = moment(dateOrRule)
 
@@ -259,116 +235,97 @@ export class Recur {
   }
 
   day (units?: UnitsInput): this {
-    this.measure = 'days'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'days')
     return this
   }
 
   days (units?: UnitsInput): this {
-    this.measure = 'days'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'days')
     return this
   }
 
   week (units?: UnitsInput): this {
-    this.measure = 'weeks'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'weeks')
     return this
   }
 
   weeks (units?: UnitsInput): this {
-    this.measure = 'weeks'
-    this.units =  units !== undefined ? units : this.units
+    this.every(units, 'weeks')
     return this
   }
 
   month (units?: UnitsInput): this {
-    this.measure = 'months'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'months')
     return this
   }
 
   months (units?: UnitsInput): this {
-    this.measure = 'months'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'months')
     return this
   }
 
   year (units?: UnitsInput): this {
-    this.measure = 'years'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'years')
     return this
   }
 
   years (units?: UnitsInput): this {
-    this.measure = 'years'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'years')
     return this
   }
 
   dayOfWeek (units?: UnitsInput): this {
-    this.measure = 'daysOfWeek'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'daysOfWeek')
     return this
   }
 
   daysOfWeek (units?: UnitsInput): this {
-    this.measure = 'daysOfWeek'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'daysOfWeek')
     return this
   }
 
   dayOfMonth (units?: UnitsInput): this {
-    this.measure = 'daysOfMonth'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'daysOfMonth')
     return this
   }
 
   daysOfMonth (units?: UnitsInput): this {
-    this.measure = 'daysOfMonth'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'daysOfMonth')
     return this
   }
 
   weekOfMonth (units?: UnitsInput): this {
-    this.measure = 'weeksOfMonth'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'weeksOfMonth')
     return this
   }
 
   weeksOfMonth (units?: UnitsInput): this {
-    this.measure = 'weeksOfMonth'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'weeksOfMonth')
     return this
   }
 
   weekOfYear (units?: UnitsInput): this {
-    this.measure = 'weeksOfYear'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'weeksOfYear')
     return this
   }
 
   weeksOfYear (units?: UnitsInput): this {
-    this.measure = 'weeksOfYear'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'weeksOfYear')
     return this
   }
 
   monthOfYear (units?: UnitsInput): this {
-    this.measure = 'monthsOfYear'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'monthsOfYear')
     return this
   }
 
   monthsOfYear (units?: UnitsInput): this {
-    this.measure = 'monthsOfYear'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'monthsOfYear')
     return this
   }
 
   weeksOfMonthByDay (units?: UnitsInput): this {
-    this.measure = 'weeksOfMonthByDay'
-    this.units = units !== undefined ? units : this.units
+    this.every(units, 'weeksOfMonthByDay')
     return this
   }
 
@@ -422,7 +379,8 @@ export class Recur {
       throw Error('Private method trigger() was called directly or not called as instance of Recur!')
     }
 
-    if (!this.start || !this.from) {
+    let startFrom = this.from || this.start
+    if (!startFrom) {
       throw Error('Cannot get occurrences without start or from date.')
     }
 
@@ -430,7 +388,7 @@ export class Recur {
       throw Error('Cannot get all occurrences without an end date.')
     }
 
-    if (!!this.end && (this.start > this.end)) {
+    if (this.end && (startFrom > this.end)) {
       throw Error('Start date cannot be later than end date.')
     }
 
@@ -440,7 +398,7 @@ export class Recur {
     }
 
     // Start from the from date, or the start date if from is not set.
-    currentDate = (this.from || this.start).clone()
+    currentDate = startFrom.clone()
 
     // Include the initial date in the results if wanting all dates
     if (type === 'all') {
@@ -460,8 +418,6 @@ export class Recur {
       } else {
         currentDate.subtract(1, 'day')
       }
-
-      //console.log("Match: " + currentDate.format("L") + " - " + this.matches(currentDate, true));
 
       // Don't match outside the date if generating all dates within start/end
       if (this.matches(currentDate, (type !== 'all'))) {
