@@ -1,4 +1,9 @@
 .idea/
-bower_components*
-node_modules*
+.vscode/
+dist/
+bower_components/
+node_modules/
+
 moment-recur.min.js
+npm-debug.log*
+yarn-error.log

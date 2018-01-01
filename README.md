@@ -1,3 +1,9 @@
+moment-recur-ts
+=====
+This is a fork and conversion of the moment-recur library into TypeScript.
+
+Original work is [c-trimm/moment-recur](https://github.com/c-trimm/moment-recur)
+
 moment-recur
 =====
 moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/). This plugin handles dates only; time information is discarded.
