@@ -2,7 +2,12 @@ moment-recur-ts
 =====
 This is a fork and conversion of the moment-recur library into TypeScript.
 
+[Online documentation](https://jefbarn.github.io/moment-recur-ts/)
+
+
+
 Original work is [c-trimm/moment-recur](https://github.com/c-trimm/moment-recur)
+
 
 moment-recur
 =====
