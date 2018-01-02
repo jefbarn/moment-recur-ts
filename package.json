@@ -1,6 +1,6 @@
 {
   "name": "moment-recur-ts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A momentjs plugin for matching and generating recurring dates.",
   "main": "dist/moment-recur-ts.js",
   "typings": "dist/moment-recur-ts.d.ts",
