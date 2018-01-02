@@ -30,9 +30,11 @@ Getting Started
 ---------------
 moment-recur can be included in your project a few different ways.
 
-### Webpack + TypeScript
+### Webpack + ES6/TypeScript
+```js
 import * as moment from 'moment'
 import 'moment-recur-ts'
+```
 
 
 
