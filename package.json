@@ -1,12 +1,13 @@
 {
   "name": "moment-recur-ts",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A momentjs plugin for matching and generating recurring dates.",
-  "main": "dist/moment-recur-ts.umd.js",
-  "module": "dist/moment-recur-ts.es5.js",
-  "typings": "dist/types/moment-recur-ts.d.ts",
+  "main": "dist/moment-recur-ts.js",
+  "typings": "dist/moment-recur-ts.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "docs"
   ],
   "repository": {
     "type": "git",
@@ -17,13 +18,13 @@
     "date",
     "recur"
   ],
-  "author": "Jeff Barnes",
+  "author": "Jeff Barnes <jeff.barnes@gmail.com>",
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
   },
   "peerDependencies": {
-    "moment": "2.20.1"
+    "moment": "^2.20.0"
   },
   "devDependencies": {
     "@types/chai": "4.0.10",
@@ -38,7 +39,6 @@
     "chai": "4.1.2",
     "clean-webpack-plugin": "0.1.17",
     "core-js": "2.5.3",
-    "declaration-bundler-webpack-plugin": "1.0.3",
     "dts-bundle": "0.7.3",
     "karma": "2.0.0",
     "karma-chai": "0.1.0",
@@ -53,7 +53,6 @@
     "moment-timezone": "0.5.14",
     "nyc": "11.4.1",
     "prettier": "1.9.2",
-    "prettier-webpack-plugin": "0.2.2",
     "shx": "0.2.2",
     "ts-loader": "3.2.0",
     "ts-node": "4.1.0",
@@ -68,7 +67,7 @@
     "up": "yarn upgrade-interactive --latest",
     "test": "mocha -r ts-node/register --ui bdd test\\**\\*.ts",
     "build": "webpack --config ./config/webpack.config.umd.ts",
-    "docs": "typedoc --excludePrivate --internal-aliases internal --out dist/docs --target es5 --theme default --mode file src",
+    "docs": "typedoc --excludePrivate --out docs --target es5 --theme default --mode file src",
     "clean": "shx rm -rf dist .nyc_output"
   }
 }

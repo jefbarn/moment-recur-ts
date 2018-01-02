@@ -1,6 +1,7 @@
 .idea/
 .vscode/
 dist/
+docs/
 bower_components/
 node_modules/
 .nyc_output/
