@@ -2,23 +2,33 @@ import { Moment } from 'moment'
 import { Interval } from './interval'
 import { Calendar } from './calendar'
 
-export type MeasureSingle = keyof typeof MeasureSingleToPlural
+export type MeasureSingle =
+  'day'
+  | 'week'
+  | 'month'
+  | 'year'
+  | 'dayOfWeek'
+  | 'dayOfMonth'
+  | 'weekOfMonth'
+  | 'weekOfMonthByDay'
+  | 'weekOfYear'
+  | 'monthOfYear'
 
-export type MeasurePlural = keyof typeof MeasurePluralToSingle
+export type MeasurePlural =
+  'days'
+  | 'weeks'
+  | 'months'
+  | 'years'
+  | 'daysOfWeek'
+  | 'daysOfMonth'
+  | 'weeksOfMonth'
+  | 'weeksOfMonthByDay'
+  | 'weeksOfYear'
+  | 'monthsOfYear'
 
-export const MeasurePluralToSingle = {
-  days: 'day',
-  weeks: 'week',
-  months: 'month',
-  years: 'year',
-  daysOfWeek: 'dayOfWeek',
-  daysOfMonth: 'dayOfMonth',
-  weeksOfMonth: 'weekOfMonth',
-  weeksOfMonthByDay: 'weekOfMonthByDay',
-  weeksOfYear: 'weekOfYear',
-  monthsOfYear: 'monthOfYear'
-}
-export const MeasureSingleToPlural = {
+export const MeasureSingleToPlural: {
+  [m: string]: MeasurePlural
+} = {
   day: 'days',
   week: 'weeks',
   month: 'months',
@@ -88,39 +98,9 @@ function unitsToArray (units: UnitsInput): (string | number)[] {
 // Private function to pluralize measure names for use with dictionaries.
 export function pluralize (measure: MeasureInput): MeasurePlural {
   if (!measure) throw new Error('Measure for recurrence rule undefined')
-
-  switch (measure) {
-    case 'day':
-      return 'days'
-
-    case 'week':
-      return 'weeks'
-
-    case 'month':
-      return 'months'
-
-    case 'year':
-      return 'years'
-
-    case 'dayOfWeek':
-      return 'daysOfWeek'
-
-    case 'dayOfMonth':
-      return 'daysOfMonth'
-
-    case 'weekOfMonth':
-      return 'weeksOfMonth'
-
-    case 'weekOfMonthByDay':
-      return 'weeksOfMonthByDay'
-
-    case 'weekOfYear':
-      return 'weeksOfYear'
-
-    case 'monthOfYear':
-      return 'monthsOfYear'
-
-    default:
-      return measure
+  if (MeasureSingleToPlural.hasOwnProperty(measure)) {
+    return MeasureSingleToPlural[measure]
+  } else {
+    return measure as MeasurePlural
   }
 }

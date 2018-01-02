@@ -27,18 +27,9 @@ export class Interval implements Rule {
   }
 
   match (date: Moment, start: Moment): boolean {
-    // Get the difference between the start date and the provided date,
-    // using the required measure based on the type of rule'
-    let diff: number
-    if (date.isBefore(start)) {
-      diff = start.diff(date, this.measure, true)
-    } else {
-      diff = date.diff(start, this.measure, true)
-    }
-    if (this.measure === 'days') {
-      // if we are dealing with days, we deal with whole days only.
-      diff = Math.floor(diff)  // TODO: should this even happen?
-    }
+
+    let precise = this.measure !== 'days'
+    let diff = Math.abs(start.diff(date, this.measure, precise))
 
     // Check to see if any of the units provided match the date
     for (let unit of this.units) {

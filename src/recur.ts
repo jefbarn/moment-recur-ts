@@ -1,6 +1,9 @@
 import * as moment from 'moment'
 import { Interval } from './interval'
-import { MeasureInput, pluralize, Rule, ruleFactory, UnitsInput } from './rule'
+import {
+  MeasureInput, MeasurePlural, MeasureSingleToPlural, pluralize, Rule, ruleFactory,
+  UnitsInput
+} from './rule'
 
 export type Moment = moment.Moment
 export type MomentInput = moment.MomentInput
@@ -61,7 +64,7 @@ export class Recur {
 
   // Get/Set start date
   startDate (): Moment
-  startDate (date: MomentInput): Recur
+  startDate (date: MomentInput | null): Recur
   startDate (date?: MomentInput): Moment | Recur {
     if (date === null) {
       this.start = null
@@ -81,7 +84,7 @@ export class Recur {
 
   // Get/Set end date
   endDate (): Moment
-  endDate (date: MomentInput): Recur
+  endDate (date: MomentInput | null): Recur
   endDate (date?: MomentInput): Moment | Recur {
     if (date === null) {
       this.end = null
@@ -101,7 +104,7 @@ export class Recur {
 
   // Get/Set a temporary from date
   fromDate (): Moment
-  fromDate (date: MomentInput): Recur
+  fromDate (date: MomentInput | null): Recur
   fromDate (date?: MomentInput): Moment | Recur {
     if (date === null) {
       this.from = null
@@ -165,22 +168,29 @@ export class Recur {
   }
 
   // Forgets rules (by passing measure) and exceptions (by passing date)
-  forget (dateOrRule: MomentInput | MeasureInput): this {
+  forget (dateOrRule: MomentInput | MeasureInput, format?: string): this {
 
     if (!dateOrRule) {
       throw new Error('Invalid input for recurrence forget: ' + dateOrRule)
     }
-    let date = moment(dateOrRule)
 
-    // If valid date, try to remove it from exceptions
-    if (date.isValid()) {
-      date = date.dateOnly() // change to date only for perfect comparison
-      this.exceptions = this.exceptions.filter(exception => !date.isSame(exception))
-      return this
-    } else {
-      // Otherwise, try to remove it from the rules
+    if (typeof dateOrRule === 'string' && (
+        Object.values(MeasureSingleToPlural).includes(dateOrRule as MeasurePlural) ||
+        MeasureSingleToPlural.hasOwnProperty(dateOrRule)
+      )) {
       this.rules = this.rules.filter(rule => rule.measure !== pluralize(dateOrRule as MeasureInput))
       return this
+    } else {
+      let date = moment(dateOrRule, format)
+
+      // If valid date, try to remove it from exceptions
+      if (date.isValid()) {
+        date = date.dateOnly() // change to date only for perfect comparison
+        this.exceptions = this.exceptions.filter(exception => !date.isSame(exception))
+        return this
+      } else {
+        throw new Error('Invalid input for recurrence forget: ' + dateOrRule)
+      }
     }
   }
 
@@ -217,7 +227,7 @@ export class Recur {
   next (num: number): Moment[]
   next (num: number, format: string): string[]
   next (num: number, format?: string): (string | Moment)[] {
-    return this.getOccurrences('next', num, format || '')
+    return this.getOccurrences('next', num, format)
   }
 
   // Get previous N occurrences
@@ -336,15 +346,10 @@ export class Recur {
       throw Error('Private method trigger() was called directly or not called as instance of Recur!')
     }
 
-    // Make sure units and measure is defined and not null
-    if ((typeof this.units === 'undefined' || this.units === null) || !this.measure) {
+    // Don't create the rule until measure is defined
+    if (!this.measure) {
       return this
     }
-
-    // Error if we don't have a valid ruleType
-    // if (ruleType !== 'calendar' && ruleType !== 'interval') {
-    //   throw Error('Invalid measure provided: ' + this.measure)
-    // }
 
     let rule = ruleFactory(this.units, this.measure)
 
@@ -376,7 +381,7 @@ export class Recur {
     let dates: (string | Moment)[] = []
 
     if (!(this instanceof Recur)) {
-      throw Error('Private method trigger() was called directly or not called as instance of Recur!')
+      throw Error('Private method getOccurrences() was called directly or not called as instance of Recur!')
     }
 
     let startFrom = this.from || this.start

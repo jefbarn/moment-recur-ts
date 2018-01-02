@@ -3,6 +3,7 @@
 dist/
 bower_components/
 node_modules/
+.nyc_output/
 
 moment-recur.min.js
 npm-debug.log*

@@ -42,7 +42,7 @@ export class Calendar implements Rule {
   match (date: moment.Moment) {
 
     // Get the unit based on the required measure of the date
-    let unit = this.unitTypes(date)
+    let unit = this.measureUnit(date)
 
     // If the unit is in our list, return true, else return false
     if (this.units.includes(unit)) {
@@ -50,15 +50,9 @@ export class Calendar implements Rule {
     }
 
     // match on end of month days
-    if (this.measure === 'daysOfMonth'
-      && unit === +date.add(1, 'months').date(0).format('D')
-      && unit < 31) {
-
-      while (unit <= 31) {
-        if (this.units.includes(unit)) {
-          return true
-        }
-        unit++
+    if (this.measure === 'daysOfMonth' && unit >= 28) {
+      if (moment(date).endOf('month').date() === unit) {
+        return true
       }
     }
 
@@ -100,7 +94,7 @@ export class Calendar implements Rule {
     })
   }
 
-  private unitTypes (date: moment.Moment): number {
+  private measureUnit (date: moment.Moment): number {
     switch (this.measure) {
       case 'daysOfMonth':
         return date.date()

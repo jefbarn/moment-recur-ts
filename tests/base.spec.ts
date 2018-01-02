@@ -68,6 +68,12 @@ describe('Creating a recurring moment', function () {
     expect(recur.startDate().format(ISO_DATE_FMT)).to.equal(startDate)
     expect(recur.endDate().format(ISO_DATE_FMT)).to.equal(endDate)
   })
+
+  it('from moment function, with options parameter without start date', function () {
+    let recur = moment(startDate).recur({ end: endDate })
+    expect(recur.startDate().format(ISO_DATE_FMT)).to.equal(startDate)
+    expect(recur.endDate().format(ISO_DATE_FMT)).to.equal(endDate)
+  })
 })
 
 describe('Setting', function () {
@@ -78,18 +84,30 @@ describe('Setting', function () {
   })
 
   it('\'start\' should be getable/setable with startDate()', function () {
-    recur.startDate(startDate)
+    let recurrence = recur.startDate(startDate)
     expect(recur.startDate().format(ISO_DATE_FMT)).to.equal(startDate)
+    recurrence.startDate(null)
+    expect(() => {
+      recurrence.startDate()
+    }).to.throw('No start date defined for recurrence')
   })
 
   it('\'end\' should be getable/setable with endDate()', function () {
-    recur.endDate(endDate)
+    let recurrence = recur.endDate(endDate)
     expect(recur.endDate().format(ISO_DATE_FMT)).to.equal(endDate)
+    recurrence.endDate(null)
+    expect(() => {
+      recurrence.endDate()
+    }).to.throw('No end date defined for recurrence')
   })
 
   it('\'from\' should be getable/setable with fromDate()', function () {
-    recur.fromDate(startDate)
+    let recurrence = recur.fromDate(startDate)
     expect(recur.fromDate().format(ISO_DATE_FMT)).to.equal(startDate)
+    recurrence.fromDate(null)
+    expect(() => {
+      recurrence.fromDate()
+    }).to.throw('No from date defined for recurrence')
   })
 })
 
@@ -112,6 +130,18 @@ describe('The every() function', function () {
   it('should accept an array', function () {
     let recurrence = moment().recur().every([1, 2])
     expect(recurrence['units']).to.not.be.null
+  })
+
+  it('should not accept invalid input', function () {
+    expect(() => {
+      moment().recur().every('toothpaste').days()
+    }).to.throw('Intervals must be integers')
+    expect(() => {
+      moment().recur().every().day()
+    }).to.throw('Units not defined for recurrence rule')
+    expect(() => {
+      moment().recur().every(true as any).day()
+    }).to.throw('Provide an array, object, string or number when passing units')
   })
 })
 
@@ -143,6 +173,9 @@ describe('An interval', function () {
     expect(recurrence.matches(moment(startDate).add(2, 'weeks'))).to.be.true
     expect(recurrence.matches(moment(startDate).add(2, 'days'))).to.be.false
     expect(recurrence.matches(moment(startDate).add(3, 'weeks'))).to.be.false
+    recurrence = moment(startDate).recur().every(1).week()
+    expect(recurrence.matches(moment(startDate).add(7, 'days'))).to.be.true
+    expect(recurrence.matches(moment(startDate).add(8, 'days'))).to.be.false
   })
 
   it('can be monthly', function () {
@@ -150,6 +183,9 @@ describe('An interval', function () {
     expect(recurrence.matches(moment(startDate).add(3, 'months'))).to.be.true
     expect(recurrence.matches(moment(startDate).add(2, 'months'))).to.be.false
     expect(recurrence.matches(moment(startDate).add(2, 'days'))).to.be.false
+    recurrence = moment(startDate).recur().every(1).month()
+    expect(recurrence.matches(moment(startDate).add(3, 'month'))).to.be.true
+    expect(recurrence.matches(moment(startDate).add(8, 'days'))).to.be.false
   })
 
   it('can be yearly', function () {
@@ -157,6 +193,9 @@ describe('An interval', function () {
     expect(recurrence.matches(moment(startDate).add(2, 'year'))).to.be.true
     expect(recurrence.matches(moment(startDate).add(3, 'year'))).to.be.false
     expect(recurrence.matches(moment(startDate).add(2, 'days'))).to.be.false
+    recurrence = moment(startDate).recur().every(1).year()
+    expect(recurrence.matches(moment(startDate).add(3, 'year'))).to.be.true
+    expect(recurrence.matches(moment(startDate).add(8, 'days'))).to.be.false
   })
 
   it('can be an array of intervals', function () {
@@ -166,6 +205,22 @@ describe('An interval', function () {
     expect(recurrence.matches(moment(startDate).add(10, 'days'))).to.be.true
     expect(recurrence.matches(moment(startDate).add(4, 'days'))).to.be.false
     expect(recurrence.matches(moment(startDate).add(8, 'days'))).to.be.false
+  })
+
+  it('must have start date', function () {
+    expect(() => {
+      moment.recur().every(5).days()
+    }).to.throw('Must have a start date set to set an interval')
+  })
+
+  it('must be valid', function () {
+    expect(() => {
+      moment(startDate).recur().every(-1).days()
+    }).to.throw('Intervals must be greater than zero')
+    expect(() => {
+      let recurrence = moment(startDate).recur().every([3, 5]).days()
+      recurrence.matches(moment.invalid())
+    }).to.throw('Invalid date supplied to match method')
   })
 })
 
@@ -177,6 +232,8 @@ describe('The Calendar Interval', function () {
       expect(recurrence.matches(moment().day('Sunday'))).to.be.true
       expect(recurrence.matches(moment().day(1))).to.be.true
       expect(recurrence.matches(moment().day(3))).to.be.false
+      recurrence = moment.recur().every('Thursday').dayOfWeek()
+      expect(recurrence.matches(moment().day('Thursday'))).to.be.true
     })
 
     it('should work with timezones', function () {
@@ -196,6 +253,8 @@ describe('The Calendar Interval', function () {
     expect(recurrence.matches(moment('2015-02-02'))).to.be.false
     expect(recurrence.matches(moment('2015-02-10'))).to.be.true
     expect(recurrence.matches(moment('2015-02-15'))).to.be.false
+    recurrence = moment('2015-01-01').recur().every(15).dayOfMonth()
+    expect(recurrence.matches(moment('2015-01-15'))).to.be.true
   })
 
   it('weeksOfMonth should work', function () {
@@ -203,18 +262,36 @@ describe('The Calendar Interval', function () {
     expect(recurrence.matches(moment(startDate).date(6))).to.be.true
     expect(recurrence.matches(moment(startDate).date(26))).to.be.true
     expect(recurrence.matches(moment(startDate).date(27))).to.be.false
+    recurrence = moment.recur().every(4).weekOfMonth()
+    expect(recurrence.matches(moment(startDate).date(27))).to.be.true
+    expect(recurrence.matches(moment(startDate).date(26))).to.be.false
   })
 
   it('weeksOfYear should work', function () {
     let recurrence = moment.recur().every(20).weekOfYear()
     expect(recurrence.matches(moment('2014-05-14'))).to.be.true
     expect(recurrence.matches(moment(startDate))).to.be.false
+    recurrence = moment.recur().every(1).weeksOfYear()
+    expect(recurrence.matches(moment('2018-01-01'))).to.be.true
+    expect(recurrence.matches(moment('2018-02-01'))).to.be.false
   })
 
   it('monthsOfYear should work', function () {
     let recurrence = moment.recur().every('January').monthsOfYear()
     expect(recurrence.matches(moment().month('January'))).to.be.true
     expect(recurrence.matches(moment().month('February'))).to.be.false
+    recurrence = moment.recur().every(11).monthOfYear()
+    expect(recurrence.matches(moment().month('Dec'))).to.be.true
+    expect(recurrence.matches(moment().month('Nov'))).to.be.false
+  })
+
+  it('should detect invalid range', function () {
+    expect(() => {
+      moment.recur().every(13).monthsOfYear()
+    }).to.throw('Value should be in range')
+    expect(() => {
+      moment.recur().every('Tuesday').weeksOfYear()
+    }).to.throw('Invalid calendar unit in recurrence')
   })
 
   it('rules can be combined', function () {
@@ -230,6 +307,14 @@ describe('The Calendar Interval', function () {
     expect(recurrence.matches('2014-01-03')).to.be.true
     expect(recurrence.matches('2014-01-06')).to.be.false
   })
+
+  it('should match end of month', function () {
+    let recurrence = moment('2018-02-01').recur().daysOfMonth(28)
+    expect(recurrence.matches('2018-02-28')).to.be.true
+    expect(recurrence.matches('2018-03-31')).to.be.true
+    expect(recurrence.matches('2018-04-30')).to.be.true
+    expect(recurrence.matches('2018-05-30')).to.be.false
+  })
 })
 
 describe('Rules', function () {
@@ -243,6 +328,16 @@ describe('Rules', function () {
     let recurrence = moment('2014-01-01').recur().every(1).day()
     recurrence.forget('days')
     expect(recurrence['rules']).to.have.lengthOf(0)
+  })
+
+  it('forget should check valid input', function () {
+    let recurrence = moment('2014-01-01').recur().every(1).day()
+    expect(() => {
+      recurrence.forget('toothpaste', ISO_DATE_FMT)
+    }).to.throw('Invalid input for recurrence forget')
+    expect(() => {
+      recurrence.forget(null)
+    }).to.throw('Invalid input for recurrence forget')
   })
 
   it('should be possible to see if one exists', function () {
@@ -325,6 +420,18 @@ describe('Future Dates', function () {
     expect(nextDates[1]).to.equal('2014-02-08')
     expect(nextDates[2]).to.equal('2014-02-10')
   })
+
+  it('must have start/from dates', function () {
+    expect(() => {
+      let recurrence = moment.recur().every('monday').dayOfWeek()
+      recurrence.next(3, ISO_DATE_FMT)
+    }).to.throw('Cannot get occurrences without start or from date')
+  })
+
+  it('should give empty set', function () {
+    let recurrence = moment().recur().every('monday').dayOfWeek()
+    expect(recurrence.next(undefined as any)).to.have.lengthOf(0)
+  })
 })
 
 describe('Previous Dates', function () {
@@ -335,6 +442,13 @@ describe('Previous Dates', function () {
     expect(nextDates[0]).to.equal('2013-12-30')
     expect(nextDates[1]).to.equal('2013-12-28')
     expect(nextDates[2]).to.equal('2013-12-26')
+  })
+
+  it('should return moments', function () {
+    let recurrence = moment('2014-01-01').recur().every(2).days()
+    let nextDates = recurrence.previous(3)
+    expect(nextDates).to.have.lengthOf(3)
+    expect(nextDates[0].format()).to.equal(moment.utc('2013-12-30').format())
   })
 })
 
@@ -371,6 +485,20 @@ describe('All Dates', function () {
     expect(allDates).to.have.lengthOf(1)
     expect(allDates[0]).to.equal('2014-01-01')
   })
+
+  it('must have end date', function () {
+    expect(() => {
+      let recurrence = moment('2018-01-01').recur().every(1).week()
+      recurrence.all(ISO_DATE_FMT)
+    }).to.throw('Cannot get all occurrences without an end date')
+  })
+
+  it('should return moments', function () {
+    let recurrence = moment('2014-01-01').recur('2014-01-07').every(2).days()
+    let allDates = recurrence.all()
+    expect(allDates).to.have.lengthOf(4)
+    expect(allDates[0].format()).to.equal(moment.utc('2014-01-01').format())
+  })
 })
 
 describe('Exceptions', function () {
@@ -401,6 +529,15 @@ describe('Exceptions', function () {
     recur.forget(exception)
     expect(recur.matches(exception)).to.be.true
   })
+
+  it('should not call private methods', function () {
+    expect(() => {
+      Recur.prototype['trigger']()
+    }).to.throw('Private method trigger() was called directly')
+    expect(() => {
+      Recur.prototype['getOccurrences']('all', null)
+    }).to.throw('Private method getOccurrences() was called directly')
+  })
 })
 
 describe('Exceptions with weeks', function () {
@@ -423,11 +560,11 @@ describe('Exceptions with weeks', function () {
   })
 
   // TODO: maybe some more timezone checks
-  // it('should not match on the exception day', function () {
-  //   expect(recur.matches(exceptionWithTz)).to.be.true
-  //   recur.except(exception)
-  //   expect(recur.matches(exceptionWithTz)).to.be.false
-  // })
+  it('should not match on the exception day with timezone', function () {
+    expect(recur.matches(exceptionWithTz)).to.be.true
+    recur.except(exception)
+    expect(recur.matches(exceptionWithTz)).to.be.false
+  })
 })
 
 describe('Options', function () {

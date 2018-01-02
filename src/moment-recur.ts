@@ -46,11 +46,8 @@ moment.fn.monthWeekByDay = function monthWeekByDay () {
 
 // Plugin for removing all time information from a given date
 moment.fn.dateOnly = function dateOnly () {
-  // if (this.tz && typeof(moment.tz) == 'function') {
-  //   return moment.tz(this.format('YYYY-MM-DD[T]00:00:00Z'), 'UTC')
-  // } else {
-  return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(), 'minute').utcOffset(0)
-  // }
+  // return this.startOf('day')
+  return this.isValid() ? moment.utc(this.format('YYYY-MM-DD')) : this
 }
 
 // Recur can be created the following ways:
@@ -80,7 +77,7 @@ moment.fn.recur = function (start?: moment.MomentInput | RecurOptions, end?: mom
   if (start === Object(start) && !moment.isMoment(start)) {
     let options = start as RecurOptions
     // if we have no start date, use the moment
-    if (typeof options.start === 'undefined') {
+    if (options.start === undefined) {
       options.start = this
     }
 
