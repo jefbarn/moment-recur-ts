@@ -631,6 +631,7 @@ describe('Performance', function () {
 
   it('should get unbounded dates', function () {
     // 812ms
+    this.timeout(5000)
     let recurrence = moment('2000-01-01').recur().every(1).week()
     let dates = recurrence.next(5000, ISO_DATE_FMT)
     console.log(`Generated ${dates.length} dates`)
