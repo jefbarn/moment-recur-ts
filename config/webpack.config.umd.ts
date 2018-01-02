@@ -14,8 +14,7 @@ class DtsBundlePlugin implements webpack.Plugin {
         main: 'dist/types/index.d.ts',
         out: '../moment-recur-ts.d.ts',
         removeSource: true,
-        indent: '  ',
-        outputAsModuleFolder: true // to use npm in-package typings
+        outputAsModuleFolder: true
       })
 
       fs.rmdirSync(path.resolve(__dirname, '../dist/types'))
@@ -28,7 +27,7 @@ class DtsBundlePlugin implements webpack.Plugin {
           semi: false,
           singleQuote: true
         }
-      ))
+      ).replace('moment/index//moment', 'moment'))
     })
   }
 }

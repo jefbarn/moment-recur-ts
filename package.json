@@ -66,7 +66,8 @@
   "scripts": {
     "up": "yarn upgrade-interactive --latest",
     "test": "mocha -r ts-node/register --ui bdd test\\**\\*.ts",
-    "build": "webpack --config ./config/webpack.config.umd.ts",
+    "build": "yarn bundle && yarn docs",
+    "bundle": "webpack --config ./config/webpack.config.umd.ts",
     "docs": "typedoc --excludePrivate --out docs --target es5 --theme default --mode file src",
     "clean": "shx rm -rf dist .nyc_output"
   }
