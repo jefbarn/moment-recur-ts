@@ -1,6 +1,6 @@
 {
   "name": "moment-recur-ts",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A momentjs plugin for matching and generating recurring dates.",
   "main": "dist/moment-recur-ts.js",
   "typings": "dist/moment-recur-ts.d.ts",
@@ -73,6 +73,7 @@
     "build": "yarn bundle && yarn docs",
     "bundle": "webpack --config ./config/webpack.config.umd.ts",
     "docs": "typedoc --excludePrivate --out docs --target es5 --theme default --mode file src",
-    "clean": "shx rm -rf dist .nyc_output"
+    "clean": "shx rm -rf dist .nyc_output",
+    "prepublish": "yarn build"
   }
 }
