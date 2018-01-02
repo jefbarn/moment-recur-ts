@@ -5,7 +5,7 @@ import { Recur } from '../src/recur'
 
 /* tslint:disable:no-unused-expression */
 
-const ISO_DATE_FMT = moment.HTML5_FMT.DATE
+const ISO_DATE_FMT = 'YYYY-MM-DD'
 
 let startDate = '2013-01-01'
 let endDate = '2014-01-01'

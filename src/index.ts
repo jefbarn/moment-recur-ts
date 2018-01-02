@@ -34,13 +34,13 @@ declare module 'moment' {
   export function recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
   export function recur (options?: RecurOptions): Recur
 
-  /**
-   * @internal
-   * @hidden
-   */
-  namespace HTML5_FMT {
-    export const DATE: string
-  }
+  // /**
+  //  * @internal
+  //  * @hidden
+  //  */
+  // namespace HTML5_FMT {
+  //   export const DATE: string
+  // }
 }
 
 // Plugin for calculating the week of the month of a date

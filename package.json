@@ -24,7 +24,7 @@
     "node": ">=6.0.0"
   },
   "peerDependencies": {
-    "moment": "^2.20.0"
+    "moment": "^2.13.0"
   },
   "devDependencies": {
     "@types/chai": "4.0.10",
@@ -50,6 +50,7 @@
     "karma-typescript": "3.0.9",
     "mocha": "4.1.0",
     "mocha-typescript": "1.1.12",
+    "moment": "2.20.1",
     "moment-timezone": "0.5.14",
     "nyc": "11.4.1",
     "prettier": "1.9.2",
@@ -62,6 +63,9 @@
     "typedoc-plugin-internal-external": "1.0.10",
     "typescript": "2.6.2",
     "webpack": "3.10.0"
+  },
+  "resolutions": {
+    "**/moment": "2.20.1"
   },
   "scripts": {
     "up": "yarn upgrade-interactive --latest",

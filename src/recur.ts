@@ -22,6 +22,12 @@ export interface RecurOptions {
  * @internal
  * @hidden
  */
+const ISO_DATE_FMT = 'YYYY-MM-DD'
+
+/**
+ * @internal
+ * @hidden
+ */
 type OccuranceType = 'next' | 'previous' | 'all'
 
 // The main Recur object to provide an interface for settings, rules, and matching
@@ -138,14 +144,14 @@ export class Recur {
     let data: RecurOptions = {}
 
     if (this.start && moment(this.start).isValid()) {
-      data.start = this.start.format(moment.HTML5_FMT.DATE)
+      data.start = this.start.format(ISO_DATE_FMT)
     }
 
     if (this.end && moment(this.end).isValid()) {
-      data.end = this.end.format(moment.HTML5_FMT.DATE)
+      data.end = this.end.format(ISO_DATE_FMT)
     }
 
-    data.exceptions = this.exceptions.map(date => date.format(moment.HTML5_FMT.DATE))
+    data.exceptions = this.exceptions.map(date => date.format(ISO_DATE_FMT))
 
     data.rules = this.rules
 
