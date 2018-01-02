@@ -1,5 +1,5 @@
 import * as moment from 'moment-timezone'
-import '../src/moment-recur'
+import '../src'
 import { expect } from 'chai'
 import { Recur } from '../src/recur'
 
@@ -607,5 +607,36 @@ describe('The repeats() function', function () {
   it('should return false when there are no rules set', function () {
     let recurrence = moment().recur()
     expect(recurrence.repeats()).to.be.false
+  })
+})
+
+describe('Performance', function () {
+  it('should generate thousands of dates', function () {
+    // 312ms
+    let recurrence = moment('2000-01-01').recur('2018-12-01').every(1).days()
+    let allDates = recurrence.all(ISO_DATE_FMT)
+    console.log(`Generated ${allDates.length} dates`)
+    expect(allDates[0]).to.equal('2000-01-01')
+    expect(allDates[allDates.length - 1]).to.equal('2018-12-01')
+  })
+
+  it('should quickly get sparse dates', function () {
+    // 282ms
+    let recurrence = moment('2000-01-01').recur('2018-12-01').every(1).month()
+    let allDates = recurrence.all(ISO_DATE_FMT)
+    console.log(`Generated ${allDates.length} dates`)
+    expect(allDates[0]).to.equal('2000-01-01')
+    expect(allDates[allDates.length - 1]).to.equal('2018-12-01')
+  })
+
+  it('should get unbounded dates', function () {
+    // 812ms
+    let recurrence = moment('2000-01-01').recur().every(1).week()
+    let dates = recurrence.next(5000, ISO_DATE_FMT)
+    console.log(`Generated ${dates.length} dates`)
+    expect(dates[0]).to.equal('2000-01-08')
+    expect(dates[dates.length - 1]).to.equal(
+      moment('2000-01-01').add(5000, 'weeks').format(ISO_DATE_FMT)
+    )
   })
 })

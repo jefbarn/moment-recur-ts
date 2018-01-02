@@ -18,19 +18,30 @@ export interface RecurOptions {
   exceptions?: MomentInput[]
 }
 
+/**
+ * @internal
+ * @hidden
+ */
 type OccuranceType = 'next' | 'previous' | 'all'
 
 // The main Recur object to provide an interface for settings, rules, and matching
 export class Recur {
 
+  /** @internal */
   protected start: Moment | null
+  /** @internal */
   protected end: Moment | null
+  /** @internal */
   protected from: Moment | null
 
+  /** @internal */
   private rules: Rule[]
+  /** @internal */
   private exceptions: Moment[]
 
+  /** @internal */
   private units: UnitsInput
+  /** @internal */
   private measure: MeasureInput
 
   // Recur Object Constrcutor
@@ -339,6 +350,7 @@ export class Recur {
     return this
   }
 
+  /** @internal */
   // Private method that tries to set a rule.
   private trigger () {
 
@@ -374,6 +386,7 @@ export class Recur {
     return this
   }
 
+  /** @internal */
   // Private method to get next, previous or all occurrences
   private getOccurrences (type: OccuranceType, num: number | null, format?: string): (string | Moment)[] {
     let currentDate
@@ -440,6 +453,7 @@ export class Recur {
     return dates
   }
 
+  /** @internal */
   // Private function to see if a date is within range of start/end
   private inRange (date: Moment) {
     if (this.start && date.isBefore(this.start)) {
@@ -451,6 +465,7 @@ export class Recur {
     }
   }
 
+  /** @internal */
   // Private function to check if a date is an exception
   private isException (date: MomentInput): boolean {
 
@@ -462,6 +477,7 @@ export class Recur {
     return false
   }
 
+  /** @internal */
   // Private funtion to see if all rules match
   private matchAllRules (date: Moment) {
 

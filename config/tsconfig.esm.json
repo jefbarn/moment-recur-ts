@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
+    "module": "es2015",
+    "target": "es2015",
     "lib": ["ES2015", "ES2016.Array.Include", "ES2017.object", "dom"],
 
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
-    "outDir": "dist",
-    "declarationDir": "dist/types",
+    "rootDir": "../src",
+    "outDir": "../dist/esm",
+    "declarationDir": "../dist/esm/types",
     "sourceMap": true,
-    "declaration": true,
-    "stripInternal": true
+    "declaration": true
   },
+  "typeRoots" : ["../node_modules"],
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "../src/**/*"
   ]
 }

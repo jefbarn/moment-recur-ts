@@ -26,6 +26,10 @@ export type MeasurePlural =
   | 'weeksOfYear'
   | 'monthsOfYear'
 
+/**
+ * @internal
+ * @hidden
+ */
 export const MeasureSingleToPlural: {
   [m: string]: MeasurePlural
 } = {
@@ -43,6 +47,10 @@ export const MeasureSingleToPlural: {
 
 export type UnitsInput = string | number | (string | number)[] | UnitsObject | undefined | null
 
+/**
+ * @hidden
+ * @deprecated
+ */
 export interface UnitsObject {
   [unit: string]: boolean
 
@@ -56,9 +64,17 @@ export interface Rule {
   units: number[]
   measure: MeasurePlural
 
+  /**
+   * @internal
+   * @hidden
+   */
   match (date: Moment, start?: Moment): boolean
 }
 
+/**
+ * @internal
+ * @hidden
+ */
 export function ruleFactory (units: UnitsInput, measure: MeasureInput): Rule {
 
   let normMeasure = pluralize(measure)
@@ -80,6 +96,10 @@ export function ruleFactory (units: UnitsInput, measure: MeasureInput): Rule {
   }
 }
 
+/**
+ * @internal
+ * @hidden
+ */
 function unitsToArray (units: UnitsInput): (string | number)[] {
 
   if (units == null) {
@@ -95,7 +115,11 @@ function unitsToArray (units: UnitsInput): (string | number)[] {
   }
 }
 
-// Private function to pluralize measure names for use with dictionaries.
+/**
+ * Private function to pluralize measure names for use with dictionaries.
+ * @internal
+ * @hidden
+ */
 export function pluralize (measure: MeasureInput): MeasurePlural {
   if (!measure) throw new Error('Measure for recurrence rule undefined')
   if (MeasureSingleToPlural.hasOwnProperty(measure)) {

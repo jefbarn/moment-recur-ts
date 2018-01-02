@@ -14,7 +14,7 @@ export = (config: Config) => {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '../',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -22,8 +22,8 @@ export = (config: Config) => {
 
     // list of files / patterns to load in the browser
     files: [
-      'tests/base.spec.ts',
-      'tests/**/*.ts',
+      'test/base.spec.ts',
+      'test/**/*.ts',
       'src/**/*.ts'
     ],
 
@@ -34,7 +34,7 @@ export = (config: Config) => {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/**/*.ts': ['karma-typescript', 'coverage'],
-      'tests/**/*.ts': ['karma-typescript']
+      'test/**/*.ts': ['karma-typescript']
     },
 
     karmaTypescriptConfig: {
@@ -65,7 +65,8 @@ export = (config: Config) => {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['ChromeHeadless'],
+    // browsers: ['Chrome', 'Firefox', 'Edge', 'IE'],
+    browsers: ['ChromeHeadless', 'FirefoxHeadless'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

@@ -2,7 +2,12 @@
   "name": "moment-recur-ts",
   "version": "0.0.1",
   "description": "A momentjs plugin for matching and generating recurring dates.",
-  "main": "moment-recur.js",
+  "main": "dist/moment-recur-ts.umd.js",
+  "module": "dist/moment-recur-ts.es5.js",
+  "typings": "dist/types/moment-recur-ts.d.ts",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/jefbarn/moment-recur-ts.git"
@@ -13,32 +18,57 @@
     "recur"
   ],
   "author": "Jeff Barnes",
-  "license": "Unlicense",
-  "dependencies": {
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "peerDependencies": {
     "moment": "2.20.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.0.10",
-    "@types/karma": "^1.7.3",
-    "@types/mocha": "^2.2.40",
+    "@types/chai": "4.0.10",
+    "@types/clean-webpack-plugin": "0.1.0",
+    "@types/karma": "1.7.3",
+    "@types/karma-chai": "^0.1.0",
+    "@types/mocha": "2.2.45",
     "@types/moment-timezone": "0.5.3",
-    "chai": "^4.1.2",
-    "karma": "^2.0.0",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-mocha": "^1.3.0",
-    "karma-typescript": "^3.0.0",
-    "mocha": "^4.1.0",
+    "@types/prettier": "1.9.0",
+    "@types/rollup": "0.51.2",
+    "@types/webpack": "3.8.1",
+    "chai": "4.1.2",
+    "clean-webpack-plugin": "0.1.17",
+    "core-js": "2.5.3",
+    "declaration-bundler-webpack-plugin": "1.0.3",
+    "dts-bundle": "0.7.3",
+    "karma": "2.0.0",
+    "karma-chai": "0.1.0",
+    "karma-chrome-launcher": "2.2.0",
+    "karma-edge-launcher": "0.4.2",
+    "karma-firefox-launcher": "1.1.0",
+    "karma-ie-launcher": "1.0.0",
+    "karma-mocha": "1.3.0",
+    "karma-typescript": "3.0.9",
+    "mocha": "4.1.0",
     "mocha-typescript": "1.1.12",
     "moment-timezone": "0.5.14",
     "nyc": "11.4.1",
+    "prettier": "1.9.2",
+    "prettier-webpack-plugin": "0.2.2",
+    "shx": "0.2.2",
+    "ts-loader": "3.2.0",
     "ts-node": "4.1.0",
     "tslint": "5.8.0",
     "tslint-config-standard": "7.0.0",
-    "typescript": "2.6.2"
+    "typedoc": "0.9.0",
+    "typedoc-plugin-internal-external": "1.0.10",
+    "typescript": "2.6.2",
+    "webpack": "3.10.0"
   },
   "scripts": {
     "up": "yarn upgrade-interactive --latest",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register --ui bdd test\\**\\*.ts",
+    "build": "webpack --config ./config/webpack.config.umd.ts",
+    "docs": "typedoc --excludePrivate --internal-aliases internal --out dist/docs --target es5 --theme default --mode file src",
+    "clean": "shx rm -rf dist .nyc_output"
   }
 }

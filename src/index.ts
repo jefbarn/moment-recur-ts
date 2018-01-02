@@ -1,9 +1,19 @@
-import moment = require('moment')
+import * as moment from 'moment'
 import { Recur, RecurOptions } from './recur'
 
-declare module 'moment' {
+// Polyfills
+/** @internal */
+import 'core-js/fn/object/values'
+/** @internal */
+import 'core-js/fn/number/is-integer'
+/** @internal */
+import 'core-js/fn/array/includes'
+/** @internal */
+import 'core-js/fn/array/find-index'
 
-  interface Moment {
+declare module 'moment' {
+  export interface Moment {
+
     monthWeek (): number
 
     monthWeekByDay (): number
@@ -14,12 +24,20 @@ declare module 'moment' {
 
     recur (options?: RecurOptions): Recur
 
+    /**
+     * @internal
+     * @hidden
+     */
     set (unit: moment.unitOfTime.All, value: number | string): moment.Moment
   }
 
   export function recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
   export function recur (options?: RecurOptions): Recur
 
+  /**
+   * @internal
+   * @hidden
+   */
   namespace HTML5_FMT {
     export const DATE: string
   }
@@ -55,7 +73,7 @@ moment.fn.dateOnly = function dateOnly () {
 // moment.recur(options)
 // moment.recur(start)
 // moment.recur(start, end)
-moment.recur = function (start?: moment.MomentInput | RecurOptions, end?: moment.MomentInput) {
+;(moment as any).recur = function (start?: moment.MomentInput | RecurOptions, end?: moment.MomentInput) {
   // If we have an object, use it as a set of options
   if (typeof start === 'object' && !moment.isMoment(start)) {
     let options = start as RecurOptions
