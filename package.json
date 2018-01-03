@@ -34,8 +34,7 @@
     "@types/mocha": "2.2.45",
     "@types/moment-timezone": "0.5.3",
     "@types/prettier": "1.9.0",
-    "@types/rollup": "0.51.2",
-    "@types/webpack": "3.8.1",
+    "@types/webpack": "3.8.2",
     "chai": "4.1.2",
     "clean-webpack-plugin": "0.1.17",
     "core-js": "2.5.3",
@@ -56,14 +55,13 @@
     "moment-timezone": "0.5.14",
     "nyc": "11.4.1",
     "prettier": "1.9.2",
-    "shx": "0.2.2",
+    "rimraf": "2.6.2",
     "source-map-support": "0.5.0",
     "ts-loader": "3.2.0",
     "ts-node": "4.1.0",
     "tslint": "5.8.0",
     "tslint-config-standard": "7.0.0",
     "typedoc": "0.9.0",
-    "typedoc-plugin-internal-external": "1.0.10",
     "typescript": "2.6.2",
     "webpack": "3.10.0"
   },
@@ -78,9 +76,8 @@
     "build": "yarn bundle && yarn docs",
     "bundle": "webpack --config ./config/webpack.config.umd.ts",
     "docs": "typedoc --excludePrivate --out docs --target es5 --theme default --mode file src",
-    "clean": "shx rm -rf dist .nyc_output",
+    "clean": "rimraf dist docs .nyc_output",
     "prepublishOnly": "yarn build"
-
   },
   "nyc": {
     "include": [

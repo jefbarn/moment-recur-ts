@@ -1,6 +1,5 @@
 import * as moment from 'moment'
-import { Recur, RecurOptions } from './recur'
-
+import { Recur } from './recur'
 // Polyfills
 /** @internal */
 import 'core-js/fn/object/values'
@@ -49,7 +48,7 @@ declare module 'moment' {
      * ```
      */
     recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
-    recur (options?: RecurOptions): Recur
+    recur (options?: Recur.Options): Recur
 
     /**
      * @internal
@@ -68,7 +67,7 @@ declare module 'moment' {
    * ```
    */
   export function recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
-  export function recur (options?: RecurOptions): Recur
+  export function recur (options?: Recur.Options): Recur
 }
 
 moment.fn.monthWeek = function monthWeek (): number {
@@ -91,10 +90,10 @@ moment.fn.dateOnly = function dateOnly (): moment.Moment {
   return this.isValid() ? moment.utc(this.format('YYYY-MM-DD')) : this
 }
 
-;(moment as any).recur = function (start?: moment.MomentInput | RecurOptions, end?: moment.MomentInput) {
+;(moment as any).recur = function (start?: moment.MomentInput | Recur.Options, end?: moment.MomentInput) {
   // If we have an object, use it as a set of options
   if (typeof start === 'object' && !moment.isMoment(start)) {
-    let options = start as RecurOptions
+    let options = start as Recur.Options
     return new Recur(options)
   }
 
@@ -102,10 +101,10 @@ moment.fn.dateOnly = function dateOnly (): moment.Moment {
   return new Recur({ start: start, end: end })
 }
 
-moment.fn.recur = function (start?: moment.MomentInput | RecurOptions, end?: moment.MomentInput): Recur {
+moment.fn.recur = function (start?: moment.MomentInput | Recur.Options, end?: moment.MomentInput): Recur {
   // If we have an object, use it as a set of options
   if (start === Object(start) && !moment.isMoment(start)) {
-    let options = start as RecurOptions
+    let options = start as Recur.Options
     // if we have no start date, use the moment
     if (options.start === undefined) {
       options.start = this

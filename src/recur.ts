@@ -1,41 +1,40 @@
 import * as moment from 'moment'
 import { Interval } from './interval'
-import {
-  MeasureInput, MeasurePlural, MeasureSingleToPlural, pluralize, Rule, ruleFactory,
-  UnitsInput
-} from './rule'
+import { MeasureInput, MeasurePlural, MeasureSingleToPlural, pluralize, Rule, ruleFactory, UnitsInput } from './rule'
 
 /** @hidden */
 export type Moment = moment.Moment
 /** @hidden */
 export type MomentInput = moment.MomentInput
 
-/**
- * Set options upon creation.
- *
- * > Note that the units for rules are converted to objects,
- * > so it is not recommended to set rules this way.
- * > They can be set in the options so that they can be imported.
- *
- * ```js
- * moment().recur({
- *   start: "01/01/2014",
- *   end: "12/31/2014",
- *   rules: [
- *     { units: [2], measure: "days" }
- *   ],
- *   exceptions: ["01/05/2014"]
- * });
- * ```
- */
-export interface RecurOptions {
-  start?: MomentInput
-  end?: MomentInput
-  rules?: {
-    units: UnitsInput
-    measure: MeasureInput
-  }[]
-  exceptions?: MomentInput[]
+export namespace Recur {
+  /**
+   * Set options upon creation.
+   *
+   * > Note that the units for rules are converted to objects,
+   * > so it is not recommended to set rules this way.
+   * > They can be set in the options so that they can be imported.
+   *
+   * ```js
+   * moment().recur({
+   *   start: "01/01/2014",
+   *   end: "12/31/2014",
+   *   rules: [
+   *     { units: [2], measure: "days" }
+   *   ],
+   *   exceptions: ["01/05/2014"]
+   * });
+   * ```
+   */
+  export interface Options {
+    start?: MomentInput
+    end?: MomentInput
+    rules?: {
+      units: UnitsInput
+      measure: MeasureInput
+    }[]
+    exceptions?: MomentInput[]
+  }
 }
 
 /**
@@ -160,7 +159,7 @@ export class Recur implements Iterable<moment.Moment> {
    * });
    * ```
    */
-  constructor (options: RecurOptions) {
+  constructor (options: Recur.Options) {
     if (options.start) {
       this.start = moment(options.start).dateOnly()
     }
@@ -277,8 +276,8 @@ export class Recur implements Iterable<moment.Moment> {
    * recurrence.save();
    * ```
    */
-  save (): RecurOptions {
-    let data: RecurOptions = {}
+  save (): Recur.Options {
+    let data: Recur.Options = {}
 
     if (this.start && moment(this.start).isValid()) {
       data.start = this.start.format(ISO_DATE_FMT)
@@ -532,7 +531,7 @@ export class Recur implements Iterable<moment.Moment> {
    *
    * ```js
    * let mondays = []
-   * for (let momday of moment().recur().every('Monday').dayOfWeek().reverse()) {
+   * for (let monday of moment().recur().every('Monday').dayOfWeek().reverse()) {
    *   lastThreeMondays.push(monday)
    *   if (mondays.length > 10) break
    * }
@@ -630,6 +629,9 @@ export class Recur implements Iterable<moment.Moment> {
     return dates
   }
 
+  /**
+   * @alias days
+   */
   day (units?: UnitsInput): this {
     this.every(units, 'days')
     return this
@@ -778,6 +780,7 @@ export class Recur implements Iterable<moment.Moment> {
   /**
    * Private funtion to see if all rules match
    * @internal
+   * @hidden
    */
   private matchAllRules (date: Moment) {
 
