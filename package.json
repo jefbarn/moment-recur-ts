@@ -74,6 +74,7 @@
     "up": "yarn upgrade-interactive --latest",
     "test": "nyc mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "lint": "tslint -p . 'src/**/*.ts'",
     "build": "yarn bundle && yarn docs",
     "bundle": "webpack --config ./config/webpack.config.umd.ts",
     "docs": "typedoc --excludePrivate --out docs --target es5 --theme default --mode file src",

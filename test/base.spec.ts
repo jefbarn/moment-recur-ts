@@ -137,7 +137,7 @@ describe('The every() function', function () {
       moment().recur().every('toothpaste').days()
     }).to.throw('Intervals must be integers')
     expect(() => {
-      moment().recur().every().day()
+      moment().recur().every(undefined).day()
     }).to.throw('Units not defined for recurrence rule')
     expect(() => {
       moment().recur().every(true as any).day()

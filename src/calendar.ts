@@ -33,7 +33,7 @@ export class Calendar implements Rule {
     } else {
       this.units = units.map(unit => {
         unit = +unit
-        if (typeof unit === 'number' && Number.isInteger(unit)) {
+        if (Number.isInteger(unit)) {
           return unit
         } else {
           throw new TypeError('Invalid calendar unit in recurrence: ' + unit)

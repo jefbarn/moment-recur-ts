@@ -323,7 +323,7 @@ export class Recur {
    *  let recurrence = moment.recur().monthOfYear("January");
    *  ```
    */
-  every (units?: UnitsInput, measure?: MeasureInput) {
+  every (units: UnitsInput, measure?: MeasureInput) {
 
     if (units != null) {
       this.units = units
@@ -386,7 +386,9 @@ export class Recur {
     }
   }
 
-  // Checks if a rule has been set on the chain
+  /**
+   * Checks if a rule has been set on the chain
+   */
   hasRule (measure: MeasureInput) {
     return this.rules.findIndex(rule => rule.measure === pluralize(measure)) !== -1
   }

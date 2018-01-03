@@ -111,7 +111,10 @@ function unitsToArray (units: UnitsInput): (string | number)[] {
     return units
   } else if (typeof units === 'object') {
     return Object.keys(units)
-  } else if (typeof units === 'number' || typeof units === 'string') {
+  } else if (typeof units === 'number') {
+    return [units]
+  // tslint:disable-next-line:strict-type-predicates
+  } else if (typeof units === 'string') {
     return [units]
   } else {
     throw new Error('Provide an array, object, string or number when passing units!')
