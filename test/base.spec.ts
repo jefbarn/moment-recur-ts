@@ -538,6 +538,19 @@ describe('Exceptions', function () {
       Recur.prototype['getOccurrences']('all', null)
     }).to.throw('Private method getOccurrences() was called directly')
   })
+
+  it('should be not allow undefined measures', function () {
+    expect(() => {
+      moment().recur({
+        start: '2014-01-01',
+        end: '2014-12-31',
+        rules: [
+          { units: [2], measure: undefined }
+        ],
+        exceptions: ['2014-01-05']
+      })
+    }).to.throw('Measure for recurrence rule undefined')
+  })
 })
 
 describe('Exceptions with weeks', function () {
@@ -595,6 +608,16 @@ describe('Options', function () {
     expect(data.exceptions).to.include('2014-01-05')
     expect(data.rules).to.have.nested.property('[0].units[0]', 2)
     expect(data.rules && data.rules[0].measure).to.equal('days')
+  })
+
+  it('shold export without all options set', function () {
+    let recurrence = moment.recur().every('Thursday').dayOfWeek()
+    let data = recurrence.save()
+    expect(data.start).to.be.undefined
+    expect(data.end).to.be.undefined
+    expect(data.exceptions).to.be.empty
+    expect(data.rules).to.have.nested.property('[0].units[0]', 4)
+    expect(data.rules && data.rules[0].measure).to.equal('daysOfWeek')
   })
 })
 

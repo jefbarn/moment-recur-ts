@@ -673,13 +673,11 @@ export class Recur {
     currentDate = startFrom.clone()
 
     // Include the initial date in the results if wanting all dates
-    if (type === 'all') {
-      if (this.matches(currentDate, false)) {
-        if (format) {
-          dates.push(currentDate.format(format))
-        } else {
-          dates.push(currentDate.clone())
-        }
+    if (type === 'all' && this.matches(currentDate, false)) {
+      if (format) {
+        dates.push(currentDate.format(format))
+      } else {
+        dates.push(currentDate.clone())
       }
     }
 
