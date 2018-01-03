@@ -70,41 +70,43 @@
 				<p><a href="https://travis-ci.org/jefbarn/moment-recur-ts"><img src="https://travis-ci.org/jefbarn/moment-recur-ts.svg?branch=master" alt="Build Status"></a>
 				<a href="https://coveralls.io/github/jefbarn/moment-recur-ts?branch=master"><img src="https://coveralls.io/repos/github/jefbarn/moment-recur-ts/badge.svg?branch=master" alt="Coverage Status"></a></p>
 				<p>Original work is <a href="https://github.com/c-trimm/moment-recur">c-trimm/moment-recur</a></p>
-				<h1 id="moment-recur">moment-recur</h1>
-				<p>moment-recur is a recurring date plugin for <a href="http://momentjs.com/">momentjs</a>. This plugin handles dates only; time information is discarded.</p>
+				<p>moment-recur-ts is a recurring date plugin for <a href="http://momentjs.com/">momentjs</a>. This plugin handles dates only; time information is discarded.</p>
 				<p>The rule matching concept is borrowed from the excellent <a href="https://github.com/appsattic/node-date-recur">node-date-recur</a> library created by Andrew Chilton.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> rInterval = moment( <span class="hljs-string">"01/01/2014"</span> ).recur().every(<span class="hljs-number">2</span>).days();
-rInterval.matches( <span class="hljs-string">"01/03/2014"</span> ); <span class="hljs-comment">// true</span>
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> interval = moment( <span class="hljs-string">"01/01/2014"</span> ).recur().every(<span class="hljs-number">2</span>).days();
+interval.matches( <span class="hljs-string">"01/03/2014"</span> ); <span class="hljs-comment">// true</span>
 
-<span class="hljs-keyword">var</span> rCalendar = moment.recur().every(<span class="hljs-number">10</span>).dayOfMonth();
-rCalendar.matches( <span class="hljs-string">"05/10/2014"</span> ); <span class="hljs-comment">// true</span>
+<span class="hljs-keyword">let</span> calendar = moment.recur().every(<span class="hljs-number">10</span>).dayOfMonth();
+calendar.matches( <span class="hljs-string">"05/10/2014"</span> ); <span class="hljs-comment">// true</span>
 </code></pre>
 				<h2 id="getting-started">Getting Started</h2>
-				<p>moment-recur can be included in your project a few different ways.</p>
+				<p>moment-recur-ts can be included in your project a few different ways.</p>
+				<h3 id="node-js">node.js</h3>
+				<p>moment-recur-ts can be installed with npm and required into a script.</p>
+				<pre><code>npm install moment-recur-<span class="hljs-keyword">ts</span>
+<span class="hljs-built_in">or</span>
+yarn <span class="hljs-built_in">add</span> moment-recur-<span class="hljs-keyword">ts</span>
+</code></pre><pre><code class="lang-js"><span class="hljs-keyword">let</span> moment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'moment'</span>);
+<span class="hljs-built_in">require</span>(<span class="hljs-string">'moment-recur-ts'</span>);
+</code></pre>
+				<h3 id="webpack-es6-typescript">Webpack + ES6/TypeScript</h3>
+				<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> moment <span class="hljs-keyword">from</span> <span class="hljs-string">'moment'</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">'moment-recur-ts'</span>
+</code></pre>
 				<h3 id="browser">Browser</h3>
-				<p>Simply include the momentjs script, then the moment-recur script.</p>
+				<p>Simply include the momentjs script, then the moment-recur-ts script.</p>
 				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"moment.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"moment-recur.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"moment-recur-ts.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
 				<h3 id="browser-with-requirejs">Browser with RequireJS</h3>
-				<p>moment-recur also works with RequireJS. Include it just like any other script.</p>
-				<pre><code class="lang-js">define([<span class="hljs-string">"moment"</span>, <span class="hljs-string">"moment-recur"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">moment</span>)</span>{
-    <span class="hljs-comment">//you probably won't need a reference to moment-recur itself, so include it last.</span>
+				<p>moment-recur-ts also works with RequireJS. Include it just like any other script.</p>
+				<pre><code class="lang-js">define([<span class="hljs-string">"moment"</span>, <span class="hljs-string">"moment-recur-ts"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">moment</span>)</span>{
+    <span class="hljs-comment">//you probably won't need a reference to moment-recur-ts itself, so include it last.</span>
 });
-</code></pre>
-				<h3 id="bower">Bower</h3>
-				<p>moment-recur is a register bower component.</p>
-				<pre><code><span class="hljs-keyword">bower </span><span class="hljs-keyword">install </span>moment-recur
-</code></pre><h3 id="node-js">node.js</h3>
-				<p>moment-recur can be installed with npm and required into a script.</p>
-				<pre><code>npm <span class="hljs-keyword">install</span> moment-recur
-</code></pre><pre><code class="lang-js"><span class="hljs-keyword">var</span> moment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'moment'</span>);
-<span class="hljs-built_in">require</span>(<span class="hljs-string">'moment-recur'</span>);
 </code></pre>
 				<h2 id="creating-a-recurring-date">Creating a Recurring Date</h2>
 				<p>You can create a recurrence from an instance of moment or from the constructor a few different ways.  </p>
 				<p>From an instance:</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence;
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence;
 
 <span class="hljs-comment">// Create a recurrence using today as the start date.</span>
 recurrence = moment().recur();
@@ -124,7 +126,7 @@ recurrence = moment().recur({
 });
 </code></pre>
 				<p>From the constructor:</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence;
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence;
 
 <span class="hljs-comment">// Create recurrence without a start date. Note: this will not work with intervals.</span>
 recurrence = moment.recur();
@@ -139,10 +141,10 @@ recurrence = moment.recur({
 });
 </code></pre>
 				<h2 id="creating-rules">Creating Rules</h2>
-				<p>moment-recur uses rules to define when a date should recur. You can then generate future or past recurrences based on these rules, or see if a specific date matches the rules. Rules can also be overridden or removed.</p>
+				<p>moment-recur-ts uses rules to define when a date should recur. You can then generate future or past recurrences based on these rules, or see if a specific date matches the rules. Rules can also be overridden or removed.</p>
 				<h3 id="the-every-function">The every() Function</h3>
 				<p>The <code>every()</code> function allows you to set the units and, optionally, the measurment type of the recurring date. It returns the recur object to allow chaining.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> myDate, recurrence;
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> myDate, recurrence;
 
 <span class="hljs-comment">// Create a date to start from</span>
 myDate = moment(<span class="hljs-string">"01/01/2014"</span>);
@@ -167,10 +169,10 @@ recurrence = myDate.recur().every([<span class="hljs-string">"Jan"</span>, <span
 </code></pre>
 				<p>If you need to specify multiple units, pass an array to <code>every()</code>.</p>
 				<p>You may also pass the units directly to the interval functions (listed below) instead of using <code>every()</code>.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence = moment.recur().monthOfYear(<span class="hljs-string">"January"</span>);
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence = moment.recur().monthOfYear(<span class="hljs-string">"January"</span>);
 </code></pre>
 				<h3 id="length-intervals">Length Intervals</h3>
-				<p>moment-recur supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: <code>day()</code> vs <code>days()</code>). Length Intervals <strong>must</strong> have a start date defined.</p>
+				<p>moment-recur-ts supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: <code>day()</code> vs <code>days()</code>). Length Intervals <strong>must</strong> have a start date defined.</p>
 				<p>Possible Length Intervals Include:</p>
 				<ul>
 					<li>day / days</li>
@@ -179,7 +181,7 @@ recurrence = myDate.recur().every([<span class="hljs-string">"Jan"</span>, <span
 					<li>year / years</li>
 				</ul>
 				<h4 id="examples">Examples</h4>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> myDate, interval;
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> myDate, interval;
 
 <span class="hljs-comment">// Create a date to start from</span>
 myDate = moment(<span class="hljs-string">"01/01/2014"</span>);
@@ -213,7 +215,7 @@ interval = myDate.recur().every(<span class="hljs-number">3</span>).days().every
 					<li>monthOfYear / monthsOfYear</li>
 				</ul>
 				<h4 id="examples">Examples</h4>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> cal;
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> cal;
 
 <span class="hljs-comment">// Will match any date that is on Sunday or Monday.</span>
 cal = moment.recur().every([<span class="hljs-string">"Sunday"</span>, <span class="hljs-number">1</span>]).daysOfWeek();
@@ -232,7 +234,7 @@ cal = moment.recur().every(<span class="hljs-string">"January"</span>).monthsOfY
 
 <span class="hljs-comment">// You can also combine these rules to match specific dates.</span>
 <span class="hljs-comment">// For instance, this will match only on Valentines day</span>
-<span class="hljs-keyword">var</span> valentines = moment.recur().every(<span class="hljs-number">14</span>).daysOfMonth()
+<span class="hljs-keyword">let</span> valentines = moment.recur().every(<span class="hljs-number">14</span>).daysOfMonth()
                                .every(<span class="hljs-string">"Februray"</span>).monthsOfYear();
 
 <span class="hljs-comment">// A weekOfMonthByDay interval is available for combining with</span>
@@ -248,24 +250,24 @@ cal = moment.recur().every(moment(<span class="hljs-string">"01/01/2014"</span>)
 				<h2 id="using-the-rules">Using the Rules</h2>
 				<h3 id="matching">Matching</h3>
 				<p>The <code>matches()</code> function will test a date to check if all of the recurrence rules match. It returns <code>true</code> if the date matches, <code>false</code> otherwise.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> interval = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> interval = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
 interval.matches(<span class="hljs-string">"01/02/2014"</span>); <span class="hljs-comment">// false</span>
 interval.matches(<span class="hljs-string">"01/03/2014"</span>); <span class="hljs-comment">// true</span>
 </code></pre>
 				<p>You may also see if a date matches before the start date or after the end date by passing <code>true</code> as the second argument to <code>matches()</code>.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> interval = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> interval = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
 interval.matches(<span class="hljs-string">"12/30/2013"</span>); <span class="hljs-comment">// false</span>
 interval.matches(<span class="hljs-string">"12/30/2013"</span>, <span class="hljs-literal">true</span>); <span class="hljs-comment">// true</span>
 </code></pre>
 				<h3 id="exceptions">Exceptions</h3>
 				<p>To prevent a date from matching that would normally match, use the <code>except()</code> function.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">1</span>).day().except(<span class="hljs-string">"01/02/2014"</span>);
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">1</span>).day().except(<span class="hljs-string">"01/02/2014"</span>);
 recurrence.matches(<span class="hljs-string">"01/02/2014"</span>); <span class="hljs-comment">// false</span>
 </code></pre>
 				<h3 id="overriding-and-forgetting">Overriding and Forgetting</h3>
 				<p>If a rule is created with the same measurement of a previous rule, it will override the previous rule. Rules can also be removed from a recurrence.</p>
 				<pre><code class="lang-js"><span class="hljs-comment">// Create a recurrence that matches every day, with an exception</span>
-<span class="hljs-keyword">var</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">1</span>).day().except(<span class="hljs-string">"01/03/2014"</span>);
+<span class="hljs-keyword">let</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">1</span>).day().except(<span class="hljs-string">"01/03/2014"</span>);
 
 <span class="hljs-comment">// This will override the previous rule and match every 2 days instead.</span>
 recurrence.every(<span class="hljs-number">2</span>).days();
@@ -278,7 +280,7 @@ recurrence.forget(<span class="hljs-string">"days"</span>);
 </code></pre>
 				<h3 id="generating-dates">Generating Dates</h3>
 				<p>It is also possible to generate dates from the rules. These functions require a starting date.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence, nextDates;
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence, nextDates;
 
 <span class="hljs-comment">// Create a recurrence</span>
 recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
@@ -296,31 +298,31 @@ nextDates = recurrence.next(<span class="hljs-number">3</span>, <span class="hlj
 nextDates = recurrence.previous(<span class="hljs-number">3</span>, <span class="hljs-string">"L"</span>);
 </code></pre>
 				<p>If your recurrence does not have a start date set, or if it does but you want to start at a different date, use the <code>fromDate()</code> method first.</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
 recurrence.fromDate(<span class="hljs-string">"02/05/2014"</span>);
 
 <span class="hljs-comment">// Outputs: ["02/06/2014", "02/08/2014", "02/10/2014"]</span>
 nextDates = recurrence.next(<span class="hljs-number">3</span>, <span class="hljs-string">"L"</span>);
 </code></pre>
 				<p>With both a start date and an end date set, you can generate all dates within that range that match the pattern (including the start/end dates).</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> recurrence = moment().recur(<span class="hljs-string">"01/01/2014"</span>, <span class="hljs-string">"01/07/2014"</span>).every(<span class="hljs-number">2</span>).days();
+				<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence = moment().recur(<span class="hljs-string">"01/01/2014"</span>, <span class="hljs-string">"01/07/2014"</span>).every(<span class="hljs-number">2</span>).days();
 
 <span class="hljs-comment">// Outputs: ["01/01/2014", "01/03/2014", "01/05/2014", "01/07/2014"]</span>
 allDates = recurrence.all(<span class="hljs-string">"L"</span>);
 </code></pre>
 				<p><strong>Important Note:</strong> These functions may be very inefficient/slow. They work by attempting to match every date from the start of a range until the desired number of dates have been generated. So if you attempt to get 10 dates for a rule that matches once a year, it will run the match function for ~3650 days.</p>
 				<h2 id="options-and-other-methods">Options and Other Methods</h2>
-				<p>moment-recur provides a few methods for getting/setting options, as well as two utility methods. It also creates two additional momentjs functions.</p>
+				<p>moment-recur-ts provides a few methods for getting/setting options, as well as two utility methods. It also creates two additional momentjs functions.</p>
 				<h3 id="options">Options</h3>
 				<p>Options can be set when creating a recurrence or using the getter/setter methods listed below.</p>
 				<p>Set options upon creation. Note that the units for rules are converted to objects, so it is not recommended to set rules this way. They can be set in the options so that they can be imported.</p>
 				<pre><code class="lang-js">moment().recur({
-    <span class="hljs-attr">start</span>: <span class="hljs-string">"01/01/2014"</span>,
-    <span class="hljs-attr">end</span>: <span class="hljs-string">"12/31/2014"</span>,
-    <span class="hljs-attr">rules</span>: [
-        { <span class="hljs-attr">units</span>: {  <span class="hljs-number">2</span> : <span class="hljs-literal">true</span> }, <span class="hljs-attr">measure</span>: <span class="hljs-string">"days"</span> }
-    ],
-    <span class="hljs-attr">exceptions</span>: [<span class="hljs-string">"01/05/2014"</span>]
+  <span class="hljs-attr">start</span>: <span class="hljs-string">"01/01/2014"</span>,
+  <span class="hljs-attr">end</span>: <span class="hljs-string">"12/31/2014"</span>,
+  <span class="hljs-attr">rules</span>: [
+    { <span class="hljs-attr">units</span>: [<span class="hljs-number">2</span>], <span class="hljs-attr">measure</span>: <span class="hljs-string">"days"</span> }
+  ],
+  <span class="hljs-attr">exceptions</span>: [<span class="hljs-string">"01/05/2014"</span>]
 });
 </code></pre>
 				<p>Get/Set the Start Date</p>
@@ -350,7 +352,8 @@ recurrence.fromDate(<span class="hljs-string">"01/01/2014"</span>); <span class=
 				<pre><code class="lang-js">moment(<span class="hljs-string">"2014-01-01 09:30:26"</span>).dateOnly(); <span class="hljs-comment">// 01/01/2014 12:00:00 AM</span>
 </code></pre>
 				<h2 id="license">License</h2>
-				<p>UNLICENSE - see UNLICENSE file and <a href="http://unlicense.org/">unlicense.org</a> for details.</p>
+				<p>MIT License</p>
+				<p>See LICENSE file for details.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -372,15 +375,6 @@ recurrence.fromDate(<span class="hljs-string">"01/01/2014"</span>); <span class=
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/recuroptions.html" class="tsd-kind-icon">Recur<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/rule.html" class="tsd-kind-icon">Rule</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#calendarmeasure" class="tsd-kind-icon">Calendar<wbr>Measure</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#intervalmeasure" class="tsd-kind-icon">Interval<wbr>Measure</a>
-					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#measureinput" class="tsd-kind-icon">Measure<wbr>Input</a>
 					</li>
@@ -389,12 +383,6 @@ recurrence.fromDate(<span class="hljs-string">"01/01/2014"</span>); <span class=
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#measuresingle" class="tsd-kind-icon">Measure<wbr>Single</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#moment" class="tsd-kind-icon">Moment</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#momentinput" class="tsd-kind-icon">Moment<wbr>Input</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#unitsinput" class="tsd-kind-icon">Units<wbr>Input</a>

@@ -59,6 +59,9 @@ export interface UnitsObject {
 
 export type MeasureInput = MeasureSingle | MeasurePlural | undefined | null
 
+/**
+ * @hidden
+ */
 export interface Rule {
 
   units: number[]

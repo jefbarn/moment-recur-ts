@@ -105,9 +105,16 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/index.ts#L21">index.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/index.ts#L39">index.ts:39</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The <code>dateOnly()</code> method can be used to remove any time information from a moment.</p>
+									<pre><code class="lang-js">moment(<span class="hljs-string">"2014-01-01 09:30:26"</span>).dateOnly(); <span class="hljs-comment">// 01/01/2014 12:00:00 AM</span>
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Moment</span></h4>
 						</li>
 					</ul>
@@ -122,9 +129,16 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/index.ts#L17">index.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/index.ts#L23">index.ts:23</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The <code>monthWeek()</code> method can be used to determine the week of the month a date is in.</p>
+									<pre><code class="lang-js">moment(<span class="hljs-string">"01/01/2014"</span>).monthWeek(); <span class="hljs-comment">// 0</span>
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
@@ -139,9 +153,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/index.ts#L19">index.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/index.ts#L31">index.ts:31</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Plugin for calculating the occurrence of the day of the week in the month.
+										Similar to <code>moment().monthWeek()</code>, the return value is zero-indexed.
+										A return value of 2 means the date is the 3rd occurence of that day
+									of the week in the month.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
@@ -157,9 +179,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/index.ts#L23">index.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/index.ts#L51">index.ts:51</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Recur can also be created the following ways:</p>
+									<pre><code class="lang-js">moment().recur()
+moment().recur(options)
+moment().recur(start, end)
+moment(start).recur(end)
+moment().recur(end)
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -174,7 +207,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/index.ts#L25">index.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/index.ts#L52">index.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

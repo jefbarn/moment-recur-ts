@@ -66,6 +66,39 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The main Recur object to provide an interface for settings, rules, and matching</p>
+					</div>
+					<h2 id="creating-rules">Creating Rules</h2>
+					<p>moment-recur-ts uses rules to define when a date should recur. You can then generate future
+						or past recurrences based on these rules, or see if a specific date matches the rules.
+					Rules can also be overridden or removed.</p>
+					<h3 id="length-intervals">Length Intervals</h3>
+					<p>moment-recur-ts supports intervals for days, weeks, months, and years. Measurements may be singular or
+					plural (ex: <code>day()</code> vs <code>days()</code>). Length Intervals <strong>must</strong> have a start date defined.</p>
+					<p>Possible Length Intervals Include:</p>
+					<ul>
+						<li>day / days</li>
+						<li>week / weeks</li>
+						<li>month / months</li>
+						<li>year / years</li>
+					</ul>
+					<h3 id="calendar-intervals">Calendar Intervals</h3>
+					<p>Calendar Intervals do not depend on a start date. They define a unit of another unit. For instance,
+						a day of a month, or a month of a year. Measurements may be singular or plural
+					(ex: <code>dayOfMonth()</code> vs <code>daysOfMonth()</code>).</p>
+					<p>Possible Calendar Intervals Include:</p>
+					<ul>
+						<li>dayOfWeek / daysOfWeek</li>
+						<li>dayOfMonth / daysOfMonth</li>
+						<li>weekOfMonth / weeksOfMonth</li>
+						<li>weekOfYear / weeksOfYear</li>
+						<li>monthOfYear / monthsOfYear</li>
+					</ul>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -144,9 +177,47 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L51">recur.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L101">recur.ts:101</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h3 id="recur-object-constrcutor">Recur Object Constrcutor</h3>
+								</div>
+								<p>From an instance of moment:</p>
+								<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence;
+
+<span class="hljs-comment">// Create a recurrence using today as the start date.</span>
+recurrence = moment().recur();
+
+<span class="hljs-comment">// Create a recurrence while passing the start and end dates to the recur function.</span>
+<span class="hljs-comment">// Note: passing an end date requires you to also pass a start date.</span>
+recurrence = moment().recur( start, end );
+
+<span class="hljs-comment">// You may pass a start date to the moment, or use an existing moment, to set the start date.</span>
+<span class="hljs-comment">// In this case, passing a date to the recur function sets and end date.</span>
+recurrence = moment(start).recur( end );
+
+<span class="hljs-comment">// Finally, you can create a recurrence and pass in an entire set of options.</span>
+recurrence = moment().recur({
+  <span class="hljs-attr">start</span>: <span class="hljs-string">"01/01/2014"</span>,
+  <span class="hljs-attr">end</span>: <span class="hljs-string">"01/01/2015"</span>
+});
+</code></pre>
+								<p>From static moment:</p>
+								<pre><code class="lang-js"><span class="hljs-comment">// Create recurrence without a start date. Note: this will not work with intervals.</span>
+recurrence = moment.recur();
+
+<span class="hljs-comment">// Create a recurrence, passing just the start, or the start and end dates.</span>
+recurrence = moment.recur( start, end );
+
+<span class="hljs-comment">// Create a recurrence, passing set of options.</span>
+recurrence = moment.recur({
+  <span class="hljs-attr">start</span>: <span class="hljs-string">"01/01/2014"</span>,
+  <span class="hljs-attr">end</span>: <span class="hljs-string">"01/01/2015"</span>
+});
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -166,7 +237,7 @@
 					<div class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Moment</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L39">recur.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L89">recur.ts:89</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -178,7 +249,7 @@
 					<div class="tsd-signature tsd-kind-icon">from<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Moment</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L41">recur.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L91">recur.ts:91</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -190,7 +261,7 @@
 					<div class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Moment</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L37">recur.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L87">recur.ts:87</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -210,15 +281,26 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L258">recur.ts:258</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L478">recur.ts:478</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>With both a start date and an end date set, you can generate all dates within
+									that range that match the pattern (including the start/end dates).</p>
+								</div>
+								<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence = moment().recur(<span class="hljs-string">"01/01/2014"</span>, <span class="hljs-string">"01/07/2014"</span>).every(<span class="hljs-number">2</span>).days();
+
+<span class="hljs-comment">// Outputs: ["01/01/2014", "01/03/2014", "01/05/2014", "01/07/2014"]</span>
+allDates = recurrence.all(<span class="hljs-string">"L"</span>);
+</code></pre>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Moment</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L259">recur.ts:259</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L479">recur.ts:479</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -241,7 +323,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L264">recur.ts:264</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L484">recur.ts:484</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -264,7 +346,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L314">recur.ts:314</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L534">recur.ts:534</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -287,7 +369,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L304">recur.ts:304</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L524">recur.ts:524</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -310,7 +392,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L269">recur.ts:269</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L489">recur.ts:489</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -333,7 +415,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L319">recur.ts:319</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L539">recur.ts:539</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -356,7 +438,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L309">recur.ts:309</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L529">recur.ts:529</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -374,27 +456,40 @@
 					<h3>end<wbr>Date</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">end<wbr>Date<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Moment</span></li>
-						<li class="tsd-signature tsd-kind-icon">end<wbr>Date<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="recur.html" class="tsd-signature-type">Recur</a></li>
+						<li class="tsd-signature tsd-kind-icon">end<wbr>Date<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="recur.html" class="tsd-signature-type">Recur</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L103">recur.ts:103</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L205">recur.ts:205</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get/Set the End Date</p>
+									<pre><code class="lang-js">recurrence.endDate(); <span class="hljs-comment">// Get</span>
+recurrence.endDate(<span class="hljs-string">"01/01/2014"</span>); <span class="hljs-comment">// Set</span>
+</code></pre>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>category</dt>
+									<dd><p>getter/setter</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Moment</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L104">recur.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L206">recur.ts:206</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>date: <a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<h5>date: <span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="recur.html" class="tsd-signature-type">Recur</a></h4>
@@ -411,9 +506,44 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L167">recur.ts:167</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L326">recur.ts:326</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The <code>every()</code> function allows you to set the units and, optionally, the measurment type
+									of the recurring date. It returns the recur object to allow chaining.</p>
+								</div>
+								<pre><code class="lang-js"> <span class="hljs-keyword">let</span> myDate, recurrence;
+
+ <span class="hljs-comment">// Create a date to start from</span>
+ myDate = moment(<span class="hljs-string">"01/01/2014"</span>);
+
+ <span class="hljs-comment">// You can pass the units to recur on, and the measurement type.</span>
+ recurrence = myDate.recur().every(<span class="hljs-number">1</span>, <span class="hljs-string">"days"</span>);
+
+ <span class="hljs-comment">// You can also chain the measurement type instead of passing it to every.</span>
+ recurrence = myDate.recur().every(<span class="hljs-number">1</span>).day();
+
+ <span class="hljs-comment">// It is also possible to pass an array of units.</span>
+ recurrence = myDate.recur().every([<span class="hljs-number">3</span>, <span class="hljs-number">5</span>]).days();
+
+ <span class="hljs-comment">// When using the dayOfWeek measurement, you can pass days names.</span>
+ recurrence = myDate.recur().every([<span class="hljs-string">"Monday"</span>, <span class="hljs-string">"wed"</span>]).daysOfWeek();
+
+ <span class="hljs-comment">// Month names also work when using monthOfYear.</span>
+ recurrence = myDate.recur().every([<span class="hljs-string">"Jan"</span>, <span class="hljs-string">"february"</span>], <span class="hljs-string">"monthsOfYear"</span>);
+</code></pre>
+								<p> <code>every()</code> will override the last &quot;every&quot; if a measurement was not provided.
+								The following line will create a recurrence for every 5 days.</p>
+								<pre><code class="lang-js"> recurrence  = myDate.recur().every(<span class="hljs-number">1</span>).every(<span class="hljs-number">5</span>).days();
+</code></pre>
+								<p> If you need to specify multiple units, pass an array to <code>every()</code>.</p>
+								<p> You may also pass the units directly to the interval functions (listed below)
+								instead of using <code>every()</code>.</p>
+								<pre><code class="lang-js"> <span class="hljs-keyword">let</span> recurrence = moment.recur().monthOfYear(<span class="hljs-string">"January"</span>);
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -431,19 +561,27 @@
 					<a name="except" class="tsd-anchor"></a>
 					<h3>except</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">except<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">except<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L181">recur.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L346">recur.ts:346</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>To prevent a date from matching that would normally match, use the <code>except()</code> function.</p>
+									<pre><code class="lang-js"><span class="hljs-keyword">let</span> recurrence = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">1</span>).day().except(<span class="hljs-string">"01/02/2014"</span>);
+recurrence.matches(<span class="hljs-string">"01/02/2014"</span>); <span class="hljs-comment">// false</span>
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>date: <a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a></h5>
+									<h5>date: <span class="tsd-signature-type">MomentInput</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -454,19 +592,30 @@
 					<a name="forget" class="tsd-anchor"></a>
 					<h3>forget</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">forget<span class="tsd-signature-symbol">(</span>dateOrRule<span class="tsd-signature-symbol">: </span><a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><a href="../globals.html#measureinput" class="tsd-signature-type">MeasureInput</a>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">forget<span class="tsd-signature-symbol">(</span>dateOrRule<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><a href="../globals.html#measureinput" class="tsd-signature-type">MeasureInput</a>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L188">recur.ts:188</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L363">recur.ts:363</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Forgets rules (by passing measure) and exceptions (by passing date)</p>
+									<pre><code class="lang-js"><span class="hljs-comment">// Exceptions can be removed by passing a date to the forget() function.</span>
+recurrence.forget(<span class="hljs-string">"01/03/2014"</span>);
+</code></pre>
+									<pre><code class="lang-js"><span class="hljs-comment">// Rules can be removed by passing the measurement to the forget() function.</span>
+recurrence.forget(<span class="hljs-string">"days"</span>);
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>dateOrRule: <a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><a href="../globals.html#measureinput" class="tsd-signature-type">MeasureInput</a></h5>
+									<h5>dateOrRule: <span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><a href="../globals.html#measureinput" class="tsd-signature-type">MeasureInput</a></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> format: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -481,27 +630,40 @@
 					<h3>from<wbr>Date</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">from<wbr>Date<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Moment</span></li>
-						<li class="tsd-signature tsd-kind-icon">from<wbr>Date<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="recur.html" class="tsd-signature-type">Recur</a></li>
+						<li class="tsd-signature tsd-kind-icon">from<wbr>Date<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="recur.html" class="tsd-signature-type">Recur</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L123">recur.ts:123</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L232">recur.ts:232</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get/Set a temporary &quot;From Date&quot; for use with generating dates</p>
+									<pre><code class="lang-js">recurrence.fromDate(); <span class="hljs-comment">// Get</span>
+recurrence.fromDate(<span class="hljs-string">"01/01/2014"</span>); <span class="hljs-comment">// Set</span>
+</code></pre>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>category</dt>
+									<dd><p>getter/setter</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Moment</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L124">recur.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L233">recur.ts:233</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>date: <a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<h5>date: <span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="recur.html" class="tsd-signature-type">Recur</a></h4>
@@ -518,7 +680,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L215">recur.ts:215</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L390">recur.ts:390</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -535,19 +697,35 @@
 					<a name="matches" class="tsd-anchor"></a>
 					<h3>matches</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">matches<span class="tsd-signature-symbol">(</span>dateToMatch<span class="tsd-signature-symbol">: </span><a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a>, ignoreStartEnd<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">matches<span class="tsd-signature-symbol">(</span>dateToMatch<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MomentInput</span>, ignoreStartEnd<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L220">recur.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L411">recur.ts:411</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The <code>matches()</code> function will test a date to check if all of the recurrence rules match.
+									It returns <code>true</code> if the date matches, <code>false</code> otherwise.</p>
+									<pre><code class="lang-js"><span class="hljs-keyword">let</span> interval = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
+interval.matches(<span class="hljs-string">"01/02/2014"</span>); <span class="hljs-comment">// false</span>
+interval.matches(<span class="hljs-string">"01/03/2014"</span>); <span class="hljs-comment">// true</span>
+</code></pre>
+								</div>
+								<p>You may also see if a date matches before the start date or after the end date by
+								passing <code>true</code> as the second argument to <code>matches()</code>.</p>
+								<pre><code class="lang-js"><span class="hljs-keyword">let</span> interval = moment(<span class="hljs-string">"01/01/2014"</span>).recur().every(<span class="hljs-number">2</span>).days();
+interval.matches(<span class="hljs-string">"12/30/2013"</span>); <span class="hljs-comment">// false</span>
+interval.matches(<span class="hljs-string">"12/30/2013"</span>, <span class="hljs-literal">true</span>); <span class="hljs-comment">// true</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>dateToMatch: <a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a></h5>
+									<h5>dateToMatch: <span class="tsd-signature-type">MomentInput</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ignoreStartEnd: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></h5>
@@ -567,7 +745,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L284">recur.ts:284</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L504">recur.ts:504</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -590,9 +768,16 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L344">recur.ts:344</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L570">recur.ts:570</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<pre><code class="lang-js"><span class="hljs-comment">// Will match any date that is in January of any year.</span>
+cal = moment.recur().every(<span class="hljs-string">"January"</span>).monthsOfYear();
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -613,7 +798,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L289">recur.ts:289</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L509">recur.ts:509</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -636,7 +821,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L349">recur.ts:349</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L574">recur.ts:574</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -660,9 +845,22 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L244">recur.ts:244</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L447">recur.ts:447</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get next N occurrences</p>
+									<pre><code class="lang-js"><span class="hljs-comment">// Generate the next three dates as moments</span>
+<span class="hljs-comment">// Outputs: [moment("01/03/2014"), moment("01/05/2014"), moment("01/07/2014")]</span>
+nextDates = recurrence.next(<span class="hljs-number">3</span>);
+</code></pre>
+									<pre><code class="lang-js"><span class="hljs-comment">// Generate the next three dates, formatted in local format</span>
+<span class="hljs-comment">// Outputs: ["01/03/2014", "01/05/2014", "01/07/2014"]</span>
+nextDates = recurrence.next(<span class="hljs-number">3</span>, <span class="hljs-string">"L"</span>);
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -674,7 +872,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L245">recur.ts:245</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L448">recur.ts:448</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -701,9 +899,18 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L251">recur.ts:251</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L461">recur.ts:461</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get previous N occurrences</p>
+									<pre><code class="lang-js"><span class="hljs-comment">// Generate previous three dates, formatted in local format</span>
+<span class="hljs-comment">// Outputs: ["12/30/2013", "12/28/2013", "12/26/2013"]</span>
+nextDates = recurrence.previous(<span class="hljs-number">3</span>, <span class="hljs-string">"L"</span>);
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -715,7 +922,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L252">recur.ts:252</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L462">recur.ts:462</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -741,9 +948,16 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L162">recur.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L283">recur.ts:283</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Use <code>repeats()</code> to check if a recurrence has rules set.</p>
+									<pre><code class="lang-js">recurrence.repeats(); <span class="hljs-comment">// true/false</span>
+</code></pre>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -758,9 +972,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L143">recur.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L259">recur.ts:259</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Use <code>save()</code> to export all options, rules, and exceptions as an object.
+									This can be used to store recurrences in a database.</p>
+									<blockquote>
+										<p>Note: This does not export the &quot;From Date&quot; which is considered a temporary option.</p>
+										<pre><code class="lang-js">recurrence.save();
+</code></pre>
+									</blockquote>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/recuroptions.html" class="tsd-signature-type">RecurOptions</a></h4>
 						</li>
 					</ul>
@@ -770,27 +995,40 @@
 					<h3>start<wbr>Date</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 						<li class="tsd-signature tsd-kind-icon">start<wbr>Date<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Moment</span></li>
-						<li class="tsd-signature tsd-kind-icon">start<wbr>Date<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="recur.html" class="tsd-signature-type">Recur</a></li>
+						<li class="tsd-signature tsd-kind-icon">start<wbr>Date<span class="tsd-signature-symbol">(</span>date<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="recur.html" class="tsd-signature-type">Recur</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L83">recur.ts:83</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L178">recur.ts:178</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get/Set the Start Date</p>
+									<pre><code class="lang-js">recurrence.startDate(); <span class="hljs-comment">// Get</span>
+recurrence.startDate(<span class="hljs-string">"01/01/2014"</span>); <span class="hljs-comment">// Set</span>
+</code></pre>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>category</dt>
+									<dd><p>getter/setter</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Moment</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L84">recur.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L179">recur.ts:179</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>date: <a href="../globals.html#momentinput" class="tsd-signature-type">MomentInput</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<h5>date: <span class="tsd-signature-type">MomentInput</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="recur.html" class="tsd-signature-type">Recur</a></h4>
@@ -807,7 +1045,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L274">recur.ts:274</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L494">recur.ts:494</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -830,7 +1068,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L324">recur.ts:324</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L544">recur.ts:544</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -853,7 +1091,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L334">recur.ts:334</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L554">recur.ts:554</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -876,7 +1114,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L279">recur.ts:279</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L499">recur.ts:499</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -899,7 +1137,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L329">recur.ts:329</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L549">recur.ts:549</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -922,9 +1160,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L354">recur.ts:354</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L596">recur.ts:596</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A weekOfMonthByDay interval is available for combining with the daysOfWeek to
+										achieve &quot;nth weekday of month&quot; recurrences. The following matches every 1st
+									and 3rd Thursday of the month.</p>
+									<blockquote>
+										<p>(Note this cannot be combined at the moment with every(x).months() expression)</p>
+									</blockquote>
+								</div>
+								<pre><code class="lang-js">cal = moment.recur()
+  .every(<span class="hljs-string">"Thursday"</span>).daysOfWeek()
+  .every([<span class="hljs-number">0</span>, <span class="hljs-number">2</span>]).weeksOfMonthByDay();
+</code></pre>
+								<pre><code class="lang-js">cal = moment.recur()
+  .every(moment(<span class="hljs-string">"01/01/2014"</span>).day()).daysOfWeek()
+  .every(moment(<span class="hljs-string">"01/01/2014"</span>).monthWeekByDay()).weeksOfMonthByDay();
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -945,7 +1201,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L339">recur.ts:339</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L559">recur.ts:559</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -968,7 +1224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L294">recur.ts:294</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L514">recur.ts:514</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -991,7 +1247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/e536ab2/src/recur.ts#L299">recur.ts:299</a></li>
+									<li>Defined in <a href="https://github.com/jefbarn/moment-recur-ts/blob/f32a0f7/src/recur.ts#L519">recur.ts:519</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1136,15 +1392,6 @@
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/recuroptions.html" class="tsd-kind-icon">Recur<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/rule.html" class="tsd-kind-icon">Rule</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#calendarmeasure" class="tsd-kind-icon">Calendar<wbr>Measure</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#intervalmeasure" class="tsd-kind-icon">Interval<wbr>Measure</a>
-					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#measureinput" class="tsd-kind-icon">Measure<wbr>Input</a>
 					</li>
@@ -1153,12 +1400,6 @@
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#measuresingle" class="tsd-kind-icon">Measure<wbr>Single</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#moment" class="tsd-kind-icon">Moment</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#momentinput" class="tsd-kind-icon">Moment<wbr>Input</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#unitsinput" class="tsd-kind-icon">Units<wbr>Input</a>

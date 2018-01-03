@@ -5,9 +5,29 @@ import {
   UnitsInput
 } from './rule'
 
+/** @hidden */
 export type Moment = moment.Moment
+/** @hidden */
 export type MomentInput = moment.MomentInput
 
+/**
+ * Set options upon creation.
+ *
+ * > Note that the units for rules are converted to objects,
+ * > so it is not recommended to set rules this way.
+ * > They can be set in the options so that they can be imported.
+ *
+ * ```js
+ * moment().recur({
+ *   start: "01/01/2014",
+ *   end: "12/31/2014",
+ *   rules: [
+ *     { units: [2], measure: "days" }
+ *   ],
+ *   exceptions: ["01/05/2014"]
+ * });
+ * ```
+ */
 export interface RecurOptions {
   start?: MomentInput
   end?: MomentInput
@@ -30,7 +50,37 @@ const ISO_DATE_FMT = 'YYYY-MM-DD'
  */
 type OccuranceType = 'next' | 'previous' | 'all'
 
-// The main Recur object to provide an interface for settings, rules, and matching
+/**
+ * The main Recur object to provide an interface for settings, rules, and matching
+ *
+ * Creating Rules
+ * --------------
+ * moment-recur-ts uses rules to define when a date should recur. You can then generate future
+ * or past recurrences based on these rules, or see if a specific date matches the rules.
+ * Rules can also be overridden or removed.
+ *
+ * ### Length Intervals
+ * moment-recur-ts supports intervals for days, weeks, months, and years. Measurements may be singular or
+ * plural (ex: `day()` vs `days()`). Length Intervals **must** have a start date defined.
+ *
+ * Possible Length Intervals Include:
+ * * day / days
+ * * week / weeks
+ * * month / months
+ * * year / years
+ *
+ * ### Calendar Intervals
+ * Calendar Intervals do not depend on a start date. They define a unit of another unit. For instance,
+ * a day of a month, or a month of a year. Measurements may be singular or plural
+ * (ex: `dayOfMonth()` vs `daysOfMonth()`).
+ *
+ * Possible Calendar Intervals Include:
+ * * dayOfWeek / daysOfWeek
+ * * dayOfMonth / daysOfMonth
+ * * weekOfMonth / weeksOfMonth
+ * * weekOfYear / weeksOfYear
+ * * monthOfYear / monthsOfYear
+ */
 export class Recur {
 
   /** @internal */
@@ -50,7 +100,45 @@ export class Recur {
   /** @internal */
   private measure: MeasureInput
 
-  // Recur Object Constrcutor
+  /**
+   * ### Recur Object Constrcutor
+   *
+   * From an instance of moment:
+   * ```js
+   * let recurrence;
+   *
+   * // Create a recurrence using today as the start date.
+   * recurrence = moment().recur();
+   *
+   * // Create a recurrence while passing the start and end dates to the recur function.
+   * // Note: passing an end date requires you to also pass a start date.
+   * recurrence = moment().recur( start, end );
+   *
+   * // You may pass a start date to the moment, or use an existing moment, to set the start date.
+   * // In this case, passing a date to the recur function sets and end date.
+   * recurrence = moment(start).recur( end );
+   *
+   * // Finally, you can create a recurrence and pass in an entire set of options.
+   * recurrence = moment().recur({
+   *   start: "01/01/2014",
+   *   end: "01/01/2015"
+   * });
+   * ```
+   * From static moment:
+   * ```js
+   * // Create recurrence without a start date. Note: this will not work with intervals.
+   * recurrence = moment.recur();
+   *
+   * // Create a recurrence, passing just the start, or the start and end dates.
+   * recurrence = moment.recur( start, end );
+   *
+   * // Create a recurrence, passing set of options.
+   * recurrence = moment.recur({
+   *   start: "01/01/2014",
+   *   end: "01/01/2015"
+   * });
+   * ```
+   */
   constructor (options: RecurOptions) {
     if (options.start) {
       this.start = moment(options.start).dateOnly()
@@ -79,7 +167,14 @@ export class Recur {
     return this
   }
 
-  // Get/Set start date
+  /**
+   * Get/Set the Start Date
+   * ```js
+   * recurrence.startDate(); // Get
+   * recurrence.startDate("01/01/2014"); // Set
+   * ```
+   * @category getter/setter
+   */
   startDate (): Moment
   startDate (date: MomentInput | null): Recur
   startDate (date?: MomentInput): Moment | Recur {
@@ -99,7 +194,14 @@ export class Recur {
     return this.start
   }
 
-  // Get/Set end date
+  /**
+   * Get/Set the End Date
+   * ```js
+   * recurrence.endDate(); // Get
+   * recurrence.endDate("01/01/2014"); // Set
+   * ```
+   * @category getter/setter
+   */
   endDate (): Moment
   endDate (date: MomentInput | null): Recur
   endDate (date?: MomentInput): Moment | Recur {
@@ -119,7 +221,14 @@ export class Recur {
     return this.end
   }
 
-  // Get/Set a temporary from date
+  /**
+   * Get/Set a temporary "From Date" for use with generating dates
+   * ```js
+   * recurrence.fromDate(); // Get
+   * recurrence.fromDate("01/01/2014"); // Set
+   * ```
+   * @category getter/setter
+   */
   fromDate (): Moment
   fromDate (date: MomentInput | null): Recur
   fromDate (date?: MomentInput): Moment | Recur {
@@ -139,7 +248,14 @@ export class Recur {
     return this.from
   }
 
-  // Export the settings, rules, and exceptions of this recurring date
+  /**
+   * Use `save()` to export all options, rules, and exceptions as an object.
+   * This can be used to store recurrences in a database.
+   * > Note: This does not export the "From Date" which is considered a temporary option.
+   * ```js
+   * recurrence.save();
+   * ```
+   */
   save (): RecurOptions {
     let data: RecurOptions = {}
 
@@ -158,12 +274,55 @@ export class Recur {
     return data
   }
 
-  // Return boolean value based on whether this date repeats (has rules or not)
+  /**
+   * Use `repeats()` to check if a recurrence has rules set.
+   * ```js
+   * recurrence.repeats(); // true/false
+   * ```
+   */
   repeats (): boolean {
     return this.rules.length > 0
   }
 
-  // Set the units and, optionally, the measure
+  /**
+   * The `every()` function allows you to set the units and, optionally, the measurment type
+   * of the recurring date. It returns the recur object to allow chaining.
+   *
+   *  ```js
+   *  let myDate, recurrence;
+   *
+   *  // Create a date to start from
+   *  myDate = moment("01/01/2014");
+   *
+   *  // You can pass the units to recur on, and the measurement type.
+   *  recurrence = myDate.recur().every(1, "days");
+   *
+   *  // You can also chain the measurement type instead of passing it to every.
+   *  recurrence = myDate.recur().every(1).day();
+   *
+   *  // It is also possible to pass an array of units.
+   *  recurrence = myDate.recur().every([3, 5]).days();
+   *
+   *  // When using the dayOfWeek measurement, you can pass days names.
+   *  recurrence = myDate.recur().every(["Monday", "wed"]).daysOfWeek();
+   *
+   *  // Month names also work when using monthOfYear.
+   *  recurrence = myDate.recur().every(["Jan", "february"], "monthsOfYear");
+   *  ```
+   *
+   *  `every()` will override the last "every" if a measurement was not provided.
+   *  The following line will create a recurrence for every 5 days.
+   *  ```js
+   *  recurrence  = myDate.recur().every(1).every(5).days();
+   *  ```
+   *  If you need to specify multiple units, pass an array to `every()`.
+   *
+   *  You may also pass the units directly to the interval functions (listed below)
+   *  instead of using `every()`.
+   *  ```js
+   *  let recurrence = moment.recur().monthOfYear("January");
+   *  ```
+   */
   every (units?: UnitsInput, measure?: MeasureInput) {
 
     if (units != null) {
@@ -177,14 +336,30 @@ export class Recur {
     return this.trigger()
   }
 
-  // Creates an exception date to prevent matches, even if rules match
+  /**
+   * To prevent a date from matching that would normally match, use the `except()` function.
+   * ```js
+   * let recurrence = moment("01/01/2014").recur().every(1).day().except("01/02/2014");
+   * recurrence.matches("01/02/2014"); // false
+   * ```
+   */
   except (date: MomentInput) {
     date = moment(date).dateOnly()
     this.exceptions.push(date)
     return this
   }
 
-  // Forgets rules (by passing measure) and exceptions (by passing date)
+  /**
+   * Forgets rules (by passing measure) and exceptions (by passing date)
+   * ```js
+   * // Exceptions can be removed by passing a date to the forget() function.
+   * recurrence.forget("01/03/2014");
+   * ```
+   * ```js
+   * // Rules can be removed by passing the measurement to the forget() function.
+   * recurrence.forget("days");
+   * ```
+   */
   forget (dateOrRule: MomentInput | MeasureInput, format?: string): this {
 
     if (!dateOrRule) {
@@ -216,7 +391,23 @@ export class Recur {
     return this.rules.findIndex(rule => rule.measure === pluralize(measure)) !== -1
   }
 
-  // Attempts to match a date to the rules
+  /**
+   * The `matches()` function will test a date to check if all of the recurrence rules match.
+   * It returns `true` if the date matches, `false` otherwise.
+   * ```js
+   * let interval = moment("01/01/2014").recur().every(2).days();
+   * interval.matches("01/02/2014"); // false
+   * interval.matches("01/03/2014"); // true
+   * ```
+   *
+   * You may also see if a date matches before the start date or after the end date by
+   * passing `true` as the second argument to `matches()`.
+   * ```js
+   * let interval = moment("01/01/2014").recur().every(2).days();
+   * interval.matches("12/30/2013"); // false
+   * interval.matches("12/30/2013", true); // true
+   * ```
+   */
   matches (dateToMatch: MomentInput, ignoreStartEnd?: boolean): boolean {
     let date = moment(dateToMatch).dateOnly()
 
@@ -240,21 +431,50 @@ export class Recur {
     return true
   }
 
-  // Get next N occurrences
+  /**
+   * Get next N occurrences
+   * ```js
+   * // Generate the next three dates as moments
+   * // Outputs: [moment("01/03/2014"), moment("01/05/2014"), moment("01/07/2014")]
+   * nextDates = recurrence.next(3);
+   * ```
+   * ```js
+   * // Generate the next three dates, formatted in local format
+   * // Outputs: ["01/03/2014", "01/05/2014", "01/07/2014"]
+   * nextDates = recurrence.next(3, "L");
+   * ```
+   */
   next (num: number): Moment[]
   next (num: number, format: string): string[]
   next (num: number, format?: string): (string | Moment)[] {
     return this.getOccurrences('next', num, format)
   }
 
-  // Get previous N occurrences
+  /**
+   * Get previous N occurrences
+   * ```js
+   * // Generate previous three dates, formatted in local format
+   * // Outputs: ["12/30/2013", "12/28/2013", "12/26/2013"]
+   * nextDates = recurrence.previous(3, "L");
+   * ```
+   */
   previous (num: number): Moment[]
   previous (num: number, format: string): string[]
   previous (num: number, format?: string): (string | Moment)[] {
     return this.getOccurrences('previous', num, format)
   }
 
-  // Get all occurrences between start and end date
+  /**
+   * With both a start date and an end date set, you can generate all dates within
+   * that range that match the pattern (including the start/end dates).
+   *
+   * ```js
+   * let recurrence = moment().recur("01/01/2014", "01/07/2014").every(2).days();
+   *
+   * // Outputs: ["01/01/2014", "01/03/2014", "01/05/2014", "01/07/2014"]
+   * allDates = recurrence.all("L");
+   * ```
+   */
   all (): Moment[]
   all (format: string): string[]
   all (format?: string): (string | Moment)[] {
@@ -341,23 +561,47 @@ export class Recur {
     return this
   }
 
+  /**
+   * ```js
+   * // Will match any date that is in January of any year.
+   * cal = moment.recur().every("January").monthsOfYear();
+   * ```
+   */
   monthOfYear (units?: UnitsInput): this {
     this.every(units, 'monthsOfYear')
     return this
   }
-
   monthsOfYear (units?: UnitsInput): this {
     this.every(units, 'monthsOfYear')
     return this
   }
 
+  /**
+   * A weekOfMonthByDay interval is available for combining with the daysOfWeek to
+   * achieve "nth weekday of month" recurrences. The following matches every 1st
+   * and 3rd Thursday of the month.
+   * > (Note this cannot be combined at the moment with every(x).months() expression)
+   *
+   * ```js
+   * cal = moment.recur()
+   *   .every("Thursday").daysOfWeek()
+   *   .every([0, 2]).weeksOfMonthByDay();
+   * ```
+   * ```js
+   * cal = moment.recur()
+   *   .every(moment("01/01/2014").day()).daysOfWeek()
+   *   .every(moment("01/01/2014").monthWeekByDay()).weeksOfMonthByDay();
+   * ```
+   */
   weeksOfMonthByDay (units?: UnitsInput): this {
     this.every(units, 'weeksOfMonthByDay')
     return this
   }
 
-  /** @internal */
-  // Private method that tries to set a rule.
+  /**
+   * Private method that tries to set a rule.
+   * @internal
+   */
   private trigger () {
 
     if (!(this instanceof Recur)) {
@@ -392,8 +636,10 @@ export class Recur {
     return this
   }
 
-  /** @internal */
-  // Private method to get next, previous or all occurrences
+  /**
+   * Private method to get next, previous or all occurrences
+   * @internal
+   */
   private getOccurrences (type: OccuranceType, num: number | null, format?: string): (string | Moment)[] {
     let currentDate
 
@@ -459,8 +705,10 @@ export class Recur {
     return dates
   }
 
-  /** @internal */
-  // Private function to see if a date is within range of start/end
+  /**
+   * Private function to see if a date is within range of start/end
+   * @internal
+   */
   private inRange (date: Moment) {
     if (this.start && date.isBefore(this.start)) {
       return false
@@ -471,8 +719,10 @@ export class Recur {
     }
   }
 
-  /** @internal */
-  // Private function to check if a date is an exception
+  /**
+   * Private function to check if a date is an exception
+   * @internal
+   */
   private isException (date: MomentInput): boolean {
 
     for (let exception of this.exceptions) {
@@ -483,8 +733,10 @@ export class Recur {
     return false
   }
 
-  /** @internal */
-  // Private funtion to see if all rules match
+  /**
+   * Private funtion to see if all rules match
+   * @internal
+   */
   private matchAllRules (date: Moment) {
 
     for (let rule of this.rules) {

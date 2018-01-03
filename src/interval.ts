@@ -1,10 +1,14 @@
 import { Rule } from './rule'
 import { Moment } from 'moment'
 
-/** @internal */
+/**
+ * @internal
+ * @hidden
+ */
 export type IntervalMeasure = 'days' | 'weeks' | 'months' | 'years'
 
-/** Interval object for creating and matching interval-based rules
+/**
+ * Interval object for creating and matching interval-based rules
  * @internal
  * @hidden
  */

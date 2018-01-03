@@ -1,7 +1,10 @@
 import { Rule } from './rule'
 import * as moment from 'moment'
 
-/** @internal */
+/**
+ * @internal
+ * @hidden
+ */
 export type CalendarMeasure =
   'daysOfWeek'
   | 'daysOfMonth'
@@ -10,7 +13,8 @@ export type CalendarMeasure =
   | 'weeksOfYear'
   | 'monthsOfYear'
 
-/** Calendar object for creating and matching calendar-based rules
+/**
+ * Calendar object for creating and matching calendar-based rules
  * @internal
  * @hidden
  */

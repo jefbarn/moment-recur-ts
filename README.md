@@ -9,26 +9,37 @@ This is a fork and conversion of the moment-recur library into TypeScript.
 
 Original work is [c-trimm/moment-recur](https://github.com/c-trimm/moment-recur)
 
-
-moment-recur
-=====
-moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/). This plugin handles dates only; time information is discarded.
+moment-recur-ts is a recurring date plugin for [momentjs](http://momentjs.com/). This plugin handles dates only; time information is discarded.
 
 The rule matching concept is borrowed from the excellent [node-date-recur](https://github.com/appsattic/node-date-recur) library created by Andrew Chilton.
 
 ```js
-var rInterval = moment( "01/01/2014" ).recur().every(2).days();
-rInterval.matches( "01/03/2014" ); // true
+let interval = moment( "01/01/2014" ).recur().every(2).days();
+interval.matches( "01/03/2014" ); // true
 
-var rCalendar = moment.recur().every(10).dayOfMonth();
-rCalendar.matches( "05/10/2014" ); // true
+let calendar = moment.recur().every(10).dayOfMonth();
+calendar.matches( "05/10/2014" ); // true
 ```
 
 
 
 Getting Started
 ---------------
-moment-recur can be included in your project a few different ways.
+moment-recur-ts can be included in your project a few different ways.
+
+### node.js
+moment-recur-ts can be installed with npm and required into a script.
+```
+npm install moment-recur-ts
+or
+yarn add moment-recur-ts
+```
+
+```js
+let moment = require('moment');
+require('moment-recur-ts');
+```
+
 
 ### Webpack + ES6/TypeScript
 ```js
@@ -37,9 +48,8 @@ import 'moment-recur-ts'
 ```
 
 
-
 ### Browser
-Simply include the momentjs script, then the moment-recur script.
+Simply include the momentjs script, then the moment-recur-ts script.
 ```html
 <script src="moment.min.js"></script>
 <script src="moment-recur-ts.min.js"></script>
@@ -55,16 +65,6 @@ define(["moment", "moment-recur-ts"], function(moment){
 ```
 
 
-### node.js
-moment-recur can be installed with npm and required into a script.
-```
-npm install moment-recur-ts
-```
-
-```js
-var moment = require('moment');
-require('moment-recur-ts');
-```
 
 
 Creating a Recurring Date
@@ -73,7 +73,7 @@ You can create a recurrence from an instance of moment or from the constructor a
 
 From an instance:
 ```js
-var recurrence;
+let recurrence;
 
 // Create a recurrence using today as the start date.
 recurrence = moment().recur();
@@ -95,7 +95,7 @@ recurrence = moment().recur({
 
 From the constructor:
 ```js
-var recurrence;
+let recurrence;
 
 // Create recurrence without a start date. Note: this will not work with intervals.
 recurrence = moment.recur();
@@ -112,14 +112,14 @@ recurrence = moment.recur({
 
 Creating Rules
 --------------
-moment-recur uses rules to define when a date should recur. You can then generate future or past recurrences based on these rules, or see if a specific date matches the rules. Rules can also be overridden or removed.
+moment-recur-ts uses rules to define when a date should recur. You can then generate future or past recurrences based on these rules, or see if a specific date matches the rules. Rules can also be overridden or removed.
 
 
 ### The every() Function
 The `every()` function allows you to set the units and, optionally, the measurment type of the recurring date. It returns the recur object to allow chaining.
 
 ```js
-var myDate, recurrence;
+let myDate, recurrence;
 
 // Create a date to start from
 myDate = moment("01/01/2014");
@@ -148,11 +148,11 @@ If you need to specify multiple units, pass an array to `every()`.
 
 You may also pass the units directly to the interval functions (listed below) instead of using `every()`.
 ```js
-var recurrence = moment.recur().monthOfYear("January");
+let recurrence = moment.recur().monthOfYear("January");
 ```
 
 ### Length Intervals
-moment-recur supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: `day()` vs `days()`). Length Intervals **must** have a start date defined.
+moment-recur-ts supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: `day()` vs `days()`). Length Intervals **must** have a start date defined.
 
 Possible Length Intervals Include:
 * day / days
@@ -162,7 +162,7 @@ Possible Length Intervals Include:
 
 #### Examples
 ```js
-var myDate, interval;
+let myDate, interval;
 
 // Create a date to start from
 myDate = moment("01/01/2014");
@@ -199,7 +199,7 @@ Possible Calendar Intervals Include:
 
 #### Examples
 ```js
-var cal;
+let cal;
 
 // Will match any date that is on Sunday or Monday.
 cal = moment.recur().every(["Sunday", 1]).daysOfWeek();
@@ -218,7 +218,7 @@ cal = moment.recur().every("January").monthsOfYear();
 
 // You can also combine these rules to match specific dates.
 // For instance, this will match only on Valentines day
-var valentines = moment.recur().every(14).daysOfMonth()
+let valentines = moment.recur().every(14).daysOfMonth()
                                .every("Februray").monthsOfYear();
 
 // A weekOfMonthByDay interval is available for combining with
@@ -240,14 +240,14 @@ Using the Rules
 ### Matching
 The `matches()` function will test a date to check if all of the recurrence rules match. It returns `true` if the date matches, `false` otherwise.
 ```js
-var interval = moment("01/01/2014").recur().every(2).days();
+let interval = moment("01/01/2014").recur().every(2).days();
 interval.matches("01/02/2014"); // false
 interval.matches("01/03/2014"); // true
 ```
 
 You may also see if a date matches before the start date or after the end date by passing `true` as the second argument to `matches()`.
 ```js
-var interval = moment("01/01/2014").recur().every(2).days();
+let interval = moment("01/01/2014").recur().every(2).days();
 interval.matches("12/30/2013"); // false
 interval.matches("12/30/2013", true); // true
 ```
@@ -257,7 +257,7 @@ interval.matches("12/30/2013", true); // true
 To prevent a date from matching that would normally match, use the `except()` function.
 
 ```js
-var recurrence = moment("01/01/2014").recur().every(1).day().except("01/02/2014");
+let recurrence = moment("01/01/2014").recur().every(1).day().except("01/02/2014");
 recurrence.matches("01/02/2014"); // false
 ```
 
@@ -267,7 +267,7 @@ If a rule is created with the same measurement of a previous rule, it will overr
 
 ```js
 // Create a recurrence that matches every day, with an exception
-var recurrence = moment("01/01/2014").recur().every(1).day().except("01/03/2014");
+let recurrence = moment("01/01/2014").recur().every(1).day().except("01/03/2014");
 
 // This will override the previous rule and match every 2 days instead.
 recurrence.every(2).days();
@@ -284,7 +284,7 @@ recurrence.forget("days");
 It is also possible to generate dates from the rules. These functions require a starting date.
 
 ```js
-var recurrence, nextDates;
+let recurrence, nextDates;
 
 // Create a recurrence
 recurrence = moment("01/01/2014").recur().every(2).days();
@@ -304,7 +304,7 @@ nextDates = recurrence.previous(3, "L");
 
 If your recurrence does not have a start date set, or if it does but you want to start at a different date, use the `fromDate()` method first.
 ```js
-var recurrence = moment("01/01/2014").recur().every(2).days();
+let recurrence = moment("01/01/2014").recur().every(2).days();
 recurrence.fromDate("02/05/2014");
 
 // Outputs: ["02/06/2014", "02/08/2014", "02/10/2014"]
@@ -313,7 +313,7 @@ nextDates = recurrence.next(3, "L");
 
 With both a start date and an end date set, you can generate all dates within that range that match the pattern (including the start/end dates).
 ```js
-var recurrence = moment().recur("01/01/2014", "01/07/2014").every(2).days();
+let recurrence = moment().recur("01/01/2014", "01/07/2014").every(2).days();
 
 // Outputs: ["01/01/2014", "01/03/2014", "01/05/2014", "01/07/2014"]
 allDates = recurrence.all("L");
@@ -325,7 +325,7 @@ allDates = recurrence.all("L");
 
 Options and Other Methods
 -------------------------
-moment-recur provides a few methods for getting/setting options, as well as two utility methods. It also creates two additional momentjs functions.
+moment-recur-ts provides a few methods for getting/setting options, as well as two utility methods. It also creates two additional momentjs functions.
 
 ### Options
 Options can be set when creating a recurrence or using the getter/setter methods listed below.
@@ -333,12 +333,12 @@ Options can be set when creating a recurrence or using the getter/setter methods
 Set options upon creation. Note that the units for rules are converted to objects, so it is not recommended to set rules this way. They can be set in the options so that they can be imported.
 ```js
 moment().recur({
-    start: "01/01/2014",
-    end: "12/31/2014",
-    rules: [
-        { units: {  2 : true }, measure: "days" }
-    ],
-    exceptions: ["01/05/2014"]
+  start: "01/01/2014",
+  end: "12/31/2014",
+  rules: [
+    { units: [2], measure: "days" }
+  ],
+  exceptions: ["01/05/2014"]
 });
 ```
 
@@ -385,4 +385,6 @@ moment("2014-01-01 09:30:26").dateOnly(); // 01/01/2014 12:00:00 AM
 
 License
 -------
-UNLICENSE - see UNLICENSE file and [unlicense.org](http://unlicense.org/) for details.
+MIT License
+
+See LICENSE file for details.
