@@ -4,7 +4,6 @@ import {
   MeasureInput, MeasurePlural, MeasureSingleToPlural, pluralize, Rule, ruleFactory,
   UnitsInput
 } from './rule'
-import { expect } from "chai"
 
 /** @hidden */
 export type Moment = moment.Moment
@@ -46,12 +45,6 @@ export interface RecurOptions {
 const ISO_DATE_FMT = 'YYYY-MM-DD'
 
 /**
- * @internal
- * @hidden
- */
-type OccuranceType = 'next' | 'previous' | 'all'
-
-/**
  * The main Recur object to provide an interface for settings, rules, and matching
  *
  * Creating Rules
@@ -84,24 +77,48 @@ type OccuranceType = 'next' | 'previous' | 'all'
  */
 export class Recur implements Iterable<moment.Moment> {
 
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   protected start: Moment | null
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   protected end: Moment | null
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   protected from: Moment | null
 
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   private rules: Rule[]
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   private exceptions: Moment[]
 
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   private units: UnitsInput
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   private measure: MeasureInput
 
-  /** @internal */
+  /**
+   * @internal
+   * @hidden
+   */
   private reversed = false
 
   /**
