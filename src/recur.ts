@@ -4,6 +4,7 @@ import {
   MeasureInput, MeasurePlural, MeasureSingleToPlural, pluralize, Rule, ruleFactory,
   UnitsInput
 } from './rule'
+import { expect } from "chai"
 
 /** @hidden */
 export type Moment = moment.Moment
@@ -81,7 +82,7 @@ type OccuranceType = 'next' | 'previous' | 'all'
  * * weekOfYear / weeksOfYear
  * * monthOfYear / monthsOfYear
  */
-export class Recur {
+export class Recur implements Iterable<moment.Moment> {
 
   /** @internal */
   protected start: Moment | null
@@ -99,6 +100,9 @@ export class Recur {
   private units: UnitsInput
   /** @internal */
   private measure: MeasureInput
+
+  /** @internal */
+  private reversed = false
 
   /**
    * ### Recur Object Constrcutor
@@ -323,7 +327,7 @@ export class Recur {
    *  let recurrence = moment.recur().monthOfYear("January");
    *  ```
    */
-  every (units: UnitsInput, measure?: MeasureInput) {
+  every (units: UnitsInput, measure?: MeasureInput): this {
 
     if (units != null) {
       this.units = units
@@ -333,7 +337,32 @@ export class Recur {
       this.measure = measure
     }
 
-    return this.trigger()
+    // Don't create the rule until measure is defined
+    if (!this.measure) {
+      return this
+    }
+
+    let rule = ruleFactory(this.units, this.measure)
+
+    if (rule instanceof Interval) {
+      if (!this.start) {
+        throw new Error('Must have a start date set to set an interval!')
+      }
+    }
+
+    if (rule.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
+      throw new Error('weeksOfMonthByDay must be combined with daysOfWeek')
+    }
+
+    // Remove the temporary rule data
+    this.units = null
+    this.measure = null
+
+    // Remove existing rule based on measure
+    this.rules = this.rules.filter(oldRule => oldRule.measure !== rule.measure)
+
+    this.rules.push(rule)
+    return this
   }
 
   /**
@@ -434,36 +463,67 @@ export class Recur {
   }
 
   /**
-   * Get next N occurrences
+   * Iterate over moments matched by rules
+   * > Note if there is no end date, results are unbounded (you must manually terminate the iterator).
+   *
+   * > Also note, this exapmle intentionally ignores some complicated leap year math.
+   *
    * ```js
-   * // Generate the next three dates as moments
-   * // Outputs: [moment("01/03/2014"), moment("01/05/2014"), moment("01/07/2014")]
-   * nextDates = recurrence.next(3);
+   * let recurrence = moment('2012-01').recur('2032-01').every(4).years()
+   * let leapYears = [...recurrence].map(m => m.year())
+   * // leapYears = [ 2012, 2016, 2020, 2024, 2028, 2032 ]
    * ```
+   * Or, this is a bit faster...
    * ```js
-   * // Generate the next three dates, formatted in local format
-   * // Outputs: ["01/03/2014", "01/05/2014", "01/07/2014"]
-   * nextDates = recurrence.next(3, "L");
+   * let recurrence = moment('2012-01').recur('2032-01').every(4).years()
+   * let leapYears = []
+   * for (let date of recurrence) {
+   *   leapYears.push(date.year())
+   * }
+   * // leapYears = [ 2012, 2016, 2020, 2024, 2028, 2032 ]
    * ```
    */
-  next (num: number): Moment[]
-  next (num: number, format: string): string[]
-  next (num: number, format?: string): (string | Moment)[] {
-    return this.getOccurrences('next', num, format)
+  *[Symbol.iterator] () {
+
+    let startFrom = this.from || this.start
+    if (!startFrom) {
+      throw Error('Cannot get occurrences without start or from date.')
+    }
+
+    if (this.end && (startFrom > this.end)) {
+      throw Error('Start date cannot be later than end date.')
+    }
+
+    let currentDate = startFrom.clone()
+
+    while (this.end ? currentDate.isSameOrBefore(this.end) : true) {
+
+      if (this.matches(currentDate, true)) {
+        yield currentDate.clone()
+      }
+      if (this.reversed) {
+        currentDate.subtract(1, 'day')
+      } else {
+        currentDate.add(1, 'day')
+      }
+    }
   }
 
   /**
-   * Get previous N occurrences
+   * Reverse iterator direction
+   * > Note since there is no end date, results are unbounded (you must manually terminate the iterator).
+   *
    * ```js
-   * // Generate previous three dates, formatted in local format
-   * // Outputs: ["12/30/2013", "12/28/2013", "12/26/2013"]
-   * nextDates = recurrence.previous(3, "L");
+   * let mondays = []
+   * for (let momday of moment().recur().every('Monday').dayOfWeek().reverse()) {
+   *   lastThreeMondays.push(monday)
+   *   if (mondays.length > 10) break
+   * }
    * ```
    */
-  previous (num: number): Moment[]
-  previous (num: number, format: string): string[]
-  previous (num: number, format?: string): (string | Moment)[] {
-    return this.getOccurrences('previous', num, format)
+  reverse (): this {
+    this.reversed = !this.reversed
+    return this
   }
 
   /**
@@ -480,7 +540,77 @@ export class Recur {
   all (): Moment[]
   all (format: string): string[]
   all (format?: string): (string | Moment)[] {
-    return this.getOccurrences('all', null, format)
+
+    if (!this.end) {
+      throw Error('Cannot get all occurrences without an end date.')
+    }
+
+    this.reversed = false
+
+    if (format) {
+      let dates: string[] = []
+      for (let date of this) {
+        dates.push(date.format(format))
+      }
+      return dates
+    } else {
+      return [...this]
+    }
+  }
+
+  /**
+   * Get next N occurrences
+   * ```js
+   * // Generate the next three dates as moments
+   * // Outputs: [moment("01/03/2014"), moment("01/05/2014"), moment("01/07/2014")]
+   * nextDates = recurrence.next(3);
+   * ```
+   * ```js
+   * // Generate the next three dates, formatted in local format
+   * // Outputs: ["01/03/2014", "01/05/2014", "01/07/2014"]
+   * nextDates = recurrence.next(3, "L");
+   * ```
+   */
+  next (num: number): Moment[]
+  next (num: number, format: string): string[]
+  next (num: number, format?: string): (string | Moment)[] {
+    if (!num) return []
+    let dates: (string | Moment)[] = []
+    let count = 0
+    this.reversed = false
+    for (let date of this) {
+      if (!(this.start && date.isSame(this.start))) {
+        dates.push(format ? date.format(format) : date)
+        count++
+      }
+      if (count >= num) break
+    }
+    return dates
+  }
+
+  /**
+   * Get previous N occurrences
+   * ```js
+   * // Generate previous three dates, formatted in local format
+   * // Outputs: ["12/30/2013", "12/28/2013", "12/26/2013"]
+   * nextDates = recurrence.previous(3, "L");
+   * ```
+   */
+  previous (num: number): Moment[]
+  previous (num: number, format: string): string[]
+  previous (num?: number, format?: string): (string | Moment)[] {
+    if (!num) return []
+    let dates: (string | Moment)[] = []
+    let count = 0
+    this.reversed = true
+    for (let date of this) {
+      if (!(this.start && date.isSame(this.start))) {
+        dates.push(format ? date.format(format) : date)
+        count++
+      }
+      if (count >= num) break
+    }
+    return dates
   }
 
   day (units?: UnitsInput): this {
@@ -598,111 +728,6 @@ export class Recur {
   weeksOfMonthByDay (units?: UnitsInput): this {
     this.every(units, 'weeksOfMonthByDay')
     return this
-  }
-
-  /**
-   * Private method that tries to set a rule.
-   * @internal
-   */
-  private trigger () {
-
-    if (!(this instanceof Recur)) {
-      throw Error('Private method trigger() was called directly or not called as instance of Recur!')
-    }
-
-    // Don't create the rule until measure is defined
-    if (!this.measure) {
-      return this
-    }
-
-    let rule = ruleFactory(this.units, this.measure)
-
-    if (rule instanceof Interval) {
-      if (!this.start) {
-        throw new Error('Must have a start date set to set an interval!')
-      }
-    }
-
-    if (rule.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
-      throw new Error('weeksOfMonthByDay must be combined with daysOfWeek')
-    }
-
-    // Remove the temporary rule data
-    this.units = null
-    this.measure = null
-
-    // Remove existing rule based on measure
-    this.rules = this.rules.filter(oldRule => oldRule.measure !== rule.measure)
-
-    this.rules.push(rule)
-    return this
-  }
-
-  /**
-   * Private method to get next, previous or all occurrences
-   * @internal
-   */
-  private getOccurrences (type: OccuranceType, num: number | null, format?: string): (string | Moment)[] {
-    let currentDate
-
-    let dates: (string | Moment)[] = []
-
-    if (!(this instanceof Recur)) {
-      throw Error('Private method getOccurrences() was called directly or not called as instance of Recur!')
-    }
-
-    let startFrom = this.from || this.start
-    if (!startFrom) {
-      throw Error('Cannot get occurrences without start or from date.')
-    }
-
-    if (type === 'all' && !this.end) {
-      throw Error('Cannot get all occurrences without an end date.')
-    }
-
-    if (this.end && (startFrom > this.end)) {
-      throw Error('Start date cannot be later than end date.')
-    }
-
-    // Return empty set if the caller doesn't want any for next/prev
-    if (type !== 'all' && !num) {
-      return []
-    }
-
-    // Start from the from date, or the start date if from is not set.
-    currentDate = startFrom.clone()
-
-    // Include the initial date in the results if wanting all dates
-    if (type === 'all' && this.matches(currentDate, false)) {
-      if (format) {
-        dates.push(currentDate.format(format))
-      } else {
-        dates.push(currentDate.clone())
-      }
-    }
-
-    // Get the next N dates, if num is null then infinite
-    while (dates.length < (num === null ? dates.length + 1 : num)) {
-      if (type === 'next' || type === 'all') {
-        currentDate.add(1, 'day')
-      } else {
-        currentDate.subtract(1, 'day')
-      }
-
-      // Don't match outside the date if generating all dates within start/end
-      if (this.matches(currentDate, (type !== 'all'))) {
-        if (format) {
-          dates.push(currentDate.format(format))
-        } else {
-          dates.push(currentDate.clone())
-        }
-      }
-      if (this.end && currentDate >= this.end) {
-        break
-      }
-    }
-
-    return dates
   }
 
   /**

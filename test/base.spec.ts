@@ -1,7 +1,7 @@
 import * as moment from 'moment-timezone'
 import '../src'
 import { expect } from 'chai'
-import { Recur } from '../src/recur'
+import { Moment, Recur } from '../src/recur'
 
 /* tslint:disable:no-unused-expression */
 
@@ -428,13 +428,45 @@ describe('Future Dates', function () {
     }).to.throw('Cannot get occurrences without start or from date')
   })
 
+  it('should return moments', function () {
+    let recurrence = moment('2014-01-01').recur().every(2).days()
+    let nextDates = recurrence.next(3)
+    expect(nextDates).to.have.lengthOf(3)
+    expect(nextDates[2].format()).to.equal(moment.utc('2014-01-07').format())
+  })
+
   it('should give empty set', function () {
     let recurrence = moment().recur().every('monday').dayOfWeek()
     expect(recurrence.next(undefined as any)).to.have.lengthOf(0)
   })
+
+  it('should be iterable', function () {
+    this.timeout(10000)
+    let recurrence = moment('2018-01').recur('2018-02').every('Monday').dayOfWeek()
+    let mondays = [...recurrence].map(m => m.format(ISO_DATE_FMT))
+    expect(mondays).to.eql([
+      '2018-01-01',
+      '2018-01-08',
+      '2018-01-15',
+      '2018-01-22',
+      '2018-01-29'
+    ])
+  })
 })
 
 describe('Previous Dates', function () {
+
+  it('should be iterable', function () {
+    let recurrence = moment('2014-01-01').recur().every(2).days()
+    let nextDates: Moment[] = []
+    for (let date of recurrence.reverse()) {
+      nextDates.push(date)
+      if (nextDates.length >= 4) break
+    }
+    expect(nextDates).to.have.lengthOf(4)
+    expect(nextDates[3].format()).to.equal(moment.utc('2013-12-26').format())
+  })
+
   it('can be generated', function () {
     let recurrence = moment('2014-01-01').recur().every(2).days()
     let nextDates = recurrence.previous(3, ISO_DATE_FMT)
@@ -449,6 +481,11 @@ describe('Previous Dates', function () {
     let nextDates = recurrence.previous(3)
     expect(nextDates).to.have.lengthOf(3)
     expect(nextDates[0].format()).to.equal(moment.utc('2013-12-30').format())
+  })
+
+  it('should give empty set', function () {
+    let recurrence = moment().recur().every('monday').dayOfWeek()
+    expect(recurrence.previous(undefined as any)).to.have.lengthOf(0)
   })
 })
 
@@ -499,6 +536,13 @@ describe('All Dates', function () {
     expect(allDates).to.have.lengthOf(4)
     expect(allDates[0].format()).to.equal(moment.utc('2014-01-01').format())
   })
+
+  it('should be iterable', function () {
+    let recurrence = moment('2014-01-01').recur('2014-01-07').every(2).days()
+    let allDates = [...recurrence]
+    expect(allDates).to.have.lengthOf(4)
+    expect(allDates[0].format()).to.equal(moment.utc('2014-01-01').format())
+  })
 })
 
 describe('Exceptions', function () {
@@ -528,15 +572,6 @@ describe('Exceptions', function () {
     recur.except(exception)
     recur.forget(exception)
     expect(recur.matches(exception)).to.be.true
-  })
-
-  it('should not call private methods', function () {
-    expect(() => {
-      Recur.prototype['trigger']()
-    }).to.throw('Private method trigger() was called directly')
-    expect(() => {
-      Recur.prototype['getOccurrences']('all', null)
-    }).to.throw('Private method getOccurrences() was called directly')
   })
 
   it('should be not allow undefined measures', function () {
@@ -654,7 +689,7 @@ describe('Performance', function () {
   })
 
   it('should get unbounded dates', function () {
-    // 812ms
+    // 900ms
     let recurrence = moment('2000-01-01').recur().every(1).week()
     let dates = recurrence.next(5000, ISO_DATE_FMT)
     console.log(`Generated ${dates.length} dates`)
@@ -662,5 +697,15 @@ describe('Performance', function () {
     expect(dates[dates.length - 1]).to.equal(
       moment('2000-01-01').add(5000, 'weeks').format(ISO_DATE_FMT)
     )
+  })
+
+  it('iterable should be fast', function () {
+    // 265ms
+    let recurrence = moment('2012-01').recur('2032-01').every(4).years()
+    let leapYears = []
+    for (let date of recurrence) {
+      leapYears.push(date.year())
+    }
+    expect(leapYears).to.eql([2012, 2016, 2020, 2024, 2028, 2032])
   })
 })
