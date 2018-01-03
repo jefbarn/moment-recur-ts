@@ -4,6 +4,7 @@ This is a fork and conversion of the moment-recur library into TypeScript.
 
 [Online documentation](https://jefbarn.github.io/moment-recur-ts/)
 
+[![npm version](https://badge.fury.io/js/moment-recur-ts.svg)](https://badge.fury.io/js/moment-recur-ts)
 [![Build Status](https://travis-ci.org/jefbarn/moment-recur-ts.svg?branch=master)](https://travis-ci.org/jefbarn/moment-recur-ts)
 [![Coverage Status](https://coveralls.io/repos/github/jefbarn/moment-recur-ts/badge.svg?branch=master)](https://coveralls.io/github/jefbarn/moment-recur-ts?branch=master)
 
