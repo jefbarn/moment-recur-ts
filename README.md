@@ -1,7 +1,7 @@
 moment-recur-ts
 =====
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/jefbarn/moment-recur-ts.svg)](https://greenkeeper.io/)
+
 This is a fork and conversion of the moment-recur library into TypeScript.
 
 [Online documentation](https://jefbarn.github.io/moment-recur-ts/)
@@ -9,6 +9,7 @@ This is a fork and conversion of the moment-recur library into TypeScript.
 [![npm version](https://badge.fury.io/js/moment-recur-ts.svg)](https://badge.fury.io/js/moment-recur-ts)
 [![Build Status](https://travis-ci.org/jefbarn/moment-recur-ts.svg?branch=master)](https://travis-ci.org/jefbarn/moment-recur-ts)
 [![Coverage Status](https://coveralls.io/repos/github/jefbarn/moment-recur-ts/badge.svg?branch=master)](https://coveralls.io/github/jefbarn/moment-recur-ts?branch=master)
+[![Greenkeeper badge](https://badges.greenkeeper.io/jefbarn/moment-recur-ts.svg)](https://greenkeeper.io/)
 
 Original work is [c-trimm/moment-recur](https://github.com/c-trimm/moment-recur)
 
