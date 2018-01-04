@@ -11,6 +11,7 @@ import 'core-js/fn/array/includes'
 import 'core-js/fn/array/find-index'
 
 declare module 'moment' {
+
   export interface Moment {
 
     /**

@@ -18,5 +18,22 @@
   "include": [
     "src/**/*",
     "test/**/*"
-  ]
+  ],
+  "typedocOptions": {
+    "mode": "file",
+    "out": "docs",
+//    "exclude": "test",
+    "theme": "default",
+    "gitRevision": "master",
+    "ignoreCompilerErrors": true,
+    "excludePrivate": true,
+    "excludeNotExported": false,
+    "target": "ES6",
+    "moduleResolution": "node",
+    "preserveConstEnums": true,
+    "stripInternal": true,
+//    "suppressExcessPropertyErrors": true,
+//    "suppressImplicitAnyIndexErrors": true,
+    "module": "commonjs"
+  }
 }
