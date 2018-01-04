@@ -76,7 +76,7 @@
     "build": "yarn bundle && yarn docs",
     "bundle": "webpack --config ./config/webpack.config.umd.ts",
     "docs": "typedoc src",
-    "clean": "rimraf dist docs .nyc_output",
+    "clean": "rimraf dist .nyc_output",
     "prepublishOnly": "yarn build"
   },
   "nyc": {
