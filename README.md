@@ -1,5 +1,7 @@
 moment-recur-ts
 =====
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/jefbarn/moment-recur-ts.svg)](https://greenkeeper.io/)
 This is a fork and conversion of the moment-recur library into TypeScript.
 
 [Online documentation](https://jefbarn.github.io/moment-recur-ts/)
