@@ -1,6 +1,6 @@
 import * as moment from 'moment'
 import { Interval } from './interval'
-import { MeasureInput, MeasurePlural, MeasureSingleToPlural, pluralize, Rule, ruleFactory, UnitsInput } from './rule'
+import { Rule } from './rule'
 
 /** @hidden */
 export type Moment = moment.Moment
@@ -30,8 +30,8 @@ export namespace Recur {
     start?: MomentInput
     end?: MomentInput
     rules?: {
-      units: UnitsInput
-      measure: MeasureInput
+      units: Rule.UnitsInput
+      measure: Rule.MeasureInput
     }[]
     exceptions?: MomentInput[]
   }
@@ -107,12 +107,12 @@ export class Recur implements Iterable<moment.Moment> {
    * @internal
    * @hidden
    */
-  private units: UnitsInput
+  private units: Rule.UnitsInput
   /**
    * @internal
    * @hidden
    */
-  private measure: MeasureInput
+  private measure: Rule.MeasureInput
 
   /**
    * @internal
@@ -169,7 +169,7 @@ export class Recur implements Iterable<moment.Moment> {
     }
 
     // Our list of rules, all of which must match
-    this.rules = (options.rules || []).map(rule => ruleFactory(rule.units, rule.measure))
+    this.rules = (options.rules || []).map(rule => Rule.factory(rule.units, rule.measure))
 
     // Our list of exceptions. Match always fails on these dates.
     let exceptions = options.exceptions || []
@@ -343,7 +343,7 @@ export class Recur implements Iterable<moment.Moment> {
    *  let recurrence = moment.recur().monthOfYear("January");
    *  ```
    */
-  every (units: UnitsInput, measure?: MeasureInput): this {
+  every (units: Rule.UnitsInput, measure?: Rule.MeasureInput): this {
 
     if (units != null) {
       this.units = units
@@ -358,7 +358,7 @@ export class Recur implements Iterable<moment.Moment> {
       return this
     }
 
-    let rule = ruleFactory(this.units, this.measure)
+    let rule = Rule.factory(this.units, this.measure)
 
     if (rule instanceof Interval) {
       if (!this.start) {
@@ -405,17 +405,17 @@ export class Recur implements Iterable<moment.Moment> {
    * recurrence.forget("days");
    * ```
    */
-  forget (dateOrRule: MomentInput | MeasureInput, format?: string): this {
+  forget (dateOrRule: MomentInput | Rule.MeasureInput, format?: string): this {
 
     if (!dateOrRule) {
       throw new Error('Invalid input for recurrence forget: ' + dateOrRule)
     }
 
     if (typeof dateOrRule === 'string' && (
-        Object.values(MeasureSingleToPlural).includes(dateOrRule as MeasurePlural) ||
-        MeasureSingleToPlural.hasOwnProperty(dateOrRule)
+        Object.values(Rule.MeasureSingleToPlural).includes(dateOrRule as Rule.MeasurePlural) ||
+        Rule.MeasureSingleToPlural.hasOwnProperty(dateOrRule)
       )) {
-      this.rules = this.rules.filter(rule => rule.measure !== pluralize(dateOrRule as MeasureInput))
+      this.rules = this.rules.filter(rule => rule.measure !== Rule.pluralize(dateOrRule as Rule.MeasureInput))
       return this
     } else {
       let date = moment(dateOrRule, format)
@@ -434,8 +434,8 @@ export class Recur implements Iterable<moment.Moment> {
   /**
    * Checks if a rule has been set on the chain
    */
-  hasRule (measure: MeasureInput) {
-    return this.rules.findIndex(rule => rule.measure === pluralize(measure)) !== -1
+  hasRule (measure: Rule.MeasureInput) {
+    return this.rules.findIndex(rule => rule.measure === Rule.pluralize(measure)) !== -1
   }
 
   /**
@@ -632,82 +632,82 @@ export class Recur implements Iterable<moment.Moment> {
   /**
    * @alias days
    */
-  day (units?: UnitsInput): this {
+  day (units?: Rule.UnitsInput): this {
     this.every(units, 'days')
     return this
   }
 
-  days (units?: UnitsInput): this {
+  days (units?: Rule.UnitsInput): this {
     this.every(units, 'days')
     return this
   }
 
-  week (units?: UnitsInput): this {
+  week (units?: Rule.UnitsInput): this {
     this.every(units, 'weeks')
     return this
   }
 
-  weeks (units?: UnitsInput): this {
+  weeks (units?: Rule.UnitsInput): this {
     this.every(units, 'weeks')
     return this
   }
 
-  month (units?: UnitsInput): this {
+  month (units?: Rule.UnitsInput): this {
     this.every(units, 'months')
     return this
   }
 
-  months (units?: UnitsInput): this {
+  months (units?: Rule.UnitsInput): this {
     this.every(units, 'months')
     return this
   }
 
-  year (units?: UnitsInput): this {
+  year (units?: Rule.UnitsInput): this {
     this.every(units, 'years')
     return this
   }
 
-  years (units?: UnitsInput): this {
+  years (units?: Rule.UnitsInput): this {
     this.every(units, 'years')
     return this
   }
 
-  dayOfWeek (units?: UnitsInput): this {
+  dayOfWeek (units?: Rule.UnitsInput): this {
     this.every(units, 'daysOfWeek')
     return this
   }
 
-  daysOfWeek (units?: UnitsInput): this {
+  daysOfWeek (units?: Rule.UnitsInput): this {
     this.every(units, 'daysOfWeek')
     return this
   }
 
-  dayOfMonth (units?: UnitsInput): this {
+  dayOfMonth (units?: Rule.UnitsInput): this {
     this.every(units, 'daysOfMonth')
     return this
   }
 
-  daysOfMonth (units?: UnitsInput): this {
+  daysOfMonth (units?: Rule.UnitsInput): this {
     this.every(units, 'daysOfMonth')
     return this
   }
 
-  weekOfMonth (units?: UnitsInput): this {
+  weekOfMonth (units?: Rule.UnitsInput): this {
     this.every(units, 'weeksOfMonth')
     return this
   }
 
-  weeksOfMonth (units?: UnitsInput): this {
+  weeksOfMonth (units?: Rule.UnitsInput): this {
     this.every(units, 'weeksOfMonth')
     return this
   }
 
-  weekOfYear (units?: UnitsInput): this {
+  weekOfYear (units?: Rule.UnitsInput): this {
     this.every(units, 'weeksOfYear')
     return this
   }
 
-  weeksOfYear (units?: UnitsInput): this {
+  weeksOfYear (units?: Rule.UnitsInput): this {
     this.every(units, 'weeksOfYear')
     return this
   }
@@ -718,11 +718,11 @@ export class Recur implements Iterable<moment.Moment> {
    * cal = moment.recur().every("January").monthsOfYear();
    * ```
    */
-  monthOfYear (units?: UnitsInput): this {
+  monthOfYear (units?: Rule.UnitsInput): this {
     this.every(units, 'monthsOfYear')
     return this
   }
-  monthsOfYear (units?: UnitsInput): this {
+  monthsOfYear (units?: Rule.UnitsInput): this {
     this.every(units, 'monthsOfYear')
     return this
   }
@@ -744,7 +744,7 @@ export class Recur implements Iterable<moment.Moment> {
    *   .every(moment("01/01/2014").monthWeekByDay()).weeksOfMonthByDay();
    * ```
    */
-  weeksOfMonthByDay (units?: UnitsInput): this {
+  weeksOfMonthByDay (units?: Rule.UnitsInput): this {
     this.every(units, 'weeksOfMonthByDay')
     return this
   }
