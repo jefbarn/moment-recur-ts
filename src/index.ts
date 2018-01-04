@@ -4,6 +4,8 @@ import { Recur } from './recur'
 /** @internal */
 import 'core-js/fn/object/values'
 /** @internal */
+import 'core-js/fn/object/entries'
+/** @internal */
 import 'core-js/fn/number/is-integer'
 /** @internal */
 import 'core-js/fn/array/includes'
