@@ -7,6 +7,12 @@ export type Moment = moment.Moment
 /** @hidden */
 export type MomentInput = moment.MomentInput
 
+/**
+ * @internal
+ * @hidden
+ */
+const ISO_DATE_FMT = 'YYYY-MM-DD'
+
 export namespace Recur {
   /**
    * Set options upon creation.
@@ -37,11 +43,61 @@ export namespace Recur {
   }
 }
 
-/**
- * @internal
- * @hidden
- */
-const ISO_DATE_FMT = 'YYYY-MM-DD'
+export interface Recur {
+
+  days (units?: Rule.UnitsInput): this
+  day (units?: Rule.UnitsInput): this
+
+  weeks (units?: Rule.UnitsInput): this
+  week (units?: Rule.UnitsInput): this
+
+  months (units?: Rule.UnitsInput): this
+  month (units?: Rule.UnitsInput): this
+
+  years (units?: Rule.UnitsInput): this
+  year (units?: Rule.UnitsInput): this
+
+  daysOfWeek (units?: Rule.UnitsInput): this
+  dayOfWeek (units?: Rule.UnitsInput): this
+
+  daysOfMonth (units?: Rule.UnitsInput): this
+  dayOfMonth (units?: Rule.UnitsInput): this
+
+  weeksOfMonth (units?: Rule.UnitsInput): this
+  weekOfMonth (units?: Rule.UnitsInput): this
+
+  weeksOfYear (units?: Rule.UnitsInput): this
+  weekOfYear (units?: Rule.UnitsInput): this
+
+  /**
+   * ```js
+   * // Will match any date that is in January of any year.
+   * cal = moment.recur().every("January").monthsOfYear();
+   * ```
+   */
+  monthsOfYear (units?: Rule.UnitsInput): Recur
+  monthOfYear (units?: Rule.UnitsInput): Recur
+
+  /**
+   * A weekOfMonthByDay interval is available for combining with the daysOfWeek to
+   * achieve "nth weekday of month" recurrences. The following matches every 1st
+   * and 3rd Thursday of the month.
+   * > (Note this cannot be combined at the moment with every(x).months() expression)
+   *
+   * ```js
+   * cal = moment.recur()
+   *   .every("Thursday").daysOfWeek()
+   *   .every([0, 2]).weeksOfMonthByDay();
+   * ```
+   * ```js
+   * cal = moment.recur()
+   *   .every(moment("01/01/2014").day()).daysOfWeek()
+   *   .every(moment("01/01/2014").monthWeekByDay()).weeksOfMonthByDay();
+   * ```
+   */
+  weeksOfMonthByDay (units?: Rule.UnitsInput): Recur
+  weekOfMonthByDay (units?: Rule.UnitsInput): Recur
+}
 
 /**
  * The main Recur object to provide an interface for settings, rules, and matching
@@ -183,6 +239,8 @@ export class Recur implements Iterable<moment.Moment> {
 
     // Temporary from date for next/previous. Does not get imported/exported.
     this.from = null
+
+    this.addMeasureFunctions()
 
     return this
   }
@@ -630,123 +688,19 @@ export class Recur implements Iterable<moment.Moment> {
   }
 
   /**
-   * @alias days
+   * @internal
    */
-  day (units?: Rule.UnitsInput): this {
-    this.every(units, 'days')
-    return this
-  }
-
-  days (units?: Rule.UnitsInput): this {
-    this.every(units, 'days')
-    return this
-  }
-
-  week (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeks')
-    return this
-  }
-
-  weeks (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeks')
-    return this
-  }
-
-  month (units?: Rule.UnitsInput): this {
-    this.every(units, 'months')
-    return this
-  }
-
-  months (units?: Rule.UnitsInput): this {
-    this.every(units, 'months')
-    return this
-  }
-
-  year (units?: Rule.UnitsInput): this {
-    this.every(units, 'years')
-    return this
-  }
-
-  years (units?: Rule.UnitsInput): this {
-    this.every(units, 'years')
-    return this
-  }
-
-  dayOfWeek (units?: Rule.UnitsInput): this {
-    this.every(units, 'daysOfWeek')
-    return this
-  }
-
-  daysOfWeek (units?: Rule.UnitsInput): this {
-    this.every(units, 'daysOfWeek')
-    return this
-  }
-
-  dayOfMonth (units?: Rule.UnitsInput): this {
-    this.every(units, 'daysOfMonth')
-    return this
-  }
-
-  daysOfMonth (units?: Rule.UnitsInput): this {
-    this.every(units, 'daysOfMonth')
-    return this
-  }
-
-  weekOfMonth (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeksOfMonth')
-    return this
-  }
-
-  weeksOfMonth (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeksOfMonth')
-    return this
-  }
-
-  weekOfYear (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeksOfYear')
-    return this
-  }
-
-  weeksOfYear (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeksOfYear')
-    return this
-  }
-
-  /**
-   * ```js
-   * // Will match any date that is in January of any year.
-   * cal = moment.recur().every("January").monthsOfYear();
-   * ```
-   */
-  monthOfYear (units?: Rule.UnitsInput): this {
-    this.every(units, 'monthsOfYear')
-    return this
-  }
-  monthsOfYear (units?: Rule.UnitsInput): this {
-    this.every(units, 'monthsOfYear')
-    return this
-  }
-
-  /**
-   * A weekOfMonthByDay interval is available for combining with the daysOfWeek to
-   * achieve "nth weekday of month" recurrences. The following matches every 1st
-   * and 3rd Thursday of the month.
-   * > (Note this cannot be combined at the moment with every(x).months() expression)
-   *
-   * ```js
-   * cal = moment.recur()
-   *   .every("Thursday").daysOfWeek()
-   *   .every([0, 2]).weeksOfMonthByDay();
-   * ```
-   * ```js
-   * cal = moment.recur()
-   *   .every(moment("01/01/2014").day()).daysOfWeek()
-   *   .every(moment("01/01/2014").monthWeekByDay()).weeksOfMonthByDay();
-   * ```
-   */
-  weeksOfMonthByDay (units?: Rule.UnitsInput): this {
-    this.every(units, 'weeksOfMonthByDay')
-    return this
+  private addMeasureFunctions () {
+    for (let [measureSingle, measurePlural] of Object.entries(Rule.MeasureSingleToPlural)) {
+      (Recur as any).prototype[measureSingle] = (units?: Rule.UnitsInput): this => {
+        this.every(units, measurePlural)
+        return this
+      }
+      (Recur as any).prototype[measurePlural] = (units?: Rule.UnitsInput): this => {
+        this.every(units, measurePlural)
+        return this
+      }
+    }
   }
 
   /**
@@ -792,5 +746,4 @@ export class Recur implements Iterable<moment.Moment> {
 
     return true
   }
-
 }
