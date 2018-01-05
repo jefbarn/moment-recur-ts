@@ -27,7 +27,7 @@
     "moment": "^2.13.0"
   },
   "devDependencies": {
-    "@types/chai": "4.0.10",
+    "@types/chai": "4.1.0",
     "@types/clean-webpack-plugin": "0.1.0",
     "@types/karma": "1.7.3",
     "@types/karma-chai": "^0.1.0",
