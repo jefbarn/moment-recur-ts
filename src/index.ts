@@ -1,5 +1,6 @@
 import * as moment from 'moment'
 import { Recur } from './recur'
+
 // Polyfills
 /** @internal */
 import 'core-js/fn/object/values'
@@ -23,6 +24,7 @@ declare module 'moment' {
      * ```
      */
     monthWeek (): number
+    monthWeek (date: number): moment.Moment
 
     /**
      * Plugin for calculating the occurrence of the day of the week in the month.
@@ -31,6 +33,7 @@ declare module 'moment' {
      * of the week in the month.
      */
     monthWeekByDay (): number
+    monthWeekByDay (weekday: number): moment.Moment
 
     /**
      * The `dateOnly()` method can be used to remove any time information from a moment.
@@ -73,18 +76,27 @@ declare module 'moment' {
   export function recur (options?: Recur.Options): Recur
 }
 
-moment.fn.monthWeek = function monthWeek (): number {
-  // First day of the first week of the month
-  let week0 = this.clone().startOf('month').startOf('week')
+(moment as any).fn.monthWeek = function monthWeek (date?: number): number | moment.Moment {
 
-  // First day of week
-  let day0 = this.clone().startOf('week')
+  if (date === undefined) {
+    // First day of the first week of the month
+    let week0 = this.clone().startOf('month').startOf('week')
 
-  return day0.diff(week0, 'weeks')
+    // First day of week
+    let day0 = this.clone().startOf('week')
+
+    return day0.diff(week0, 'weeks')
+  } else {
+    return this.clone()
+  }
 }
 
-moment.fn.monthWeekByDay = function monthWeekByDay (): number {
-  return Math.floor((this.date() - 1) / 7)
+;(moment as any).fn.monthWeekByDay = function monthWeekByDay (weekday?: number): number | moment.Moment {
+  if (weekday === undefined) {
+    return Math.floor((this.date() - 1) / 7)
+  } else {
+    return this.clone()
+  }
 }
 
 // Plugin for removing all time information from a given date
@@ -93,7 +105,7 @@ moment.fn.dateOnly = function dateOnly (): moment.Moment {
   return this.isValid() ? moment.utc(this.format('YYYY-MM-DD')) : this
 }
 
-;(moment as any).recur = function (start?: moment.MomentInput | Recur.Options, end?: moment.MomentInput) {
+;(moment as any).recur = function (start?: moment.MomentInput | Recur.Options, end?: moment.MomentInput): Recur {
   // If we have an object, use it as a set of options
   if (typeof start === 'object' && !moment.isMoment(start)) {
     let options = start as Recur.Options

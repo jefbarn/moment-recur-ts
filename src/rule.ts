@@ -64,7 +64,7 @@ export namespace Rule {
    * @internal
    * @hidden
    */
-  export function factory (units: UnitsInput, measure: MeasureInput): Rule {
+  export function factory (units: UnitsInput, measure: MeasureInput, start: Moment | null): Rule {
 
     let normMeasure = pluralize(measure)
 
@@ -73,7 +73,7 @@ export namespace Rule {
       case 'weeks':
       case 'months':
       case 'years':
-        return new Interval(unitsToArray(units), normMeasure)
+        return new Interval(unitsToArray(units), normMeasure, start)
 
       case 'daysOfWeek':
       case 'daysOfMonth':
@@ -134,5 +134,9 @@ export interface Rule {
    * @internal
    * @hidden
    */
-  match (date: Moment, start?: Moment): boolean
+  match (date: Moment): boolean
+
+  next (current: Moment): Moment
+
+  previous (current: Moment): Moment
 }

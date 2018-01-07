@@ -405,10 +405,7 @@ describe('Future Dates', function () {
   it('can be generated', function () {
     let recurrence = moment('2014-01-01').recur().every(2).days()
     let nextDates = recurrence.next(3, ISO_DATE_FMT)
-    expect(nextDates).to.have.lengthOf(3)
-    expect(nextDates[0]).to.equal('2014-01-03')
-    expect(nextDates[1]).to.equal('2014-01-05')
-    expect(nextDates[2]).to.equal('2014-01-07')
+    expect(nextDates).to.eql(['2014-01-03', '2014-01-05', '2014-01-07'])
   })
 
   it('can start from a temporary \'from\' date', function () {
@@ -441,7 +438,6 @@ describe('Future Dates', function () {
   })
 
   it('should be iterable', function () {
-    this.timeout(10000)
     let recurrence = moment('2018-01').recur('2018-02').every('Monday').dayOfWeek()
     let mondays = [...recurrence].map(m => m.format(ISO_DATE_FMT))
     expect(mondays).to.eql([
@@ -450,6 +446,52 @@ describe('Future Dates', function () {
       '2018-01-15',
       '2018-01-22',
       '2018-01-29'
+    ])
+  })
+
+  it('should describe election day', function () {
+    // The Tuesday after the first Monday of November
+    let recurrence = moment('2017-01').recur()
+      .every('Monday').dayOfWeek()
+      .every(0).weeksOfMonthByDay()
+      .every(11).monthsOfYear()
+    let elections = recurrence.next(4)
+      .map(m => m.add(1, 'day').format(ISO_DATE_FMT))
+    expect(elections).to.eql([
+      '2017-11-07',
+      '2018-11-06',
+      '2019-11-05',
+      '2020-11-03'
+    ])
+  })
+
+  it('should describe valentines day', function () {
+    let recurrence = moment('2018-01').recur()
+      .every(14).daysOfMonth()
+      .every('Februray').monthsOfYear()
+    let valentines = recurrence.next(4, ISO_DATE_FMT)
+    expect(valentines).to.eql([
+      '2018-02-14',
+      '2019-02-14',
+      '2020-02-14',
+      '2021-02-14'
+    ])
+  })
+
+  it('should allow elaborate calendar rules', function () {
+    let recurrence = moment('2017-12-31').recur()
+      .every('Monday').dayOfWeek()
+      .every([15, '30']).daysOfMonth()
+      .every(4).weeksOfMonth()
+      .every(48).weeksOfYear()
+      .every(11).monthsOfYear()
+    let dates = recurrence.previous(20, ISO_DATE_FMT)
+    console.log(dates)
+    expect(dates).to.eql([
+      '2017-12-25',
+      '2017-12-18',
+      '2017-12-11',
+      '2017-12-04'
     ])
   })
 })
@@ -487,12 +529,40 @@ describe('Previous Dates', function () {
     let recurrence = moment().recur().every('monday').dayOfWeek()
     expect(recurrence.previous(undefined as any)).to.have.lengthOf(0)
   })
+
+  it('can use calendar format', function () {
+    let recurrence = moment('2018-01').recur().every('Monday').dayOfWeek()
+    let mondays = recurrence.previous(4, ISO_DATE_FMT)
+    expect(mondays).to.eql([
+      '2017-12-25',
+      '2017-12-18',
+      '2017-12-11',
+      '2017-12-04'
+    ])
+  })
+
+  it('should allow elaborate calendar rules', function () {
+    let recurrence = moment('2017-12-31').recur()
+      .every('Monday').dayOfWeek()
+      .every([15, '30']).daysOfMonth()
+      .every(4).weeksOfMonth()
+      .every(48).weeksOfYear()
+      .every(11).monthsOfYear()
+    let dates = recurrence.previous(20, ISO_DATE_FMT)
+    expect(dates).to.eql([
+      '2017-12-25',
+      '2017-12-18',
+      '2017-12-11',
+      '2017-12-04'
+    ])
+  })
 })
 
 describe('All Dates', function () {
   it('can be generated', function () {
     let recurrence = moment('2014-01-01').recur('2014-01-07').every(2).days()
     let allDates = recurrence.all(ISO_DATE_FMT)
+    console.log(allDates)
     expect(allDates).to.have.lengthOf(4)
     expect(allDates[0]).to.equal('2014-01-01')
     expect(allDates[1]).to.equal('2014-01-03')
@@ -669,7 +739,7 @@ describe('The repeats() function', function () {
 })
 
 describe('Performance', function () {
-  this.timeout(10000)
+  // this.timeout(10000)
   it('should generate thousands of dates', function () {
     // 312ms
     let recurrence = moment('2000-01-01').recur('2018-12-01').every(1).days()

@@ -40,6 +40,7 @@ export class Calendar implements Rule {
         }
       })
     }
+    this.units.sort((a, b) => a - b)
 
     this.measure = measure
 
@@ -47,7 +48,7 @@ export class Calendar implements Rule {
     this.checkRange()
   }
 
-  match (date: moment.Moment) {
+  match (date: moment.Moment): boolean {
 
     // Get the unit based on the required measure of the date
     let unit = this.measureUnit(date)
@@ -67,8 +68,52 @@ export class Calendar implements Rule {
     return false
   }
 
+  next (currentDate: moment.Moment): moment.Moment {
+
+    // Get the unit based on the required measure of the date
+    let currentUnit = this.measureUnit(currentDate)
+    let nextUnit = this.units.find(unit => unit > currentUnit)
+    if (nextUnit !== undefined) {
+      return this.measureUnit(currentDate, nextUnit)
+    } else {
+      // No more units found within this period,
+      // bump our period by one and try again.
+      currentDate = this.incrementPeriod(currentDate, 1)
+      currentUnit = this.measureUnit(currentDate)
+      nextUnit = this.units.find(unit => unit >= currentUnit)
+
+      /* istanbul ignore else */
+      if (nextUnit !== undefined) {
+        return this.measureUnit(currentDate, nextUnit)
+      } else {
+        throw new Error('Could not determine next date for calendar recurrence.')
+      }
+    }
+  }
+
+  previous (currentDate: moment.Moment): moment.Moment {
+
+    // Get the unit based on the required measure of the date
+    let currentUnit = this.measureUnit(currentDate)
+    let nextUnit = this.units.find(unit => unit < currentUnit)
+    if (nextUnit !== undefined) {
+      return this.measureUnit(currentDate, nextUnit)
+    } else {
+      // No more units found within this period,
+      // bump our period by one and try again.
+      currentDate = this.decrementPeriod(currentDate, 1)
+      currentUnit = this.measureUnit(currentDate)
+      nextUnit = this.units.find(unit => unit <= currentUnit)
+      if (nextUnit !== undefined) {
+        return this.measureUnit(currentDate, nextUnit)
+      } else {
+        throw new Error('Could not determine next date for calendar recurrence.')
+      }
+    }
+  }
+
   // Private function for checking the range of calendar values
-  private checkRange () {
+  private checkRange (): void {
 
     // Dictionary of ranges based on measures
     const ranges = {
@@ -102,21 +147,56 @@ export class Calendar implements Rule {
     })
   }
 
-  private measureUnit (date: moment.Moment): number {
+  private measureUnit (date: moment.Moment): number
+  private measureUnit (date: moment.Moment, unit: number): moment.Moment
+  private measureUnit (date: moment.Moment, unit?: number): number | moment.Moment {
     switch (this.measure) {
-      case 'daysOfMonth':
-        return date.date()
       case 'daysOfWeek':
-        return date.day()
+        return date.day(unit as number)
+      case 'daysOfMonth':
+        return date.date(unit as number)
       case 'weeksOfMonth':
-        return date.monthWeek()
+        return date.monthWeek(unit as number)
       case 'weeksOfMonthByDay':
-        return date.monthWeekByDay()
+        return date.monthWeekByDay(unit as number)
       case 'weeksOfYear':
-        return date.week()
+        return date.week(unit as number)
       case 'monthsOfYear':
-        return date.month()
+        return date.month(unit as number)
     }
   }
 
+  private incrementPeriod (date: moment.Moment, count: number): moment.Moment {
+    switch (this.measure) {
+      case 'daysOfWeek':
+        return date.add(count, 'weeks').startOf('week')
+      case 'daysOfMonth':
+        return date.add(count, 'months').startOf('month')
+      case 'weeksOfMonth':
+        return date.add(count, 'months').startOf('month')
+      case 'weeksOfMonthByDay':
+        return date.add(count, 'months').startOf('month')
+      case 'weeksOfYear':
+        return date.add(count, 'year').startOf('year')
+      case 'monthsOfYear':
+        return date.add(count, 'year').startOf('year')
+    }
+  }
+
+  private decrementPeriod (date: moment.Moment, count: number): moment.Moment {
+    switch (this.measure) {
+      case 'daysOfWeek':
+        return date.subtract(count, 'weeks').endOf('week')
+      case 'daysOfMonth':
+        return date.subtract(count, 'months').endOf('month')
+      case 'weeksOfMonth':
+        return date.subtract(count, 'months').endOf('month')
+      case 'weeksOfMonthByDay':
+        return date.subtract(count, 'months').endOf('month')
+      case 'weeksOfYear':
+        return date.subtract(count, 'year').endOf('year')
+      case 'monthsOfYear':
+        return date.subtract(count, 'year').endOf('year')
+    }
+  }
 }

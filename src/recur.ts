@@ -1,5 +1,4 @@
 import * as moment from 'moment'
-import { Interval } from './interval'
 import { Rule } from './rule'
 
 /** @hidden */
@@ -225,7 +224,7 @@ export class Recur implements Iterable<moment.Moment> {
     }
 
     // Our list of rules, all of which must match
-    this.rules = (options.rules || []).map(rule => Rule.factory(rule.units, rule.measure))
+    this.rules = (options.rules || []).map(rule => Rule.factory(rule.units, rule.measure, this.start))
 
     // Our list of exceptions. Match always fails on these dates.
     let exceptions = options.exceptions || []
@@ -416,13 +415,7 @@ export class Recur implements Iterable<moment.Moment> {
       return this
     }
 
-    let rule = Rule.factory(this.units, this.measure)
-
-    if (rule instanceof Interval) {
-      if (!this.start) {
-        throw new Error('Must have a start date set to set an interval!')
-      }
-    }
+    let rule = Rule.factory(this.units, this.measure, this.start)
 
     if (rule.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
       throw new Error('weeksOfMonthByDay must be combined with daysOfWeek')
@@ -446,7 +439,7 @@ export class Recur implements Iterable<moment.Moment> {
    * recurrence.matches("01/02/2014"); // false
    * ```
    */
-  except (date: MomentInput) {
+  except (date: MomentInput): this {
     date = moment(date).dateOnly()
     this.exceptions.push(date)
     return this
@@ -492,7 +485,7 @@ export class Recur implements Iterable<moment.Moment> {
   /**
    * Checks if a rule has been set on the chain
    */
-  hasRule (measure: Rule.MeasureInput) {
+  hasRule (measure: Rule.MeasureInput): boolean {
     return this.rules.findIndex(rule => rule.measure === Rule.pluralize(measure)) !== -1
   }
 
@@ -557,7 +550,7 @@ export class Recur implements Iterable<moment.Moment> {
    * // leapYears = [ 2012, 2016, 2020, 2024, 2028, 2032 ]
    * ```
    */
-  *[Symbol.iterator] () {
+  *[Symbol.iterator] (): IterableIterator<Moment> {
 
     let startFrom = this.from || this.start
     if (!startFrom) {
@@ -570,15 +563,29 @@ export class Recur implements Iterable<moment.Moment> {
 
     let currentDate = startFrom.clone()
 
+    // yield the starting date if its a match
+    if (this.matchAllRules(currentDate)) {
+      yield currentDate.clone()
+    }
+
+    if (this.reversed) {
+      currentDate = this.findPreviousMatch(currentDate)
+    } else {
+      currentDate = this.findNextMatch(currentDate)
+    }
+
     while (this.end ? currentDate.isSameOrBefore(this.end) : true) {
 
-      if (this.matches(currentDate, true)) {
+      if (this.isException(currentDate)) {
+        continue
+      } else {
         yield currentDate.clone()
       }
+
       if (this.reversed) {
-        currentDate.subtract(1, 'day')
+        currentDate = this.findPreviousMatch(currentDate)
       } else {
-        currentDate.add(1, 'day')
+        currentDate = this.findNextMatch(currentDate)
       }
     }
   }
@@ -690,7 +697,7 @@ export class Recur implements Iterable<moment.Moment> {
   /**
    * @internal
    */
-  private addMeasureFunctions () {
+  private addMeasureFunctions (): void {
     for (let [measureSingle, measurePlural] of Object.entries(Rule.MeasureSingleToPlural)) {
       (Recur as any).prototype[measureSingle] = (units?: Rule.UnitsInput): this => {
         this.every(units, measurePlural)
@@ -707,7 +714,7 @@ export class Recur implements Iterable<moment.Moment> {
    * Private function to see if a date is within range of start/end
    * @internal
    */
-  private inRange (date: Moment) {
+  private inRange (date: Moment): boolean {
     if (this.start && date.isBefore(this.start)) {
       return false
     } else if (this.end && date.isAfter(this.end)) {
@@ -736,14 +743,40 @@ export class Recur implements Iterable<moment.Moment> {
    * @internal
    * @hidden
    */
-  private matchAllRules (date: Moment) {
+  private matchAllRules (date: Moment): boolean {
 
     for (let rule of this.rules) {
-      if (!rule.match(date, this.start || undefined)) {
+      if (!rule.match(date)) {
         return false
       }
     }
 
     return true
+  }
+
+  /**
+   * Private funtion to see if all rules match
+   * @internal
+   * @hidden
+   */
+  private findNextMatch (currentDate: Moment): Moment {
+
+    let nextDates = this.rules.map(rule => rule.next(currentDate))
+    nextDates.sort((a, b) => a.diff(b))
+
+    return nextDates[0]
+  }
+
+  /**
+   * Private funtion to see if all rules match
+   * @internal
+   * @hidden
+   */
+  private findPreviousMatch (currentDate: Moment): Moment {
+
+    let nextDates = this.rules.map(rule => rule.previous(currentDate))
+    nextDates.sort((a, b) => b.diff(a))
+
+    return nextDates[0]
   }
 }

@@ -17,7 +17,14 @@ export class Interval implements Rule {
   units: number[]
   measure: IntervalMeasure
 
-  constructor (units: (string | number)[], measure: IntervalMeasure) {
+  private start: Moment
+
+  constructor (units: (string | number)[], measure: IntervalMeasure, start: Moment | null) {
+
+    if (!start) {
+      throw new Error('Must have a start date set to set an interval!')
+    }
+    this.start = start.clone()
 
     // Make sure all of the units are integers greater than 0.
     this.units = units.map(unit => {
@@ -30,14 +37,15 @@ export class Interval implements Rule {
       }
       return unit
     })
+    this.units.sort((a, b) => a - b)
 
     this.measure = measure
   }
 
-  match (date: Moment, start: Moment): boolean {
+  match (date: Moment): boolean {
 
     let precise = this.measure !== 'days'
-    let diff = Math.abs(start.diff(date, this.measure, precise))
+    let diff = Math.abs(this.start.diff(date, this.measure, precise))
 
     // Check to see if any of the units provided match the date
     for (let unit of this.units) {
@@ -50,4 +58,29 @@ export class Interval implements Rule {
     return false
   }
 
+  next (currentDate: Moment): Moment {
+
+    // let precise = this.measure !== 'days'
+    // Get the multiple of the start
+    let diff = currentDate.diff(this.start, this.measure)
+
+    // Find the next muliple for each unit
+    let multiples = this.units.map(unit => (Math.floor(diff / unit) + 1) * unit)
+    multiples.sort((a, b) => a - b)
+
+    return this.start.add(multiples[0], this.measure)
+  }
+
+  previous (currentDate: Moment): Moment {
+
+    // let precise = this.measure !== 'days'
+    // Get the multiple of the start
+    let diff = this.start.diff(currentDate, this.measure)
+
+    // Find the next muliple for each unit
+    let multiples = this.units.map(unit => (Math.floor(diff / unit) - 1) * unit)
+    multiples.sort((a, b) => b - a)
+
+    return this.start.add(multiples[0], this.measure)
+  }
 }
