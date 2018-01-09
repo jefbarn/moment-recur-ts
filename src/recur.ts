@@ -176,6 +176,12 @@ export class Recur implements Iterable<moment.Moment> {
   private reversed = false
 
   /**
+   * @internal
+   * @hidden
+   */
+  private maximumYears = 1000
+
+  /**
    * ### Recur Object Constrcutor
    *
    * From an instance of moment:
@@ -323,6 +329,21 @@ export class Recur implements Iterable<moment.Moment> {
       throw new Error('No from date defined for recurrence.')
     }
     return this.from
+  }
+
+  /**
+   * Interval calculations will use a default of 1000 year limit when determining unbounded
+   * rules. Use this function to query or change the maximum limit.
+   */
+  maxYears (): number
+  maxYears (years: number): Recur
+  maxYears (years?: number): number | Recur {
+    if (years) {
+      this.maximumYears = years
+      return this
+    } else {
+      return this.maximumYears
+    }
   }
 
   /**
@@ -553,7 +574,7 @@ export class Recur implements Iterable<moment.Moment> {
   *[Symbol.iterator] (): IterableIterator<Moment> {
 
     let startFrom = this.from || this.start
-    if (!startFrom) {
+    if (!startFrom || !startFrom.isValid()) {
       throw Error('Cannot get occurrences without start or from date.')
     }
 
@@ -563,15 +584,20 @@ export class Recur implements Iterable<moment.Moment> {
 
     let currentDate = startFrom.clone()
 
-    // yield the starting date if its a match
+    // yield the starting date if it's a match
     if (this.matchAllRules(currentDate)) {
       yield currentDate.clone()
     }
 
-    if (this.reversed) {
-      currentDate = this.findPreviousMatch(currentDate)
-    } else {
-      currentDate = this.findNextMatch(currentDate)
+    try {
+      if (this.reversed) {
+        currentDate = this.findPreviousMatch(currentDate)
+      } else {
+        currentDate = this.findNextMatch(currentDate)
+      }
+    } catch (err) {
+      if (err instanceof RangeError) return undefined
+      throw err
     }
 
     while (this.end ? currentDate.isSameOrBefore(this.end) : true) {
@@ -582,10 +608,15 @@ export class Recur implements Iterable<moment.Moment> {
         yield currentDate.clone()
       }
 
-      if (this.reversed) {
-        currentDate = this.findPreviousMatch(currentDate)
-      } else {
-        currentDate = this.findNextMatch(currentDate)
+      try {
+        if (this.reversed) {
+          currentDate = this.findPreviousMatch(currentDate)
+        } else {
+          currentDate = this.findNextMatch(currentDate)
+        }
+      } catch (err) {
+        if (err instanceof RangeError) return undefined
+        throw err
       }
     }
   }
@@ -622,21 +653,17 @@ export class Recur implements Iterable<moment.Moment> {
   all (format: string): string[]
   all (format?: string): (string | Moment)[] {
 
-    if (!this.end) {
+    if (!this.end || !this.end.isValid()) {
       throw Error('Cannot get all occurrences without an end date.')
     }
 
     this.reversed = false
 
-    if (format) {
-      let dates: string[] = []
-      for (let date of this) {
-        dates.push(date.format(format))
-      }
-      return dates
-    } else {
-      return [...this]
+    let dates: (string | Moment)[] = []
+    for (let date of this) {
+      dates.push(format ? date.format(format) : date)
     }
+    return dates
   }
 
   /**
@@ -761,10 +788,21 @@ export class Recur implements Iterable<moment.Moment> {
    */
   private findNextMatch (currentDate: Moment): Moment {
 
-    let nextDates = this.rules.map(rule => rule.next(currentDate))
-    nextDates.sort((a, b) => a.diff(b))
+    let nextDate = currentDate.clone().add(1, 'day')
 
-    return nextDates[0]
+    let allRulesMatch = false
+    while (!allRulesMatch) {
+      if (nextDate.year() >= currentDate.year() + this.maximumYears) {
+        throw new RangeError()
+      }
+      nextDate.subtract(1, 'day')
+      let nextDates = this.rules.map(rule => rule.next(nextDate))
+      nextDates.sort((a, b) => a.diff(b))
+      nextDate = nextDates[nextDates.length - 1]
+      allRulesMatch = nextDate.isSame(nextDates[0])
+    }
+
+    return nextDate
   }
 
   /**
@@ -774,9 +812,20 @@ export class Recur implements Iterable<moment.Moment> {
    */
   private findPreviousMatch (currentDate: Moment): Moment {
 
-    let nextDates = this.rules.map(rule => rule.previous(currentDate))
-    nextDates.sort((a, b) => b.diff(a))
+    let nextDate = currentDate.clone().subtract(1, 'day')
 
-    return nextDates[0]
+    let allRulesMatch = false
+    while (!allRulesMatch) {
+      if (nextDate.year() <= currentDate.year() - this.maximumYears) {
+        throw new RangeError()
+      }
+      nextDate.add(1, 'day')
+      let nextDates = this.rules.map(rule => rule.previous(nextDate))
+      nextDates.sort((a, b) => b.diff(a))
+      nextDate = nextDates[nextDates.length - 1]
+      allRulesMatch = nextDate.isSame(nextDates[0])
+    }
+
+    return nextDate
   }
 }

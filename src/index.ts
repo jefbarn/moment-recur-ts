@@ -24,7 +24,7 @@ declare module 'moment' {
      * ```
      */
     monthWeek (): number
-    monthWeek (date: number): moment.Moment
+    monthWeek (week: number): moment.Moment
 
     /**
      * Plugin for calculating the occurrence of the day of the week in the month.
@@ -33,7 +33,7 @@ declare module 'moment' {
      * of the week in the month.
      */
     monthWeekByDay (): number
-    monthWeekByDay (weekday: number): moment.Moment
+    monthWeekByDay (dayCount: number): moment.Moment
 
     /**
      * The `dateOnly()` method can be used to remove any time information from a moment.
@@ -76,9 +76,9 @@ declare module 'moment' {
   export function recur (options?: Recur.Options): Recur
 }
 
-(moment as any).fn.monthWeek = function monthWeek (date?: number): number | moment.Moment {
+(moment as any).fn.monthWeek = function monthWeek (week?: number): number | moment.Moment {
 
-  if (date === undefined) {
+  if (week === undefined) {
     // First day of the first week of the month
     let week0 = this.clone().startOf('month').startOf('week')
 
@@ -87,15 +87,17 @@ declare module 'moment' {
 
     return day0.diff(week0, 'weeks')
   } else {
-    return this.clone()
+    let weekDiff = week - this.monthWeek()
+    return this.clone().add(weekDiff, 'weeks')
   }
 }
 
-;(moment as any).fn.monthWeekByDay = function monthWeekByDay (weekday?: number): number | moment.Moment {
-  if (weekday === undefined) {
+;(moment as any).fn.monthWeekByDay = function monthWeekByDay (dayCount?: number): number | moment.Moment {
+  if (dayCount === undefined) {
     return Math.floor((this.date() - 1) / 7)
   } else {
-    return this.clone()
+    let weekDiff = dayCount - this.monthWeekByDay()
+    return this.clone().add(weekDiff, 'weeks')
   }
 }
 

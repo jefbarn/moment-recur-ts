@@ -257,7 +257,7 @@ describe('The Calendar Interval', function () {
     expect(recurrence.matches(moment('2015-01-15'))).to.be.true
   })
 
-  it('weeksOfMonth should work', function () {
+  it('weeksOfMonth matches should work', function () {
     let recurrence = moment.recur().every([1, 3]).weeksOfMonth()
     expect(recurrence.matches(moment(startDate).date(6))).to.be.true
     expect(recurrence.matches(moment(startDate).date(26))).to.be.true
@@ -265,6 +265,13 @@ describe('The Calendar Interval', function () {
     recurrence = moment.recur().every(4).weekOfMonth()
     expect(recurrence.matches(moment(startDate).date(27))).to.be.true
     expect(recurrence.matches(moment(startDate).date(26))).to.be.false
+  })
+
+  it('weeksOfMonth interval should work', function () {
+    let recurrence = moment('2018-01').recur('2018-02').every(1).weeksOfMonth()
+    expect(recurrence.all(ISO_DATE_FMT)).to.eql([
+      '2018-01-07', '2018-01-08', '2018-01-09', '2018-01-10', '2018-01-11', '2018-01-12', '2018-01-13'
+    ])
   })
 
   it('weeksOfYear should work', function () {
@@ -276,6 +283,19 @@ describe('The Calendar Interval', function () {
     expect(recurrence.matches(moment('2018-02-01'))).to.be.false
   })
 
+  it('weeksOfYear interval should work', function () {
+    let recurrence = moment('2017-12-01').recur('2018-02-28').weekOfYear(1)
+    expect(recurrence.all(ISO_DATE_FMT)).to.eql([
+      '2017-12-31',
+      '2018-01-01',
+      '2018-01-02',
+      '2018-01-03',
+      '2018-01-04',
+      '2018-01-05',
+      '2018-01-06'
+    ])
+  })
+
   it('monthsOfYear should work', function () {
     let recurrence = moment.recur().every('January').monthsOfYear()
     expect(recurrence.matches(moment().month('January'))).to.be.true
@@ -283,6 +303,13 @@ describe('The Calendar Interval', function () {
     recurrence = moment.recur().every(11).monthOfYear()
     expect(recurrence.matches(moment().month('Dec'))).to.be.true
     expect(recurrence.matches(moment().month('Nov'))).to.be.false
+  })
+
+  it('monthsOfYear interval should work', function () {
+    let recurrence = moment.recur('2018-01', '2019-01').every('April').monthsOfYear()
+    expect(recurrence.all(ISO_DATE_FMT)).to.eql(
+      moment.recur('2018-04-01', '2018-04-30').every(1, 'day').all(ISO_DATE_FMT)
+    )
   })
 
   it('should detect invalid range', function () {
@@ -425,6 +452,17 @@ describe('Future Dates', function () {
     }).to.throw('Cannot get occurrences without start or from date')
   })
 
+  it('must have valid start/from dates', function () {
+    expect(() => {
+      let recurrence = moment.recur('2017-02-31').every('monday').dayOfWeek()
+      recurrence.next(3, ISO_DATE_FMT)
+    }).to.throw('Cannot get occurrences without start or from date')
+    expect(() => {
+      let recurrence = moment.recur().every('monday').dayOfWeek().fromDate('2017-02-31')
+      recurrence.next(3, ISO_DATE_FMT)
+    }).to.throw('Cannot get occurrences without start or from date')
+  })
+
   it('should return moments', function () {
     let recurrence = moment('2014-01-01').recur().every(2).days()
     let nextDates = recurrence.next(3)
@@ -454,7 +492,7 @@ describe('Future Dates', function () {
     let recurrence = moment('2017-01').recur()
       .every('Monday').dayOfWeek()
       .every(0).weeksOfMonthByDay()
-      .every(11).monthsOfYear()
+      .every('Nov').monthsOfYear()
     let elections = recurrence.next(4)
       .map(m => m.add(1, 'day').format(ISO_DATE_FMT))
     expect(elections).to.eql([
@@ -478,20 +516,44 @@ describe('Future Dates', function () {
     ])
   })
 
-  it('should allow elaborate calendar rules', function () {
-    let recurrence = moment('2017-12-31').recur()
-      .every('Monday').dayOfWeek()
-      .every([15, '30']).daysOfMonth()
-      .every(4).weeksOfMonth()
-      .every(48).weeksOfYear()
-      .every(11).monthsOfYear()
-    let dates = recurrence.previous(20, ISO_DATE_FMT)
+  it('should find leap years', function () {
+    let recurrence = moment('2018-01-01').recur()
+      .every('Feb').monthsOfYear()
+      .every(29).daysOfMonth()
+    let dates = recurrence.next(5, ISO_DATE_FMT)
     console.log(dates)
     expect(dates).to.eql([
-      '2017-12-25',
-      '2017-12-18',
-      '2017-12-11',
-      '2017-12-04'
+      '2020-02-29',
+      '2024-02-29',
+      '2028-02-29',
+      '2032-02-29',
+      '2036-02-29'
+    ])
+  })
+
+  it('should give empty set for rules that never match', async function () {
+    let recurrence = moment('2018-01-01').recur()
+      .every('Feb').monthsOfYear()
+      .every(30).daysOfMonth()
+      .maxYears(100)
+    let dates = recurrence.next(5, ISO_DATE_FMT)
+    console.log(dates)
+    expect(dates).to.eql([])
+  })
+
+  it('should allow elaborate calendar rules', function () {
+    let recurrence = moment('2017-12-31').recur()
+      .every('Sat').dayOfWeek()
+      .every([2]).daysOfMonth()
+      .every(0).weeksOfMonth()
+      .every(48).weeksOfYear()
+      .every(11).monthsOfYear()
+    let dates = recurrence.next(4, ISO_DATE_FMT)
+    expect(dates).to.eql([
+      '2023-12-02',
+      '2034-12-02',
+      '2045-12-02',
+      '2051-12-02'
     ])
   })
 })
@@ -543,17 +605,17 @@ describe('Previous Dates', function () {
 
   it('should allow elaborate calendar rules', function () {
     let recurrence = moment('2017-12-31').recur()
-      .every('Monday').dayOfWeek()
-      .every([15, '30']).daysOfMonth()
-      .every(4).weeksOfMonth()
+      .every('Sat').dayOfWeek()
+      .every(2).daysOfMonth()
+      .every(0).weeksOfMonth()
       .every(48).weeksOfYear()
       .every(11).monthsOfYear()
-    let dates = recurrence.previous(20, ISO_DATE_FMT)
+    let dates = recurrence.previous(4, ISO_DATE_FMT)
     expect(dates).to.eql([
-      '2017-12-25',
-      '2017-12-18',
-      '2017-12-11',
-      '2017-12-04'
+      '2017-12-02',
+      '2006-12-02',
+      '1995-12-02',
+      '1989-12-02'
     ])
   })
 })
@@ -596,6 +658,13 @@ describe('All Dates', function () {
   it('must have end date', function () {
     expect(() => {
       let recurrence = moment('2018-01-01').recur().every(1).week()
+      recurrence.all(ISO_DATE_FMT)
+    }).to.throw('Cannot get all occurrences without an end date')
+  })
+
+  it('must have a valid end date', function () {
+    expect(() => {
+      let recurrence = moment('2018-02-01').recur('2018-02-31').every(1).week()
       recurrence.all(ISO_DATE_FMT)
     }).to.throw('Cannot get all occurrences without an end date')
   })
