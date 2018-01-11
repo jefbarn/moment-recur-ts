@@ -94,7 +94,7 @@ declare module 'moment' {
 
 ;(moment as any).fn.monthWeekByDay = function monthWeekByDay (dayCount?: number): number | moment.Moment {
   if (dayCount === undefined) {
-    return Math.floor((this.date() - 1) / 7)
+    return Math.floor((this.day() - 1) / 7)
   } else {
     let weekDiff = dayCount - this.monthWeekByDay()
     return this.clone().add(weekDiff, 'weeks')

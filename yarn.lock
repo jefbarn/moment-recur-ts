@@ -10,9 +10,9 @@
   version "3.5.19"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.19.tgz#1a47308819ac2d1d6d1ca4f5d800ac84924100de"
 
-"@types/chai@*", "@types/chai@4.0.10":
-  version "4.0.10"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.0.10.tgz#0eb222c7353adde8e0980bea04165d4d3b6afef3"
+"@types/chai@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.0.tgz#d9008fa4c06f6801f93396d121f0227cd4244ac6"
 
 "@types/clean-webpack-plugin@0.1.0":
   version "0.1.0"
@@ -44,12 +44,6 @@
 "@types/highlight.js@9.1.8":
   version "9.1.8"
   resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.1.8.tgz#d227f18bcb8f3f187e16965f2444859a04689758"
-
-"@types/karma-chai@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@types/karma-chai/-/karma-chai-0.1.0.tgz#f2df9b273bc6de1ee68d32ac1e10057eaecbd6e1"
-  dependencies:
-    "@types/chai" "*"
 
 "@types/karma@1.7.3":
   version "1.7.3"

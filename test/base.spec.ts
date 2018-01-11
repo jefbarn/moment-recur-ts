@@ -426,6 +426,22 @@ describe('weeksOfMonthByDay()', function () {
     }
     expect(caught.message).to.equal('weeksOfMonthByDay must be combined with daysOfWeek')
   })
+
+  it('works with all() function', function () {
+    let recurrence
+    recurrence = moment('2018-01-01').recur('2018-01-31')
+      .every(['Sunday']).daysOfWeek()
+      .every(0).weeksOfMonthByDay()
+    expect(recurrence.all(ISO_DATE_FMT)).to.eql(['2018-01-07', '2018-01-21'])
+  })
+
+  it('works with previous() function', function () {
+    let recurrence
+    recurrence = moment('2018-01-01').recur()
+      .every(['Sunday']).daysOfWeek()
+      .every([0, 2]).weeksOfMonthByDay()
+    expect(recurrence.previous(2, ISO_DATE_FMT)).to.eql(['2017-12-17', '2017-12-03'])
+  })
 })
 
 describe('Future Dates', function () {
@@ -521,7 +537,6 @@ describe('Future Dates', function () {
       .every('Feb').monthsOfYear()
       .every(29).daysOfMonth()
     let dates = recurrence.next(5, ISO_DATE_FMT)
-    console.log(dates)
     expect(dates).to.eql([
       '2020-02-29',
       '2024-02-29',
@@ -537,7 +552,6 @@ describe('Future Dates', function () {
       .every(30).daysOfMonth()
       .maxYears(100)
     let dates = recurrence.next(5, ISO_DATE_FMT)
-    console.log(dates)
     expect(dates).to.eql([])
   })
 
@@ -624,7 +638,6 @@ describe('All Dates', function () {
   it('can be generated', function () {
     let recurrence = moment('2014-01-01').recur('2014-01-07').every(2).days()
     let allDates = recurrence.all(ISO_DATE_FMT)
-    console.log(allDates)
     expect(allDates).to.have.lengthOf(4)
     expect(allDates[0]).to.equal('2014-01-01')
     expect(allDates[1]).to.equal('2014-01-03')
