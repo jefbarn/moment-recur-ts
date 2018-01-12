@@ -1,6 +1,6 @@
-import { Moment } from 'moment'
-import { Interval } from './interval'
+import * as moment from 'moment'
 import { Calendar } from './calendar'
+import { Interval } from './interval'
 
 export namespace Rule {
   export type MeasureSingle =
@@ -64,16 +64,16 @@ export namespace Rule {
    * @internal
    * @hidden
    */
-  export function factory (units: UnitsInput, measure: MeasureInput): Rule {
+  export function factory (units: UnitsInput, measure: MeasureInput, start: moment.Moment | null): Rule {
 
-    let normMeasure = pluralize(measure)
+    const normMeasure = normalizeMeasure(measure)
 
     switch (normMeasure) {
       case 'days':
       case 'weeks':
       case 'months':
       case 'years':
-        return new Interval(unitsToArray(units), normMeasure)
+        return new Interval(unitsToArray(units), normMeasure, start)
 
       case 'daysOfWeek':
       case 'daysOfMonth':
@@ -112,13 +112,17 @@ export namespace Rule {
    * @internal
    * @hidden
    */
-  export function pluralize (measure: MeasureInput): MeasurePlural {
-    if (!measure) throw new Error('Measure for recurrence rule undefined')
-    if (MeasureSingleToPlural.hasOwnProperty(measure)) {
-      return MeasureSingleToPlural[measure]
-    } else {
-      return measure as MeasurePlural
+  export function normalizeMeasure (measure: any): MeasurePlural {
+    if (typeof measure === 'string') {
+      if (MeasureSingleToPlural[measure]) {
+        return MeasureSingleToPlural[measure]
+      } else {
+        for (const key in MeasureSingleToPlural) {
+          if (MeasureSingleToPlural[key] === measure) return measure
+        }
+      }
     }
+    throw new Error('Invalid Measure for recurrence: ' + measure)
   }
 }
 
@@ -127,12 +131,16 @@ export namespace Rule {
  */
 export interface Rule {
 
-  units: number[]
-  measure: Rule.MeasurePlural
+  readonly units: number[]
+  readonly measure: Rule.MeasurePlural
 
   /**
    * @internal
    * @hidden
    */
-  match (date: Moment, start?: Moment): boolean
+  match (date: moment.Moment): boolean
+
+  next (current: moment.Moment, limit?: moment.Moment): moment.Moment
+
+  previous (current: moment.Moment, limit?: moment.Moment): moment.Moment
 }

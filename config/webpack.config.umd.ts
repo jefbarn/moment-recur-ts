@@ -5,7 +5,7 @@ import * as CleanWebpackPlugin from 'clean-webpack-plugin'
 import * as prettier from 'prettier'
 
 class DtsBundlePlugin implements webpack.Plugin {
-  apply (compiler) {
+  apply (compiler: any) {
     compiler.plugin('done', function () {
       let dts = require('dts-bundle')
 

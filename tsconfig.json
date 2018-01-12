@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "lib": ["ES2015", "ES2016.Array.Include", "ES2017.object", "dom"],
+    "lib": ["ES2016", "esnext.asynciterable", "dom"],
     "downlevelIteration": true,
 
     "strict": true,
@@ -16,8 +16,8 @@
     "stripInternal": true
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "**/*.ts"
+//    "test/**/*"
   ],
   "typedocOptions": {
     "mode": "file",
