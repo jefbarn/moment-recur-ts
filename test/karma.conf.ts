@@ -6,6 +6,7 @@ declare module 'karma' {
   interface ConfigOptions {
     karmaTypescriptConfig?: any
     // concurrency?: number
+    polyfill?: string[]
   }
 }
 
@@ -22,10 +23,24 @@ export = (config: Config) => {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/base.spec.ts',
-      'test/**/*.ts',
-      'src/**/*.ts'
+      { pattern: 'test/base.spec.ts' },
+      // 'test/**/*.ts',
+      { pattern: 'src/**/*.ts' },
+      // 'node_modules/ix/**/*.ts',
+      // { pattern: 'node_modules/ix/Ix.es2015.min.js' }
+      // { pattern: 'node_modules/ix/Ix.js', included: false }
     ],
+
+    // polyfill: [
+    //   'es2015', 'es2016'
+    // ],
+    // polyfill: [
+    //   'Promise',
+    //   'Symbol',
+    //   'Number.isInteger',
+    //   'Object.entries', 'Object.values',
+    //   'Array.prototype.includes', 'Array.prototype.find', 'Array.prototype.findIndex'
+    // ],
 
     // list of files to exclude
     exclude: [],
@@ -33,16 +48,32 @@ export = (config: Config) => {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*.ts': ['karma-typescript', 'coverage'],
-      'test/**/*.ts': ['karma-typescript']
+      // 'src/**/*.ts': ['karma-typescript', 'coverage'],
+      // 'test/**/*.ts': ['karma-typescript'],
+      '**/*.ts': ['karma-typescript']
     },
 
     karmaTypescriptConfig: {
       // compilerOptions: {
-      //   target: 'ES5',
-      //   lib: ['ES2015', 'dom']
+        // allowJs: true,
+        // target: 'ES5',
+        // lib: ['ES2015', 'dom']
+        // "include": [
+        //   "src/**/*.js", // added
+        //   "src/**/*.ts"
+        // ],
       // },
-      tsconfig: './tsconfig.json'
+      // include: ['node_modules\\ix\\**\\*.ts'],
+      tsconfig: './tsconfig.json',
+      entrypoints: /\.spec\.ts$/
+      // bundlerOptions: {
+      //   resolve: {
+      //     directories: ['node_modules'],
+      //     alias: {
+      //       'ix': 'node_modules/ix/Ix.es2015.min.js'
+      //     }
+      //   }
+      // }
     },
 
     // test results reporter to use
@@ -65,8 +96,9 @@ export = (config: Config) => {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    // browsers: ['Chrome', 'Firefox', 'Edge', 'IE'],
-    browsers: ['ChromeHeadless', 'FirefoxHeadless'],
+    browsers: ['Chrome', 'Firefox', 'Edge', 'IE'],
+    // browsers: ['ChromeHeadless', 'FirefoxHeadless'],
+    // browsers: ['Chrome'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

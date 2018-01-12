@@ -60,15 +60,22 @@ Simply include the momentjs script, then the moment-recur-ts script.
 ```
 
 
-### Browser with RequireJS
-moment-recur-ts also works with RequireJS. Include it just like any other script.
-```js
-define(["moment", "moment-recur-ts"], function(moment){
-    //you probably won't need a reference to moment-recur-ts itself, so include it last.
-});
+### Polyfills
+moment-recur-ts uses newer Javascript ES6 features and may require a polyfill library for older
+browsers or node.js < 7.
+
+```html
+<script src="https://unpkg.com/moment/min/moment.min.js"></script>
+<script src="https://unpkg.com/moment-recur-ts/dist/moment-recur-ts.min.js"></script>
+<script src="https://unpkg.com/core-js/client/core.min.js"></script>
 ```
 
 
+```js
+require('core-js');
+let moment = require('moment');
+require('moment-recur-ts');
+```
 
 
 Creating a Recurring Date

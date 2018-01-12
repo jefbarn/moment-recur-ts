@@ -99,11 +99,16 @@ yarn <span class="hljs-built_in">add</span> moment-recur-<span class="hljs-keywo
 				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"moment.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"moment-recur-ts.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
-				<h3 id="browser-with-requirejs">Browser with RequireJS</h3>
-				<p>moment-recur-ts also works with RequireJS. Include it just like any other script.</p>
-				<pre><code class="lang-js">define([<span class="hljs-string">"moment"</span>, <span class="hljs-string">"moment-recur-ts"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">moment</span>)</span>{
-    <span class="hljs-comment">//you probably won't need a reference to moment-recur-ts itself, so include it last.</span>
-});
+				<h3 id="polyfills">Polyfills</h3>
+				<p>moment-recur-ts uses newer Javascript ES6 features and may require a polyfill library for older
+				browsers or node.js &lt; 7.</p>
+				<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/moment/min/moment.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/moment-recur-ts/dist/moment-recur-ts.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/core-js/client/core.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+				<pre><code class="lang-js"><span class="hljs-built_in">require</span>(<span class="hljs-string">'core-js'</span>);
+<span class="hljs-keyword">let</span> moment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'moment'</span>);
+<span class="hljs-built_in">require</span>(<span class="hljs-string">'moment-recur-ts'</span>);
 </code></pre>
 				<h2 id="creating-a-recurring-date">Creating a Recurring Date</h2>
 				<p>You can create a recurrence from an instance of moment or from the constructor a few different ways.  </p>
