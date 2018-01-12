@@ -1,21 +1,9 @@
 import * as moment from 'moment'
 import { Recur } from './recur'
 
-// Polyfills
-/** @internal */
-import 'core-js/fn/object/values'
-/** @internal */
-import 'core-js/fn/object/entries'
-/** @internal */
-import 'core-js/fn/number/is-integer'
-/** @internal */
-import 'core-js/fn/array/includes'
-/** @internal */
-import 'core-js/fn/array/find-index'
-
 declare module 'moment' {
 
-  export interface Moment {
+  interface Moment {
 
     /**
      * The `monthWeek()` method can be used to determine the week of the month a date is in.
@@ -72,56 +60,60 @@ declare module 'moment' {
    * moment.recur(start, end)
    * ```
    */
-  export function recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
-  export function recur (options?: Recur.Options): Recur
+  function recur (start?: moment.MomentInput, end?: moment.MomentInput): Recur
+  function recur (options?: Recur.Options): Recur
 }
 
-(moment as any).fn.monthWeek = function monthWeek (week?: number): number | moment.Moment {
+moment.fn.monthWeek = function (this: moment.Moment, week?: number): number | moment.Moment {
 
   if (week === undefined) {
     // First day of the first week of the month
-    let week0 = this.clone().startOf('month').startOf('week')
+    const week0 = this.clone().startOf('month').startOf('week')
 
     // First day of week
-    let day0 = this.clone().startOf('week')
+    const day0 = this.clone().startOf('week')
 
     return day0.diff(week0, 'weeks')
   } else {
-    let weekDiff = week - this.monthWeek()
+    const weekDiff = week - this.monthWeek()
     return this.clone().add(weekDiff, 'weeks')
   }
-}
+} as {(): number, (w: number): moment.Moment}
 
-;(moment as any).fn.monthWeekByDay = function monthWeekByDay (dayCount?: number): number | moment.Moment {
-  if (dayCount === undefined) {
-    return Math.floor((this.day() - 1) / 7)
+moment.fn.monthWeekByDay = function (this: moment.Moment, week?: number): number | moment.Moment {
+  if (week === undefined) {
+    return Math.floor((this.date() - 1) / 7)
   } else {
-    let weekDiff = dayCount - this.monthWeekByDay()
+    const weekDiff = week - this.monthWeekByDay()
     return this.clone().add(weekDiff, 'weeks')
   }
-}
+} as {(): number, (w: number): moment.Moment}
 
 // Plugin for removing all time information from a given date
-moment.fn.dateOnly = function dateOnly (): moment.Moment {
+moment.fn.dateOnly = function (): moment.Moment {
   // return this.startOf('day')
   return this.isValid() ? moment.utc(this.format('YYYY-MM-DD')) : this
 }
 
-;(moment as any).recur = function (start?: moment.MomentInput | Recur.Options, end?: moment.MomentInput): Recur {
+;
+(moment as any).recur = function (start?: moment.MomentInput | Recur.Options,
+                                  end?: moment.MomentInput): Recur {
   // If we have an object, use it as a set of options
   if (typeof start === 'object' && !moment.isMoment(start)) {
-    let options = start as Recur.Options
+    const options = start as Recur.Options
     return new Recur(options)
   }
 
   // else, use the values passed
-  return new Recur({ start: start, end: end })
+  return new Recur({ start, end })
 }
 
-moment.fn.recur = function (start?: moment.MomentInput | Recur.Options, end?: moment.MomentInput): Recur {
+moment.fn.recur = function (this: moment.Moment,
+                            start?: moment.MomentInput | Recur.Options,
+                            end?: moment.MomentInput): Recur {
   // If we have an object, use it as a set of options
   if (start === Object(start) && !moment.isMoment(start)) {
-    let options = start as Recur.Options
+    const options = start as Recur.Options
     // if we have no start date, use the moment
     if (options.start === undefined) {
       options.start = this
@@ -141,5 +133,5 @@ moment.fn.recur = function (start?: moment.MomentInput | Recur.Options, end?: mo
     start = this
   }
 
-  return new Recur({ start: start as moment.MomentInput, end: end })
+  return new Recur({ start: start as moment.MomentInput, end })
 }

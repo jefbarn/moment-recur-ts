@@ -1,5 +1,5 @@
+import * as moment from 'moment'
 import { Rule } from './rule'
-import { Moment } from 'moment'
 
 /**
  * @internal
@@ -14,41 +14,29 @@ export type IntervalMeasure = 'days' | 'weeks' | 'months' | 'years'
  */
 export class Interval implements Rule {
 
-  units: number[]
-  measure: IntervalMeasure
+  public readonly units: number[]
+  public readonly measure: IntervalMeasure
 
-  private start: Moment
+  private start: moment.Moment
 
-  constructor (units: (string | number)[], measure: IntervalMeasure, start: Moment | null) {
+  constructor (units: (string | number)[], measure: IntervalMeasure, start: moment.Moment | null) {
 
     if (!start) {
       throw new Error('Must have a start date set to set an interval!')
     }
     this.start = start.clone()
 
-    // Make sure all of the units are integers greater than 0.
-    this.units = units.map(unit => {
-      unit = +unit
-      if (unit <= 0) {
-        throw new Error('Intervals must be greater than zero.')
-      }
-      if (!Number.isInteger(unit)) {
-        throw new Error('Intervals must be integers.')
-      }
-      return unit
-    })
-    this.units.sort((a, b) => a - b)
-
     this.measure = measure
+    this.units = this.normalizeUnits(units)
   }
 
-  match (date: Moment): boolean {
+  public match (date: moment.Moment): boolean {
 
-    let precise = this.measure !== 'days'
-    let diff = Math.abs(this.start.diff(date, this.measure, precise))
+    const precise = this.measure !== 'days'
+    const diff = Math.abs(this.start.diff(date, this.measure, precise))
 
     // Check to see if any of the units provided match the date
-    for (let unit of this.units) {
+    for (const unit of this.units) {
       // If the units divide evenly into the difference, we have a match
       if ((diff % unit) === 0) {
         return true
@@ -58,29 +46,44 @@ export class Interval implements Rule {
     return false
   }
 
-  next (currentDate: Moment): Moment {
+  public next (currentDate: moment.Moment): moment.Moment {
 
     // let precise = this.measure !== 'days'
     // Get the multiple of the start
-    let diff = currentDate.diff(this.start, this.measure)
+    const diff = currentDate.diff(this.start, this.measure)
 
     // Find the next muliple for each unit
-    let multiples = this.units.map(unit => (Math.floor(diff / unit) + 1) * unit)
+    const multiples = this.units.map(unit => (Math.floor(diff / unit) + 1) * unit)
     multiples.sort((a, b) => a - b)
 
-    return this.start.add(multiples[0], this.measure)
+    return this.start.clone().add(multiples[0], this.measure)
   }
 
-  previous (currentDate: Moment): Moment {
+  public previous (currentDate: moment.Moment): moment.Moment {
 
     // let precise = this.measure !== 'days'
     // Get the multiple of the start
-    let diff = this.start.diff(currentDate, this.measure)
+    const diff = this.start.diff(currentDate, this.measure)
 
     // Find the next muliple for each unit
-    let multiples = this.units.map(unit => (Math.floor(diff / unit) - 1) * unit)
+    const multiples = this.units.map(unit => (Math.floor(diff / unit) + 1) * unit)
     multiples.sort((a, b) => b - a)
 
-    return this.start.add(multiples[0], this.measure)
+    return this.start.clone().subtract(multiples[0], this.measure)
+  }
+
+  private normalizeUnits (units: any[]): number[] {
+
+    // Make sure all of the units are integers greater than 0.
+    return units.map(unit => {
+      unit = +unit
+      if (unit <= 0) {
+        throw new Error('Intervals must be greater than zero.')
+      }
+      if (!Number.isInteger(unit)) {
+        throw new Error('Intervals must be integers.')
+      }
+      return unit
+    }).sort((a, b) => a - b)
   }
 }

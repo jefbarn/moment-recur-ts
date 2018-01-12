@@ -1,5 +1,5 @@
-import { Rule } from './rule'
 import * as moment from 'moment'
+import { Rule } from './rule'
 
 /**
  * @internal
@@ -14,6 +14,12 @@ export type CalendarMeasure =
   | 'monthsOfYear'
 
 /**
+ * @internal
+ * @hidden
+ */
+type TimeUnits = 'day' | 'month' | 'week' | 'year'
+
+/**
  * Calendar object for creating and matching calendar-based rules
  * @internal
  * @hidden
@@ -22,8 +28,8 @@ export class Calendar implements Rule {
 
   private static readonly ranges: {
     [key: string]: {
-      period: moment.unitOfTime.Base
-      range: moment.unitOfTime.Base
+      period: TimeUnits
+      range: TimeUnits
       low: number
       high: number
     }
@@ -55,8 +61,8 @@ export class Calendar implements Rule {
     weeksOfYear: {
       period: 'week',
       range: 'year',
-      low: 0,
-      high: 52
+      low: 1,
+      high: 53
     },
     monthsOfYear: {
       period: 'month',
@@ -66,144 +72,125 @@ export class Calendar implements Rule {
     }
   }
 
-  units: number[]
-  measure: CalendarMeasure
+  public readonly units: number[]
+  public readonly measure: CalendarMeasure
+
+  private readonly range: TimeUnits
+  private readonly period: TimeUnits
 
   constructor (units: (string | number)[], measure: CalendarMeasure) {
 
-    // Convert day/month names to numbers, if needed
-    if (measure === 'daysOfWeek') {
-      this.units = this.namesToNumbers(units, 'days')
-    } else if (measure === 'monthsOfYear') {
-      this.units = this.namesToNumbers(units, 'months')
-    } else {
-      this.units = units.map(unit => {
-        unit = +unit
-        if (Number.isInteger(unit)) {
-          return unit
-        } else {
-          throw new TypeError('Invalid calendar unit in recurrence: ' + unit)
-        }
-      })
-    }
-    this.units.sort((a, b) => a - b)
-
     this.measure = measure
+    this.units = this.normalizeUnits(units)
 
-    // Make sure the listed units are in the measure's range
-    this.checkRange()
+    this.range = Calendar.ranges[this.measure].range
+    this.period = Calendar.ranges[this.measure].period
   }
 
-  match (date: moment.Moment): boolean {
+  public match (date: moment.Moment): boolean {
 
     // Get the unit based on the required measure of the date
-    let unit = this.periodUnit(date)
+    const unit = this.periodUnit(date)
 
     // If the unit is in our list, return true, else return false
-    if (this.units.includes(unit)) {
+    if (this.units.indexOf(unit) !== -1) {
       return true
     }
-
-    // match on end of month days
-    if (this.measure === 'daysOfMonth') {
-      if (moment(date).endOf('month').date() === unit) {
-        return this.units.some(unit => unit >= 28)
-      }
+    if ((this.units[0] === -1) &&
+      (unit === this.periodUnit(moment(date).endOf(this.range)))) {
+      return true
     }
 
     return false
   }
 
-  next (currentDate: moment.Moment): moment.Moment {
+  public next (currentDateIn: moment.Moment, limit: moment.Moment): moment.Moment {
 
+    let currentDate = currentDateIn.clone()
     // If still within our period, just give the next day
     if (!this.isLastDayOfPeriod(currentDate)) {
-      let nextDate = moment(currentDate).add(1, 'day')
-      if (this.match(nextDate)) return nextDate
+      const nextDateInPeriod = moment(currentDate).add(1, 'day')
+      if (this.match(nextDateInPeriod)) return nextDateInPeriod
     }
 
-    // Get the next period based on the measure
-    let nextDate = this.nextPeriod(currentDate)
-    if (nextDate) {
-      return nextDate
-    } else {
-      // No more units found within this range,
-      // bump our range by one and try again.
-      currentDate = this.incrementRange(currentDate, 1)
-
-      // Check to see if next range starts on a valid period
-      if (this.match(currentDate)) {
-        return currentDate
-      }
-
-      nextDate = this.nextPeriod(currentDate)
-
-      /* istanbul ignore else */
+    while (true) {
+      // Get the next period based on the measure
+      const nextDate = this.nextPeriod(currentDate)
       if (nextDate) {
         return nextDate
       } else {
-        throw new Error('Could not determine next date for calendar recurrence.')
+        // No more units found within this range,
+        // bump our range by one and try again.
+        currentDate = this.incrementRange(currentDate, 1)
+
+        // Check to see if next range starts on a valid period
+        if (this.match(currentDate)) {
+          return currentDate
+        }
+
+        if (currentDate.isSameOrAfter(limit)) {
+          throw new RangeError('Recurrence Year limit exceeded.')
+        }
       }
     }
   }
 
-  previous (currentDateIn: moment.Moment): moment.Moment {
+  public previous (currentDateIn: moment.Moment, limit: moment.Moment): moment.Moment {
 
     let currentDate = currentDateIn.clone()
     // If still within our period, just give the next day
     if (!this.isFirstDayOfPeriod(currentDate)) {
-      let nextDate = moment(currentDate).subtract(1, 'day')
-      if (this.match(nextDate)) return nextDate
+      const nextDateInPeriod = moment(currentDate).subtract(1, 'day')
+      if (this.match(nextDateInPeriod)) return nextDateInPeriod
     }
 
-    // Get the next period based on the measure
-    let nextDate = this.previousPeriod(currentDate)
-    if (nextDate) {
-      return nextDate
-    } else {
-      // No more units found within this range,
-      // bump our range by one and try again.
-      currentDate = this.decrementRange(currentDate, 1)
-
-      // Check to see if next range starts on a valid period
-      if (this.match(currentDate)) {
-        return currentDate
-      }
-
-      nextDate = this.previousPeriod(currentDate)
-
-      /* istanbul ignore else */
+    while (true) {
+      // Get the next period based on the measure
+      const nextDate = this.previousPeriod(currentDate)
       if (nextDate) {
         return nextDate
       } else {
-        throw new Error('Could not determine next date for calendar recurrence.')
+        // No more units found within this range,
+        // bump our range by one and try again.
+        currentDate = this.decrementRange(currentDate, 1)
+
+        // Check to see if next range starts on a valid period
+        if (this.match(currentDate)) {
+          return currentDate
+        }
+
+        if (currentDate.isSameOrBefore(limit)) {
+          throw new RangeError('Recurrence Year limit exceeded.')
+        }
       }
     }
   }
 
-  // Private function for checking the range of calendar values
-  private checkRange (): void {
+  private normalizeUnits (units: any[]): number[] {
 
-    let low = Calendar.ranges[this.measure].low
-    let high = Calendar.ranges[this.measure].high
+    const low = Calendar.ranges[this.measure].low
+    const high = Calendar.ranges[this.measure].high
 
-    for (let unit of this.units) {
-      if (unit < low || unit > high) {
+    return units.map(unitIn => {
+      if (unitIn === 'last') unitIn = -1
+      if (typeof unitIn !== 'number') {
+        // Convert day/month names to numbers, if needed
+        if (this.measure === 'daysOfWeek') {
+          unitIn = moment().set('days', unitIn).get('days')
+        } else if (this.measure === 'monthsOfYear') {
+          unitIn = moment().set('months', unitIn).get('months')
+        } else {
+          unitIn = +unitIn
+        }
+      }
+      if (!Number.isInteger(unitIn)) {
+        throw new TypeError('Invalid calendar unit in recurrence: ' + unitIn)
+      }
+      if ((unitIn < low || unitIn > high) && (unitIn !== -1)) {
         throw new RangeError('Value should be in range ' + low + ' to ' + high)
       }
-    }
-  }
-
-  // Private function to convert day and month names to numbers
-  private namesToNumbers (units: (string | number)[], nameType: 'days' | 'months'): number[] {
-
-    return units.map(unit => {
-      if (typeof unit === 'number') {
-        return unit
-      } else {
-        return moment().set(nameType, unit).get(nameType)
-      }
-    })
+      return unitIn
+    }).sort((a, b) => a - b)
   }
 
   private periodUnit (date: moment.Moment): number
@@ -226,70 +213,77 @@ export class Calendar implements Rule {
   }
 
   private nextPeriod (date: moment.Moment): moment.Moment | undefined {
-    let period = Calendar.ranges[this.measure].period
-
     // Get the next period based on the measure
-    let currentUnit = this.periodUnit(date)
-    if (this.measure === 'weeksOfYear' && date.month() === 0 && date.week() > 50) currentUnit = 1
-    let nextUnit = this.units.find(unit => unit > currentUnit)
+    const currentUnit = this.periodUnit(date)
+
+    const nextUnit = this.units
+      .map(unit => unit === -1 ? this.periodUnit(date.clone().endOf(this.range)) : unit)
+      .find(unit => unit > currentUnit)
+
     if (nextUnit !== undefined) {
-      return this.periodUnit(date.clone(), nextUnit).startOf(period)
+      return this.periodUnit(date.clone(), nextUnit).startOf(this.period)
     } else {
 
       // Weeks do not follow orderly periods, e.g. a year can begin and end on week 1
-      if (this.measure === 'weeksOfYear' && this.units.includes(1)) {
-        let nextDate = date.clone().endOf('year').startOf('week')
-        if (nextDate.week() === 1) return nextDate
+      if (this.measure === 'weeksOfYear' && (this.units.indexOf(1) !== -1)) {
+        return date.clone().endOf('year').startOf('week')
       }
       return undefined
     }
   }
 
   private previousPeriod (date: moment.Moment): moment.Moment | undefined {
-    let period = Calendar.ranges[this.measure].period
     // Get the next period based on the measure
     let currentUnit = this.periodUnit(date)
     if (this.measure === 'weeksOfYear' && date.month() === 11 && date.week() === 1) currentUnit = 53
-    let nextUnit = this.units.find(unit => unit < currentUnit)
+
+    const nextUnit = this.units
+      .map(unit => unit === -1 ? this.periodUnit(date.clone().endOf(this.range)) : unit)
+      .reverse().find(unit => unit < currentUnit)
+
     if (nextUnit !== undefined) {
       if (this.measure === 'weeksOfYear' && currentUnit === 53) date.week(0)
-      return this.periodUnit(date.clone(), nextUnit).endOf(period)
+      return this.periodUnit(date.clone(), nextUnit).endOf(this.period)
     } else {
 
       // Weeks do not follow orderly periods, e.g. a year can begin and end on week 1
-      if (this.measure === 'weeksOfYear' && this.units.includes(52) || this.units.includes(53)) {
-        let nextDate = date.clone().startOf('year').endOf('week')
-        if (nextDate.week() > 1) return nextDate
+      if (this.measure === 'weeksOfYear' &&
+        this.units.some(u => 52 >= u && u <= 53)) {
+        return date.clone().startOf('year').endOf('week')
       }
       return undefined
     }
   }
 
   private incrementRange (date: moment.Moment, count: number): moment.Moment {
-    let range = Calendar.ranges[this.measure].range
-    return date.add(count, range).startOf(range)
+    return date.add(count, this.range).startOf(this.range)
   }
 
   private decrementRange (date: moment.Moment, count: number): moment.Moment {
-    let range = Calendar.ranges[this.measure].range
-    return date.subtract(count, range).endOf(range)
+    return date.subtract(count, this.range).endOf(this.range)
   }
 
   private isLastDayOfPeriod (date: moment.Moment): boolean {
-    let period = Calendar.ranges[this.measure].period
-    if (period === 'day') {
+    if (this.measure === 'weeksOfMonthByDay') {
+      return date.monthWeekByDay() !== moment(date).add(1, 'day').monthWeekByDay()
+    }
+
+    if (this.period === 'day') {
       return true
     } else {
-      return date.isSame(moment(date).endOf(period))
+      return date.isSame(moment(date).endOf(this.period))
     }
   }
 
   private isFirstDayOfPeriod (date: moment.Moment): boolean {
-    let period = Calendar.ranges[this.measure].period
-    if (period === 'day') {
+    if (this.measure === 'weeksOfMonthByDay') {
+      return date.monthWeekByDay() !== moment(date).subtract(1, 'day').monthWeekByDay()
+    }
+
+    if (this.period === 'day') {
       return true
     } else {
-      return date.isSame(moment(date).startOf(period))
+      return date.isSame(moment(date).startOf(this.period))
     }
   }
 }
