@@ -27,22 +27,20 @@
     "moment": "^2.13.0"
   },
   "devDependencies": {
-    "@reactivex/ix-es2015-umd": "2.3.4",
-    "@reactivex/ix-ts": "2.3.4",
+    "@reactivex/ix-es2015-cjs": "^2.3.4",
     "@types/chai": "^4.1.0",
     "@types/clean-webpack-plugin": "^0.1.0",
     "@types/karma": "^1.7.3",
     "@types/mocha": "^2.2.46",
     "@types/moment-timezone": "^0.5.3",
     "@types/prettier": "^1.9.0",
-    "@types/semver": "5.4.0",
     "@types/webpack": "^3.8.2",
     "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.17",
     "core-js": "^2.5.3",
     "coveralls": "^3.0.0",
     "dts-bundle": "^0.7.3",
-    "ix": "2.3.4",
+    "jest": "^22.0.6",
     "karma": "^1.7.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
@@ -61,6 +59,7 @@
     "rimraf": "^2.6.2",
     "source-map-support": "^0.5.0",
     "touch": "^3.1.0",
+    "ts-jest": "^22.0.1",
     "ts-loader": "^3.2.0",
     "ts-node": "^4.1.0",
     "tslint": "^5.9.1",
@@ -82,7 +81,8 @@
     "docs": "typedoc src && nodetouch docs/.nojekyll",
     "clean": "rimraf dist .nyc_output",
     "prepublishOnly": "yarn build",
-    "validate": "npm-run-all --parallel build test lint"
+    "validate": "npm-run-all --parallel build test lint",
+    "jest": "jest"
   },
   "nyc": {
     "include": [
@@ -97,5 +97,28 @@
   },
   "dependencies": {
     "npm-run-all": "4.1.2"
+  },
+  "jest": {
+    "transform": {
+      ".ts$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.spec.ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "node"
+    ],
+    "mapCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "skipBabel": true
+      }
+    }
   }
 }

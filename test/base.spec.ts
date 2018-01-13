@@ -3,13 +3,7 @@ import * as moment from 'moment-timezone'
 import '../src'
 import { expect } from 'chai'
 import { Recur } from '../src/recur'
-import * as Ix from 'ix'
-// const Ix = require('ix')
-
-// import 'ix/add/iterable-operators/map'
-// // import 'ix/add/iterable-operators/from'
-// import 'ix/add/iterable-operators/toarray'
-// import 'ix/add/iterable-operators/take'
+import * as Ix from '@reactivex/ix-es2015-cjs'
 
 const ISO_DATE_FMT = 'YYYY-MM-DD'
 
@@ -691,7 +685,7 @@ describe('Previous Dates', function () {
     let recurrence = moment('2014-01-01').recur().every(2).days()
     let nextDates = Ix.Iterable.from(recurrence.reverse())
       .take(4)
-      .map((d: moment.Moment) => d.format(ISO_DATE_FMT))
+      .map(d => d.format(ISO_DATE_FMT))
       .toArray()
     expect(nextDates).to.eql([
       '2014-01-01',
@@ -1023,7 +1017,7 @@ describe('Performance', function () {
 
     let leapYears = Ix.Iterable.from(recurrence)
       .take(6)
-      .map((date: moment.Moment) => date.year())
+      .map(date => date.year())
       .toArray()
     expect(leapYears).to.eql([2012, 2016, 2020, 2024, 2028, 2032])
   })
