@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment, { Moment } from 'moment'
 import { Rule } from './rule'
 
 /**
@@ -19,6 +19,13 @@ export type CalendarMeasure =
  */
 type TimeUnits = 'day' | 'month' | 'week' | 'year'
 
+interface RangeDef {
+  period: TimeUnits
+  range: TimeUnits
+  low: number
+  high: number
+}
+
 /**
  * Calendar object for creating and matching calendar-based rules
  * @internal
@@ -26,14 +33,7 @@ type TimeUnits = 'day' | 'month' | 'week' | 'year'
  */
 export class Calendar implements Rule {
 
-  private static readonly ranges: {
-    [key: string]: {
-      period: TimeUnits
-      range: TimeUnits
-      low: number
-      high: number
-    }
-  } = {
+  private static readonly ranges: Record<CalendarMeasure, RangeDef> = {
     daysOfWeek: {
       period: 'day',
       range: 'week',
@@ -87,7 +87,7 @@ export class Calendar implements Rule {
     this.period = Calendar.ranges[this.measure].period
   }
 
-  public match (date: moment.Moment): boolean {
+  public match (date: Moment): boolean {
 
     // Get the unit based on the required measure of the date
     const unit = this.periodUnit(date)
@@ -104,7 +104,7 @@ export class Calendar implements Rule {
     return false
   }
 
-  public next (currentDateIn: moment.Moment, limit: moment.Moment): moment.Moment {
+  public next (currentDateIn: Moment, limit: Moment): Moment {
 
     let currentDate = currentDateIn.clone()
     // If still within our period, just give the next day
@@ -135,7 +135,7 @@ export class Calendar implements Rule {
     }
   }
 
-  public previous (currentDateIn: moment.Moment, limit: moment.Moment): moment.Moment {
+  public previous (currentDateIn: Moment, limit: Moment): Moment {
 
     let currentDate = currentDateIn.clone()
     // If still within our period, just give the next day
@@ -193,9 +193,9 @@ export class Calendar implements Rule {
     }).sort((a, b) => a - b)
   }
 
-  private periodUnit (date: moment.Moment): number
-  private periodUnit (date: moment.Moment, unit: number): moment.Moment
-  private periodUnit (date: moment.Moment, unit?: number): number | moment.Moment {
+  private periodUnit (date: Moment): number
+  private periodUnit (date: Moment, unit: number): Moment
+  private periodUnit (date: Moment, unit?: number): number | Moment {
     switch (this.measure) {
       case 'daysOfWeek':
         return date.day(unit!)
@@ -212,7 +212,7 @@ export class Calendar implements Rule {
     }
   }
 
-  private nextPeriod (date: moment.Moment): moment.Moment | undefined {
+  private nextPeriod (date: Moment): Moment | undefined {
     // Get the next period based on the measure
     const currentUnit = this.periodUnit(date)
 
@@ -232,7 +232,7 @@ export class Calendar implements Rule {
     }
   }
 
-  private previousPeriod (date: moment.Moment): moment.Moment | undefined {
+  private previousPeriod (date: Moment): Moment | undefined {
     // Get the next period based on the measure
     let currentUnit = this.periodUnit(date)
     if (this.measure === 'weeksOfYear' && date.month() === 11 && date.week() === 1) currentUnit = 53
@@ -255,15 +255,15 @@ export class Calendar implements Rule {
     }
   }
 
-  private incrementRange (date: moment.Moment, count: number): moment.Moment {
+  private incrementRange (date: Moment, count: number): Moment {
     return date.add(count, this.range).startOf(this.range)
   }
 
-  private decrementRange (date: moment.Moment, count: number): moment.Moment {
+  private decrementRange (date: Moment, count: number): Moment {
     return date.subtract(count, this.range).endOf(this.range)
   }
 
-  private isLastDayOfPeriod (date: moment.Moment): boolean {
+  private isLastDayOfPeriod (date: Moment): boolean {
     if (this.measure === 'weeksOfMonthByDay') {
       return date.monthWeekByDay() !== moment(date).add(1, 'day').monthWeekByDay()
     }
@@ -275,7 +275,7 @@ export class Calendar implements Rule {
     }
   }
 
-  private isFirstDayOfPeriod (date: moment.Moment): boolean {
+  private isFirstDayOfPeriod (date: Moment): boolean {
     if (this.measure === 'weeksOfMonthByDay') {
       return date.monthWeekByDay() !== moment(date).subtract(1, 'day').monthWeekByDay()
     }

@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment, { Moment, MomentInput } from 'moment'
 import { Recur } from './recur'
 
 declare module 'moment' {
@@ -12,7 +12,7 @@ declare module 'moment' {
      * ```
      */
     monthWeek (): number
-    monthWeek (week: number): moment.Moment
+    monthWeek (week: number): this
 
     /**
      * Plugin for calculating the occurrence of the day of the week in the month.
@@ -21,7 +21,7 @@ declare module 'moment' {
      * of the week in the month.
      */
     monthWeekByDay (): number
-    monthWeekByDay (dayCount: number): moment.Moment
+    monthWeekByDay (dayCount: number): this
 
     /**
      * The `dateOnly()` method can be used to remove any time information from a moment.
@@ -29,7 +29,7 @@ declare module 'moment' {
      * moment("2014-01-01 09:30:26").dateOnly(); // 01/01/2014 12:00:00 AM
      * ```
      */
-    dateOnly (): moment.Moment
+    dateOnly (): this
 
     /**
      * Recur can also be created the following ways:
@@ -48,7 +48,7 @@ declare module 'moment' {
      * @internal
      * @hidden
      */
-    set (unit: moment.unitOfTime.All, value: number | string): moment.Moment
+    set (unit: moment.unitOfTime.All, value: number | string): this
   }
 
   /**
@@ -64,7 +64,7 @@ declare module 'moment' {
   function recur (options?: Recur.Options): Recur
 }
 
-moment.fn.monthWeek = function (this: moment.Moment, week?: number): number | moment.Moment {
+moment.fn.monthWeek = function (this: Moment, week?: number): number | Moment {
 
   if (week === undefined) {
     // First day of the first week of the month
@@ -78,26 +78,26 @@ moment.fn.monthWeek = function (this: moment.Moment, week?: number): number | mo
     const weekDiff = week - this.monthWeek()
     return this.clone().add(weekDiff, 'weeks')
   }
-} as {(): number, (w: number): moment.Moment}
+} as {(): number, (w: number): Moment}
 
-moment.fn.monthWeekByDay = function (this: moment.Moment, week?: number): number | moment.Moment {
+moment.fn.monthWeekByDay = function (this: Moment, week?: number): number | Moment {
   if (week === undefined) {
     return Math.floor((this.date() - 1) / 7)
   } else {
     const weekDiff = week - this.monthWeekByDay()
     return this.clone().add(weekDiff, 'weeks')
   }
-} as {(): number, (w: number): moment.Moment}
+} as {(): number, (w: number): Moment}
 
 // Plugin for removing all time information from a given date
-moment.fn.dateOnly = function (): moment.Moment {
+moment.fn.dateOnly = function (): Moment {
   // return this.startOf('day')
   return this.isValid() ? moment.utc(this.format('YYYY-MM-DD')) : this
 }
 
 ;
-(moment as any).recur = function (start?: moment.MomentInput | Recur.Options,
-                                  end?: moment.MomentInput): Recur {
+(moment as any).recur = function (start?: MomentInput | Recur.Options,
+                                  end?: MomentInput): Recur {
   // If we have an object, use it as a set of options
   if (typeof start === 'object' && !moment.isMoment(start)) {
     const options = start as Recur.Options
@@ -108,9 +108,9 @@ moment.fn.dateOnly = function (): moment.Moment {
   return new Recur({ start, end })
 }
 
-moment.fn.recur = function (this: moment.Moment,
-                            start?: moment.MomentInput | Recur.Options,
-                            end?: moment.MomentInput): Recur {
+moment.fn.recur = function (this: Moment,
+                            start?: MomentInput | Recur.Options,
+                            end?: MomentInput): Recur {
   // If we have an object, use it as a set of options
   if (start === Object(start) && !moment.isMoment(start)) {
     const options = start as Recur.Options
@@ -124,7 +124,7 @@ moment.fn.recur = function (this: moment.Moment,
 
   // if there is no end value, use the start value as the end
   if (!end) {
-    end = start as moment.MomentInput
+    end = start as MomentInput
     start = undefined
   }
 
@@ -133,5 +133,5 @@ moment.fn.recur = function (this: moment.Moment,
     start = this
   }
 
-  return new Recur({ start: start as moment.MomentInput, end })
+  return new Recur({ start: start as MomentInput, end })
 }

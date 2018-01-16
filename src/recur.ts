@@ -1,10 +1,5 @@
-import * as moment from 'moment'
+import moment, { Moment, MomentInput } from 'moment'
 import { Rule } from './rule'
-
-/** @hidden */
-export type Moment = moment.Moment
-/** @hidden */
-export type MomentInput = moment.MomentInput
 
 /**
  * @internal
@@ -129,23 +124,24 @@ export interface Recur {
  * * weekOfYear / weeksOfYear
  * * monthOfYear / monthsOfYear
  */
-export class Recur implements Iterable<moment.Moment> {
+export class Recur implements Iterable<Moment> {
 
   /**
    * @internal
    * @hidden
    */
-  protected start: Moment | null
+  private start: Moment | null
   /**
    * @internal
    * @hidden
    */
-  protected end: Moment | null
+  private end: Moment | null
   /**
+   * Temporary from date for next/previous. Does not get imported/exported.
    * @internal
    * @hidden
    */
-  protected from: Moment | null
+  private from: Moment | null
 
   /**
    * @internal
@@ -159,15 +155,17 @@ export class Recur implements Iterable<moment.Moment> {
   private exceptions: Moment[]
 
   /**
+   * Temporary units integer, array, or object. Does not get imported/exported.
    * @internal
    * @hidden
    */
-  private units: Rule.UnitsInput
+  private units?: Rule.UnitsInput
   /**
+   * Temporary measure type. Does not get imported/exported.
    * @internal
    * @hidden
    */
-  private measure: Rule.MeasureInput
+  private measure?: Rule.MeasureInput
 
   /**
    * @internal
@@ -235,12 +233,6 @@ export class Recur implements Iterable<moment.Moment> {
     // Our list of exceptions. Match always fails on these dates.
     const exceptions = options.exceptions || []
     this.exceptions = exceptions.map(ex => moment(ex).dateOnly())
-
-    // Temporary units integer, array, or object. Does not get imported/exported.
-    this.units = null
-
-    // Temporary measure type. Does not get imported/exported.
-    this.measure = null
 
     // Temporary from date for next/previous. Does not get imported/exported.
     this.from = null
@@ -423,11 +415,11 @@ export class Recur implements Iterable<moment.Moment> {
    */
   public every (units: Rule.UnitsInput, measure?: Rule.MeasureInput): this {
 
-    if (units != null) {
+    if (units) {
       this.units = units
     }
 
-    if (measure != null) {
+    if (measure) {
       this.measure = measure
     }
 
@@ -443,8 +435,8 @@ export class Recur implements Iterable<moment.Moment> {
     }
 
     // Remove the temporary rule data
-    this.units = null
-    this.measure = null
+    this.units = undefined
+    this.measure = undefined
 
     // Remove existing rule based on measure
     this.rules = this.rules.filter(oldRule => oldRule.measure !== rule.measure)
@@ -713,14 +705,14 @@ export class Recur implements Iterable<moment.Moment> {
    * @internal
    */
   private addMeasureFunctions (): void {
-    for (const measureSingle of Object.keys(Rule.MeasureSingleToPlural)) {
-      const measurePlural = Rule.MeasureSingleToPlural[measureSingle];
-      (Recur as any).prototype[measureSingle] = (units?: Rule.UnitsInput): this => {
-        this.every(units, measurePlural)
+    for (const singleMeasure of Object.keys(Rule.Measures)) {
+      const pluralMeasure = Rule.Measures[singleMeasure];
+      (Recur as any).prototype[singleMeasure] = (units?: Rule.UnitsInput): this => {
+        this.every(units, pluralMeasure)
         return this
       }
-      (Recur as any).prototype[measurePlural] = (units?: Rule.UnitsInput): this => {
-        this.every(units, measurePlural)
+      (Recur as any).prototype[pluralMeasure] = (units?: Rule.UnitsInput): this => {
+        this.every(units, pluralMeasure)
         return this
       }
     }
