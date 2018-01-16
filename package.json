@@ -95,9 +95,6 @@
       "ts-node/register"
     ]
   },
-  "dependencies": {
-    "npm-run-all": "4.1.2"
-  },
   "jest": {
     "transform": {
       ".ts$": "ts-jest"
