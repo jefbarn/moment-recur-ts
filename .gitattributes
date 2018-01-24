@@ -1,0 +1,5 @@
+* text=auto
+docs/**/* text eol=lf
+
+*.png binary
+*.jpg binary
