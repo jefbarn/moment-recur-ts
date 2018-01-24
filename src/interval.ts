@@ -1,4 +1,4 @@
-import { Moment } from 'moment'
+import * as moment from 'moment'
 import { Rule } from './rule'
 
 /**
@@ -17,9 +17,9 @@ export class Interval implements Rule {
   public readonly units: number[]
   public readonly measure: IntervalMeasure
 
-  private start: Moment
+  private start: moment.Moment
 
-  constructor (units: (string | number)[], measure: IntervalMeasure, start: Moment | null) {
+  constructor (units: (string | number)[], measure: IntervalMeasure, start: moment.Moment | null) {
 
     if (!start) {
       throw new Error('Must have a start date set to set an interval!')
@@ -30,7 +30,7 @@ export class Interval implements Rule {
     this.units = this.normalizeUnits(units)
   }
 
-  public match (date: Moment): boolean {
+  public match (date: moment.Moment): boolean {
 
     const precise = this.measure !== 'days'
     const diff = Math.abs(this.start.diff(date, this.measure, precise))
@@ -46,7 +46,7 @@ export class Interval implements Rule {
     return false
   }
 
-  public next (currentDate: Moment): Moment {
+  public next (currentDate: moment.Moment): moment.Moment {
 
     // let precise = this.measure !== 'days'
     // Get the multiple of the start
@@ -59,7 +59,7 @@ export class Interval implements Rule {
     return this.start.clone().add(multiples[0], this.measure)
   }
 
-  public previous (currentDate: Moment): Moment {
+  public previous (currentDate: moment.Moment): moment.Moment {
 
     // let precise = this.measure !== 'days'
     // Get the multiple of the start

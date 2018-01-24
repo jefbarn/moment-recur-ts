@@ -1,30 +1,50 @@
-import { Moment } from 'moment'
+import * as moment from 'moment'
 import { Calendar } from './calendar'
 import { Interval } from './interval'
 
 export namespace Rule {
+  export type MeasureSingle =
+    'day'
+    | 'week'
+    | 'month'
+    | 'year'
+    | 'dayOfWeek'
+    | 'dayOfMonth'
+    | 'weekOfMonth'
+    | 'weekOfMonthByDay'
+    | 'weekOfYear'
+    | 'monthOfYear'
+
+  export type MeasurePlural =
+    'days'
+    | 'weeks'
+    | 'months'
+    | 'years'
+    | 'daysOfWeek'
+    | 'daysOfMonth'
+    | 'weeksOfMonth'
+    | 'weeksOfMonthByDay'
+    | 'weeksOfYear'
+    | 'monthsOfYear'
 
   /**
    * @internal
    * @hidden
    */
-  export class MeasureSingleToPlural {
-    public day: 'days'
-    public week: 'weeks'
-    public month: 'months'
-    public year: 'years'
-    public dayOfWeek: 'daysOfWeek'
-    public dayOfMonth: 'daysOfMonth'
-    public weekOfMonth: 'weeksOfMonth'
-    public weekOfMonthByDay: 'weeksOfMonthByDay'
-    public weekOfYear: 'weeksOfYear'
-    public monthOfYear: 'monthsOfYear'
-    [k: string]: string
+  export const MeasureSingleToPlural: {
+    [m: string]: MeasurePlural
+  } = {
+    day: 'days',
+    week: 'weeks',
+    month: 'months',
+    year: 'years',
+    dayOfWeek: 'daysOfWeek',
+    dayOfMonth: 'daysOfMonth',
+    weekOfMonth: 'weeksOfMonth',
+    weekOfMonthByDay: 'weeksOfMonthByDay',
+    weekOfYear: 'weeksOfYear',
+    monthOfYear: 'monthsOfYear'
   }
-  export const Measures = new MeasureSingleToPlural()
-
-  export type MeasureSingle = keyof MeasureSingleToPlural
-  export type MeasurePlural = MeasureSingleToPlural[keyof MeasureSingleToPlural]
 
   export type UnitsInput = string | number | (string | number)[] | UnitsObject | undefined | null
 
@@ -38,13 +58,13 @@ export namespace Rule {
     [unit: number]: boolean
   }
 
-  export type MeasureInput = MeasureSingle | MeasurePlural | undefined
+  export type MeasureInput = MeasureSingle | MeasurePlural | undefined | null
 
   /**
    * @internal
    * @hidden
    */
-  export function factory (units: UnitsInput, measure: MeasureInput, start: Moment | null): Rule {
+  export function factory (units: UnitsInput, measure: MeasureInput, start: moment.Moment | null): Rule {
 
     const normMeasure = normalizeMeasure(measure)
 
@@ -62,9 +82,6 @@ export namespace Rule {
       case 'weeksOfYear':
       case 'monthsOfYear':
         return new Calendar(unitsToArray(units), normMeasure)
-
-      default:
-        throw new Error('Invalid measure in recurrence rule')
     }
   }
 
@@ -96,11 +113,15 @@ export namespace Rule {
    * @hidden
    */
   export function normalizeMeasure (measure: any): MeasurePlural {
-    for (const singleMeasure of Object.keys(Measures)) {
-      const pluralMeasure = Measures[singleMeasure]
-      if (measure === singleMeasure || measure === pluralMeasure) return pluralMeasure
+    if (typeof measure === 'string') {
+      if (MeasureSingleToPlural[measure]) {
+        return MeasureSingleToPlural[measure]
+      } else {
+        for (const key in MeasureSingleToPlural) {
+          if (MeasureSingleToPlural[key] === measure) return measure
+        }
+      }
     }
-
     throw new Error('Invalid Measure for recurrence: ' + measure)
   }
 }
@@ -117,9 +138,9 @@ export interface Rule {
    * @internal
    * @hidden
    */
-  match (date: Moment): boolean
+  match (date: moment.Moment): boolean
 
-  next (current: Moment, limit?: Moment): Moment
+  next (current: moment.Moment, limit?: moment.Moment): moment.Moment
 
-  previous (current: Moment, limit?: Moment): Moment
+  previous (current: moment.Moment, limit?: moment.Moment): moment.Moment
 }
