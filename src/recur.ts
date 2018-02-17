@@ -135,17 +135,17 @@ export class Recur implements Iterable<moment.Moment> {
    * @internal
    * @hidden
    */
-  protected start: Moment | null
+  protected start?: Moment
   /**
    * @internal
    * @hidden
    */
-  protected end: Moment | null
+  protected end?: Moment
   /**
    * @internal
    * @hidden
    */
-  protected from: Moment | null
+  protected from?: Moment
 
   /**
    * @internal
@@ -243,7 +243,7 @@ export class Recur implements Iterable<moment.Moment> {
     this.measure = null
 
     // Temporary from date for next/previous. Does not get imported/exported.
-    this.from = null
+    this.from = undefined
 
     this.addMeasureFunctions()
 
@@ -262,7 +262,7 @@ export class Recur implements Iterable<moment.Moment> {
   public startDate (date: MomentInput | null): Recur
   public startDate (date?: MomentInput): Moment | Recur {
     if (date === null) {
-      this.start = null
+      this.start = undefined
       return this
     }
 
@@ -289,7 +289,7 @@ export class Recur implements Iterable<moment.Moment> {
   public endDate (date: MomentInput | null): Recur
   public endDate (date?: MomentInput): Moment | Recur {
     if (date === null) {
-      this.end = null
+      this.end = undefined
       return this
     }
 
@@ -316,7 +316,7 @@ export class Recur implements Iterable<moment.Moment> {
   public fromDate (date: MomentInput | null): Recur
   public fromDate (date?: MomentInput): Moment | Recur {
     if (date === null) {
-      this.from = null
+      this.from = undefined
       return this
     }
 

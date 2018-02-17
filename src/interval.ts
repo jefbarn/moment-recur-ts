@@ -17,9 +17,9 @@ export class Interval implements Rule {
   public readonly units: number[]
   public readonly measure: IntervalMeasure
 
-  private start: moment.Moment
+  private readonly start: moment.Moment
 
-  constructor (units: (string | number)[], measure: IntervalMeasure, start: moment.Moment | null) {
+  constructor (units: (string | number)[], measure: IntervalMeasure, start?: moment.Moment) {
 
     if (!start) {
       throw new Error('Must have a start date set to set an interval!')

@@ -64,7 +64,7 @@ export namespace Rule {
    * @internal
    * @hidden
    */
-  export function factory (units: UnitsInput, measure: MeasureInput, start: moment.Moment | null): Rule {
+  export function factory (units: UnitsInput, measure: MeasureInput, start?: moment.Moment): Rule {
 
     const normMeasure = normalizeMeasure(measure)
 
