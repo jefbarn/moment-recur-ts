@@ -74,8 +74,8 @@ export interface Recur {
    * cal = moment.recur().every("January").monthsOfYear();
    * ```
    */
-  monthsOfYear (units?: Rule.UnitsInput): Recur
-  monthOfYear (units?: Rule.UnitsInput): Recur
+  monthsOfYear (units?: Rule.UnitsInput): this
+  monthOfYear (units?: Rule.UnitsInput): this
 
   /**
    * A weekOfMonthByDay interval is available for combining with the daysOfWeek to
@@ -94,8 +94,8 @@ export interface Recur {
    *   .every(moment("01/01/2014").monthWeekByDay()).weeksOfMonthByDay();
    * ```
    */
-  weeksOfMonthByDay (units?: Rule.UnitsInput): Recur
-  weekOfMonthByDay (units?: Rule.UnitsInput): Recur
+  weeksOfMonthByDay (units?: Rule.UnitsInput): this
+  weekOfMonthByDay (units?: Rule.UnitsInput): this
 }
 
 /**
@@ -259,8 +259,8 @@ export class Recur implements Iterable<moment.Moment> {
    * @category getter/setter
    */
   public startDate (): Moment
-  public startDate (date: MomentInput | null): Recur
-  public startDate (date?: MomentInput): Moment | Recur {
+  public startDate (date: MomentInput | null): this
+  public startDate (date?: MomentInput): Moment | this {
     if (date === null) {
       this.start = undefined
       return this
@@ -286,8 +286,8 @@ export class Recur implements Iterable<moment.Moment> {
    * @category getter/setter
    */
   public endDate (): Moment
-  public endDate (date: MomentInput | null): Recur
-  public endDate (date?: MomentInput): Moment | Recur {
+  public endDate (date: MomentInput | null): this
+  public endDate (date?: MomentInput): Moment | this {
     if (date === null) {
       this.end = undefined
       return this
@@ -313,8 +313,8 @@ export class Recur implements Iterable<moment.Moment> {
    * @category getter/setter
    */
   public fromDate (): Moment
-  public fromDate (date: MomentInput | null): Recur
-  public fromDate (date?: MomentInput): Moment | Recur {
+  public fromDate (date: MomentInput | null): this
+  public fromDate (date?: MomentInput): Moment | this {
     if (date === null) {
       this.from = undefined
       return this
@@ -336,8 +336,8 @@ export class Recur implements Iterable<moment.Moment> {
    * rules. Use this function to query or change the maximum limit.
    */
   public maxYears (): number
-  public maxYears (years: number): Recur
-  public maxYears (years?: number): number | Recur {
+  public maxYears (years: number): this
+  public maxYears (years?: number): number | this {
     if (years) {
       this.maximumYears = years
       return this
