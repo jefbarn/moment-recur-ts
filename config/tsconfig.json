@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "module": "commonjs",
-    "lib": ["dom", "dom.iterable", "es2017"],
-    "skipLibCheck": true
-  }
-}

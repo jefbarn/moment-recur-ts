@@ -23,11 +23,24 @@
   "engines": {
     "node": ">=6.0.0"
   },
+  "scripts": {
+    "up": "yarn upgrade-interactive --latest",
+    "test": "nyc mocha",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "lint": "tslint -p . src/**/*.ts",
+    "build": "yarn bundle && yarn docs",
+    "bundle": "webpack --config ./webpack.config.umd.ts",
+    "docs": "typedoc src && nodetouch docs/.nojekyll",
+    "clean": "rimraf dist .nyc_output",
+    "prepublishOnly": "yarn build",
+    "validate": "npm-run-all --parallel build test lint",
+    "jest": "jest"
+  },
   "peerDependencies": {
     "moment": "^2.13.0"
   },
   "devDependencies": {
-    "@reactivex/ix-es2015-cjs": "^2.3.4",
+    "@reactivex/ix-es2015-cjs": "^2.3.5",
     "@types/chai": "^4.1.2",
     "@types/clean-webpack-plugin": "^0.1.1",
     "@types/karma": "^1.7.3",
@@ -40,7 +53,7 @@
     "core-js": "^2.5.3",
     "coveralls": "^3.0.0",
     "dts-bundle": "^0.7.3",
-    "jest": "^22.3.0",
+    "jest": "^22.4.2",
     "karma": "^2.0.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
@@ -55,34 +68,22 @@
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14",
     "nyc": "^11.4.1",
-    "prettier": "^1.10.2",
+    "prettier": "^1.11.1",
     "rimraf": "^2.6.2",
     "source-map-support": "^0.5.3",
     "touch": "^3.1.0",
-    "ts-jest": "^22.0.4",
-    "ts-loader": "^3.5.0",
+    "ts-jest": "^22.4.0",
+    "ts-loader": "^4.0.0",
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.10.0",
     "typescript": "^2.7.2",
-    "webpack": "^3.11.0"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.9"
   },
   "resolutions": {
     "**/moment": "^2.20.1"
-  },
-  "scripts": {
-    "up": "yarn upgrade-interactive --latest",
-    "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "lint": "tslint -p . src/**/*.ts",
-    "build": "yarn bundle && yarn docs",
-    "bundle": "webpack --config ./config/webpack.config.umd.ts",
-    "docs": "typedoc src && nodetouch docs/.nojekyll",
-    "clean": "rimraf dist .nyc_output",
-    "prepublishOnly": "yarn build",
-    "validate": "npm-run-all --parallel build test lint",
-    "jest": "jest"
   },
   "nyc": {
     "include": [
