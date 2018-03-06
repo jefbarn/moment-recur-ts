@@ -34,7 +34,7 @@
     "@types/mocha": "^2.2.48",
     "@types/moment-timezone": "^0.5.4",
     "@types/prettier": "^1.10.0",
-    "@types/webpack": "^3.8.8",
+    "@types/webpack": "^4.0.0",
     "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.18",
     "core-js": "^2.5.3",
