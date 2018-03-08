@@ -1,25 +1,26 @@
 import * as CleanWebpackPlugin from 'clean-webpack-plugin'
+import * as dts from 'dts-bundle'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as prettier from 'prettier'
 import * as webpack from 'webpack'
 
 class DtsBundlePlugin implements webpack.Plugin {
-  public apply (compiler: any) {
-    compiler.hooks.done.tap('DtsBundlePlugin', function () {
-      let dts = require('dts-bundle')
+  public apply (compiler: any): void {
+    compiler.hooks.done.tap('DtsBundlePlugin', () => {
+      // let dts = require('dts-bundle')
 
       dts.bundle({
         name: 'moment',
         main: 'dist/types/index.d.ts',
         out: '../moment-recur-ts.d.ts',
-        removeSource: true,
-        outputAsModuleFolder: true
+        removeSource: true
+        // outputAsModuleFolder: true
       })
 
       fs.rmdirSync(path.resolve(__dirname, './dist/types'))
 
-      let filename = path.resolve(__dirname, './dist/moment-recur-ts.d.ts')
+      const filename = path.resolve(__dirname, './dist/moment-recur-ts.d.ts')
       fs.writeFileSync(filename, prettier.format(
         fs.readFileSync(filename, 'utf8'),
         {
@@ -32,7 +33,7 @@ class DtsBundlePlugin implements webpack.Plugin {
   }
 }
 
-const config: any = { // const config: webpack.Configuration = {
+const config: webpack.Configuration = {
   mode: 'production',
   entry: {
     'moment-recur-ts': './src/index.ts',
