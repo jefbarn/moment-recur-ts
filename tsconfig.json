@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "lib": ["ES2016", "esnext.asynciterable", "dom"],
+    "lib": ["es2016", "esnext.asynciterable", "dom"],
     "downlevelIteration": true,
 
     "strict": true,
@@ -13,7 +13,9 @@
     "declarationDir": "dist/types",
     "sourceMap": true,
     "declaration": true,
-    "stripInternal": true
+    "stripInternal": true,
+
+    "skipLibCheck": true
   },
   "include": [
     "**/*.ts"

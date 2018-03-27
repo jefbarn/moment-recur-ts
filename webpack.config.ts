@@ -1,25 +1,27 @@
-import * as path from 'path'
-import * as fs from 'fs'
-import * as webpack from 'webpack'
 import * as CleanWebpackPlugin from 'clean-webpack-plugin'
+import * as dts from 'dts-bundle'
+import * as fs from 'fs'
+import * as path from 'path'
 import * as prettier from 'prettier'
+import * as UglifyJsPlugin from 'uglifyjs-webpack-plugin'
+import * as webpack from 'webpack'
 
 class DtsBundlePlugin implements webpack.Plugin {
-  apply (compiler: any) {
-    compiler.plugin('done', function () {
-      let dts = require('dts-bundle')
+  public apply (compiler: any): void {
+    compiler.hooks.done.tap('DtsBundlePlugin', () => {
+      // let dts = require('dts-bundle')
 
       dts.bundle({
         name: 'moment',
         main: 'dist/types/index.d.ts',
         out: '../moment-recur-ts.d.ts',
-        removeSource: true,
-        outputAsModuleFolder: true
+        removeSource: true
+        // outputAsModuleFolder: true
       })
 
-      fs.rmdirSync(path.resolve(__dirname, '../dist/types'))
+      fs.rmdirSync(path.resolve(__dirname, './dist/types'))
 
-      let filename = path.resolve(__dirname, '../dist/moment-recur-ts.d.ts')
+      const filename = path.resolve(__dirname, './dist/moment-recur-ts.d.ts')
       fs.writeFileSync(filename, prettier.format(
         fs.readFileSync(filename, 'utf8'),
         {
@@ -33,12 +35,13 @@ class DtsBundlePlugin implements webpack.Plugin {
 }
 
 const config: webpack.Configuration = {
+  mode: 'production',
   entry: {
     'moment-recur-ts': './src/index.ts',
     'moment-recur-ts.min': './src/index.ts'
   },
   output: {
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, './dist'),
     filename: '[name].js',
     libraryTarget: 'umd',
     library: 'moment-recur-ts',
@@ -51,18 +54,29 @@ const config: webpack.Configuration = {
     moment: 'moment'
   },
   devtool: 'source-map',
+  // optimization: {
+  //   minimize: true
+  // },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        include: /\.min\.js$/
+      })
+    ]
+  },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      include: /\.min\.js$/
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true,
+    //   include: /\.min\.js$/
+    // }),
     // new DeclarationBundlerPlugin({
     //   moduleName: 'moment',
     //   out: 'moment-recur-ts.d.ts'
     // }),
     new DtsBundlePlugin(),
 
-    new CleanWebpackPlugin(['../dist'], {
+    new CleanWebpackPlugin(['./dist'], {
       allowExternal: true
     })
   ],

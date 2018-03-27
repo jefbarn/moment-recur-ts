@@ -15,6 +15,7 @@
     "array-type": [true, "array"],
     "object-literal-sort-keys": false,
     "only-arrow-functions": false,
-    "no-namespace": false
+    "no-namespace": false,
+    "no-implicit-dependencies": [true, "dev"]
   }
 }
