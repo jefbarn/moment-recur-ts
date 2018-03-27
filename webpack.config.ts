@@ -3,6 +3,7 @@ import * as dts from 'dts-bundle'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as prettier from 'prettier'
+import * as UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 import * as webpack from 'webpack'
 
 class DtsBundlePlugin implements webpack.Plugin {
@@ -56,6 +57,14 @@ const config: webpack.Configuration = {
   // optimization: {
   //   minimize: true
   // },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        include: /\.min\.js$/
+      })
+    ]
+  },
   plugins: [
     // new webpack.optimize.UglifyJsPlugin({
     //   sourceMap: true,
