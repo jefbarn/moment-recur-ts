@@ -94,6 +94,10 @@
   "resolutions": {
     "**/moment": "2.21.0"
   },
+  "prettier" : {
+    "semi": false,
+    "singleQuote": true
+  },
   "nyc": {
     "include": [
       "src/**/*.ts"
