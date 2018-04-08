@@ -474,6 +474,20 @@ describe('Rules', function () {
     expect(recurrence.hasRule('days')).to.be.true
     expect(recurrence.hasRule('months')).to.be.false
   })
+
+  // it('should fail fast for rules that will never match', function () {
+  //   let start = moment('01/01/2018', 'MM/DD/YYYY')
+  //   let end = moment('12/06/2018', 'MM/DD/YYYY')
+  //
+  //   let recurrence = start.recur(end)
+  //     .every(['Tuesday']).daysOfWeek()
+  //     .every(3).weeks()
+  //
+  //   let dates = recurrence.next(1, ISO_DATE_FMT)
+  //   expect(dates).to.eql([
+  //     '2018-01-02'
+  //   ])
+  // })
 })
 
 describe('weeksOfMonthByDay()', function () {
