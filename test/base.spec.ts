@@ -1,5 +1,5 @@
 import 'core-js'
-import * as moment from 'moment-timezone'
+import moment from 'moment-timezone'
 import '../src'
 import { expect } from 'chai'
 import { Recur } from '../src/recur'

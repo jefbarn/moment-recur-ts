@@ -1,9 +1,9 @@
-import * as CleanWebpackPlugin from 'clean-webpack-plugin'
+import CleanWebpackPlugin from 'clean-webpack-plugin'
 import * as dts from 'dts-bundle'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as prettier from 'prettier'
-import * as UglifyJsPlugin from 'uglifyjs-webpack-plugin'
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 import * as webpack from 'webpack'
 
 class DtsBundlePlugin implements webpack.Plugin {

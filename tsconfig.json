@@ -4,6 +4,7 @@
     "target": "es5",
     "lib": ["es2016", "esnext.asynciterable", "dom"],
     "downlevelIteration": true,
+    "esModuleInterop": true,
 
     "strict": true,
     "noImplicitReturns": true,
