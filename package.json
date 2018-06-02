@@ -45,7 +45,7 @@
     "@types/clean-webpack-plugin": "^0.1.2",
     "@types/core-js": "^0.9.46",
     "@types/dts-bundle": "^0.0.30",
-    "@types/jest": "^22.2.3",
+    "@types/jest": "^23.0.0",
     "@types/karma": "^1.7.3",
     "@types/karma-chai": "^0.1.0",
     "@types/mocha": "^5.2.0",
