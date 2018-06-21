@@ -589,7 +589,7 @@ export class Recur implements Iterable<moment.Moment> {
       yield currentDate.clone()
     }
 
-    while (true) {
+    for (;;) {
 
       try {
         currentDate = this.reversed ?
