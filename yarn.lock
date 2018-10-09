@@ -153,9 +153,18 @@
   dependencies:
     "@types/webpack" "*"
 
-"@types/webpack@*", "@types/webpack@4.4.2", "@types/webpack@^4.4.2":
+"@types/webpack@*", "@types/webpack@4.4.2":
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.4.2.tgz#44213e0dca0924544a2831ee42de2750124ef9b5"
+  dependencies:
+    "@types/node" "*"
+    "@types/tapable" "*"
+    "@types/uglify-js" "*"
+    source-map "^0.6.0"
+
+"@types/webpack@^4.4.15":
+  version "4.4.15"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.4.15.tgz#156109efe99aaf81238b257a64c55b4552323a4c"
   dependencies:
     "@types/node" "*"
     "@types/tapable" "*"
