@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@reactivex/ix-es2015-cjs": "^2.3.5",
-    "@types/clean-webpack-plugin": "^0.1.2",
+    "@types/clean-webpack-plugin": "0.1.2",
     "@types/core-js": "^2.5.0",
     "@types/dts-bundle": "^0.0.30",
     "@types/jest": "^23.1.1",
