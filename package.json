@@ -51,7 +51,7 @@
     "@types/source-map-support": "^0.4.1",
     "@types/touch": "^3.1.0",
     "@types/uglifyjs-webpack-plugin": "^1.1.0",
-    "@types/webpack": "^4.4.2",
+    "@types/webpack": "^4.39.4",
     "clean-webpack-plugin": "^0.1.19",
     "core-js": "^2.5.7",
     "coveralls": "^3.0.1",
