@@ -58,7 +58,7 @@
     "dts-bundle": "^0.7.3",
     "jest": "^23.1.0",
     "moment": "^2.22.2",
-    "moment-timezone": "^0.5.20",
+    "moment-timezone": "^0.5.28",
     "prettier": "^1.13.5",
     "rimraf": "^2.6.2",
     "source-map-support": "^0.5.6",
