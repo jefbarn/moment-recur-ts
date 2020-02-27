@@ -40,7 +40,7 @@
     "moment": "^2.13.0"
   },
   "devDependencies": {
-    "@reactivex/ix-es2015-cjs": "^2.3.5",
+    "@reactivex/ix-es2015-cjs": "^3.0.2",
     "@types/clean-webpack-plugin": "^0.1.2",
     "@types/core-js": "^2.5.0",
     "@types/dts-bundle": "^0.0.30",
