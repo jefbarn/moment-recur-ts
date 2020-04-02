@@ -46,7 +46,7 @@
     "@types/dts-bundle": "^0.0.30",
     "@types/jest": "^23.1.1",
     "@types/moment-timezone": "^0.5.6",
-    "@types/prettier": "^1.13.1",
+    "@types/prettier": "^2.0.0",
     "@types/rimraf": "^2.0.2",
     "@types/source-map-support": "^0.4.1",
     "@types/touch": "^3.1.0",
