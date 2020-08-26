@@ -1,5 +1,9 @@
 # moment-recur-ts
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+I've switched over to rrule module for recurrence calculations.
+
 This is a fork and conversion of the moment-recur library into TypeScript.
 
 It adds additional features and improved performance.
