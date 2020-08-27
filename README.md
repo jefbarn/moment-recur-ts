@@ -10,7 +10,8 @@ It adds additional features and improved performance.
 
 [Online documentation](https://jefbarn.github.io/moment-recur-ts/)
 
-[![npm version](https://badge.fury.io/js/moment-recur-ts.svg)](https://badge.fury.io/js/moment-recur-ts)
+[![npm version](https://badge.fury.io/js/moment-recur-ts.svg)](https://badge.fury.io/js/moment-recur-ts)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjefbarn%2Fmoment-recur-ts.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjefbarn%2Fmoment-recur-ts?ref=badge_shield)
+
 [![Build Status](https://travis-ci.org/jefbarn/moment-recur-ts.svg?branch=master)](https://travis-ci.org/jefbarn/moment-recur-ts)
 [![Coverage Status](https://coveralls.io/repos/github/jefbarn/moment-recur-ts/badge.svg?branch=master)](https://coveralls.io/github/jefbarn/moment-recur-ts?branch=master)
 [![Greenkeeper badge](https://badges.greenkeeper.io/jefbarn/moment-recur-ts.svg)](https://greenkeeper.io/)
@@ -510,3 +511,6 @@ moment('2014-01-01 09:30:26').dateOnly() // 01/01/2014 12:00:00 AM
 MIT License
 
 See LICENSE file for details.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjefbarn%2Fmoment-recur-ts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjefbarn%2Fmoment-recur-ts?ref=badge_large)
