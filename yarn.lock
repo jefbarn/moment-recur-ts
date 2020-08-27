@@ -16,11 +16,13 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@reactivex/ix-es2015-cjs@^2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@reactivex/ix-es2015-cjs/-/ix-es2015-cjs-2.3.5.tgz#f50adc537e0c1fa91d68f5870bbc7e3d1ec9d327"
+"@reactivex/ix-es2015-cjs@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@reactivex/ix-es2015-cjs/-/ix-es2015-cjs-3.0.0.tgz#e1e99ae59e67fe6410dd21ba95896eaeeaeb385d"
+  integrity sha512-1woSHAFPhJVw/Kst40viFircvjg187sTVL3KwEfkTG8m4GeBGEgm69OYgedeZVZZ8rMpXJs5Ba5cSQrOMyLR8w==
   dependencies:
-    tslib "^1.8.0"
+    "@types/node" "^12.0.4"
+    tslib "^1.9.3"
 
 "@types/clean-webpack-plugin@^0.1.2":
   version "0.1.2"
@@ -106,6 +108,11 @@
 "@types/node@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.0.tgz#acaa89247afddc7967e9902fd11761dadea1a555"
+
+"@types/node@^12.0.4":
+  version "12.12.26"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.26.tgz#213e153babac0ed169d44a6d919501e68f59dea9"
+  integrity sha512-UmUm94/QZvU5xLcUlNR8hA7Ac+fGpO1EG/a8bcWVz0P0LqtxFmun9Y2bbtuckwGboWJIT70DoWq1r3hb56n3DA==
 
 "@types/prettier@^1.13.1":
   version "1.13.1"
@@ -4580,6 +4587,11 @@ ts-node@^6.1.2:
 tslib@^1.0.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.2.tgz#8be0cc9a1f6dc7727c38deb16c2ebd1a2892988e"
+
+tslib@^1.9.3:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
+  integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
 
 tslint-config-standard@^7.0.0:
   version "7.0.0"
